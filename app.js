@@ -348,6 +348,15 @@ const SKILLS = [
   { label: "Frontend", keys: ["frontend", "front-end", "front end"], proof: ["FixMateHub"] },
   { label: "Backend", keys: ["backend", "back-end", "back end"], proof: ["FixMateHub", "RTI Black Hole"] },
   { label: "Automation", keys: ["automation", "automate"], proof: ["AwaazRoute"] },
+  { label: "Firebase", keys: ["firebase", "firestore"], proof: ["FixMateHub", "RTI Black Hole"] },
+  { label: "PHP", keys: ["php"], proof: ["All-in-One Medicare (PHP/MySQL)"] },
+  { label: "React Native", keys: ["react native"], proof: ["FixMateHub"] },
+  { label: "LangChain / RAG", keys: ["langchain", "rag", "retrieval augmented", "llm"], proof: ["GenAI products (per LinkedIn About)"] },
+  { label: "MCP", keys: ["mcp", "model context protocol"], proof: ["GenAI products (per LinkedIn About)"] },
+  { label: "Automation (n8n / Zapier)", keys: ["n8n", "zapier", "make.com", "make automation", "workflow automation"], proof: ["FixMateHub ops automation"] },
+  { label: "Web Design", keys: ["web design", "responsive"], proof: ["FixMateHub"] },
+  { label: "Project Management", keys: ["project management", "project manager"], proof: ["FixMateHub", "50+ events"] },
+  { label: "Communication", keys: ["communication"], proof: ["FixMateHub — client communication", "Kushal Yuva Program (A+)"] },
   { label: "Chrome Extensions", keys: ["chrome extension", "extension"], proof: ["MyTab extension"] },
   { label: "Event Management", keys: ["event management", "event manager", "event planning", "management", "manager", "managing", "coordination", "coordinator", "operations", "logistics", "logistic", "supply chain", "vendor management", "client handling", "budgeting", "planning"], proof: ["50+ weddings & corporate events", "Event Management System"] },
   { label: "Weddings & Hospitality", keys: ["wedding", "weddings", "hospitality", "corporate events", "event", "events", "venue", "stage management"], proof: ["50+ weddings & corporate events"] },
@@ -356,7 +365,7 @@ const SKILLS = [
 ];
 const NOT_HAVE = [
   "Java", "AWS", "Azure", "Kubernetes", "DevOps", "Terraform", "TypeScript",
-  "Angular", "Vue", "PHP", "Laravel", "Django", "Golang", "Rust", "C++",
+  "Angular", "Vue", "Laravel", "Django", "Golang", "Rust", "C++",
   "TensorFlow", "PyTorch", "Figma", "Flutter", "Kotlin", "Swift", ".NET", "C#",
   "Spark", "Tableau", "Power BI", "Salesforce",
 ];

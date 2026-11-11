@@ -441,6 +441,11 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 }
 .edu-visual-top.edu-banner { object-fit: contain; padding: 10px 14px; background: #14100a; }
 .edu-visual-top.edu-logo { object-fit: contain; padding: 16px; background: rgba(255, 255, 255, 0.94); }
+.edu-visual-top.edu-logo-dark { object-fit: contain; padding: 24px; background: #14100a; }
+.edu-visual-top.edu-icon-top {
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(232, 89, 12, 0.14); color: var(--accent);
+}
 
 /* MatchMate bot */
 .bot-label { display: block; font-weight: 700; font-size: 0.92rem; margin: 0 0 6px; color: var(--text); }

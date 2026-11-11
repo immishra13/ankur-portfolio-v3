@@ -1,6 +1,6 @@
 ---
 version: zeta
-name: Ankur Mishra Portfolio v3.5 "Home Orbit"
+name: Ankur Mishra Portfolio v3.5.1 "Home Orbit"
 description: Warm dark one-page orbit over a personal-area photo background. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos + bg-removed icons, per-section panel themes, MatchMate NLP (stemming + synonyms).
 colors:
   page-default: "#0d0a07"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.5 "Home Orbit"
+# Design Contract — Portfolio v3.5.1 "Home Orbit"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -133,3 +133,10 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 - MatchMate NLP upgrade: light stemmer (suffix stripping, looped) + synonym groups with prefix matching, so logistic=logistics, management=manager, supply chain=logistics, wedding planner=event planning. 23/23 Node tests pass (incl. no false positives: "sign language" does NOT match NLP, "javascript function" does NOT match Weddings). NOT_HAVE still exact-phrase only.
 - Per-section panel themes (each panel its own design, not one repeated layout): eyebrow pill per section (Workshop / Toolbox / Campus / Route map / Scoreboard / MatchMate / Calling cards), workshop dashed work cards + LIVE/GitHub tags, toolbox h3 labels, scoreboard 2-up stat grid, contact accent top edges.
 - LinkedIn profile read (browser task) was still running when v3.5 shipped; its education/projects/certifications go into v3.5.1.
+
+## v3.5.1 — LinkedIn pass (2026-11-11)
+- LinkedIn profile read in full (browser task, read-only): 3 education entries, 1 role, 30 skills, 1 certification, 9 activity posts.
+- Education: added Kushal Yuva Program (BS-CIT/BS-CLS/BS-CSS, Nov 2021-Mar 2022, Grade A+), MongoDB certification (Jun 2025, Credly), Google Foundations of Cybersecurity (Coursera, from his activity post — not in LinkedIn's Certifications section, labelled as such in docs only).
+- Skills: added PHP, Firebase, React Native, RAG, LangChain, MCP, People & Process group (Project Management, Management, Communication, Web Design, Responsive Web Design); note about Office/Excel/PowerPoint LinkedIn assessments.
+- MatchMate: added Firebase, PHP, React Native, LangChain/RAG, MCP, n8n/Zapier automation, Web Design, Project Management, Communication; PHP REMOVED from NOT_HAVE (he has it — LinkedIn lists PHP). 12/12 new tests pass, 23/23 old tests still pass.
+- Work cards enriched from his LinkedIn posts: RTI Black Hole (transparency score, 4 role portals), Financial Complaint Classifier (CFPB dataset, VADER sentiment, probability breakdown).
