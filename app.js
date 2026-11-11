@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v3.3 "Cube Orbit".
+// Ankur Mishra — portfolio v3.6 "Home Orbit".
 // Full dark UI. Avatar in the centre, drawn on canvas with live chroma-key
 // (white video background removed per frame — no white box behind him).
 // Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a panel
