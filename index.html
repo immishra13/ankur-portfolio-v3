@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=3.5.3">
+<link rel="stylesheet" href="styles.css?v=3.6">
 </head>
 <body>
 
@@ -37,11 +37,12 @@
   </header>
 
   <!-- Living avatar, centre — canvas chroma-key: white video background removed live -->
-  <div class="avatar-stage" id="avatarStage">
+  <div class="avatar-stage" id="avatarStage" style="--mx:-46vw">
     <div class="avatar-glow" aria-hidden="true"></div>
     <div class="avatar-tilt" id="avatarTilt">
       <canvas id="avatarCanvas" class="avatar-canvas" aria-label="Ankur's avatar, standing and breathing"></canvas>
       <img class="wave-hand" src="assets/wave-hand.svg" alt="" aria-hidden="true">
+      <img class="point-hand" id="pointHand" src="assets/point-hand.svg" alt="" aria-hidden="true">
       <video id="videoIdle" class="avatar-video-src" src="avatar-idle.mp4" poster="avatar.png" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
       <video id="videoDance" class="avatar-video-src" src="avatar-dance.mp4" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
     </div>
@@ -123,7 +124,7 @@
     </button>
   </nav>
 
-  <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · v3.5.3 “Home Orbit”</p>
+  <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · v3.6 “Home Orbit”</p>
 </div>
 
 <!-- ================= SIDE PANEL: one panel per box ================= -->
@@ -210,31 +211,31 @@
       <p class="panel-intro">Padhai ka safar — Sheohar se Mumbai.</p>
       <div class="edu-grid">
         <article class="edu-card edu-feature">
-          <img class="edu-visual-top edu-banner" src="assets/viva-banner-icon.png" alt="VIVA Institute of Technology entrance banner, background removed" loading="lazy">
+          <img class="edu-visual edu-visual-viva" src="assets/viva-campus-full.jpg" alt="VIVA Institute of Technology campus — yellow entrance banner and glass building, Virar" loading="lazy">
           <div class="edu-body"><h4>B.E. CSE (AI &amp; ML)</h4><p class="edu-place">VIVA Institute of Technology, Virar — University of Mumbai · 2023–2027</p><p>Sem 6 SGPI 8.70 · CGPI 7.60</p></div>
         </article>
         <article class="edu-card">
-          <img class="edu-visual-top edu-logo" src="assets/nptel-logo.png" alt="NPTEL logo" loading="lazy">
+          <img class="edu-visual edu-logo-light" src="assets/nptel-logo.png" alt="NPTEL logo" loading="lazy">
           <div class="edu-body"><h4>NPTEL — AI Concepts &amp; Techniques</h4><p class="edu-place">Scored 96</p></div>
         </article>
         <article class="edu-card">
-          <img class="edu-visual-top" src="assets/sheohar-school-crop.jpg" alt="Shri Nawab High School, Sheohar — yellow school building" loading="lazy">
+          <img class="edu-visual" src="assets/shri-nawab-school.jpg" alt="Shri Nawab High School, Sheohar — cream school building" loading="lazy">
           <div class="edu-body"><h4>HSC — Shri Nawab High School</h4><p class="edu-place">Sheohar, Bihar · Bihar Board · 2022 · 64.40%</p></div>
         </article>
         <article class="edu-card">
-          <img class="edu-visual-top" src="assets/dps-lagma-gate.jpg" alt="Delhi Public School, Lagma entrance gate" loading="lazy">
+          <img class="edu-visual" src="assets/dps-school.jpg" alt="Delhi Public School — red and yellow school building" loading="lazy">
           <div class="edu-body"><h4>SSC — Sen Sec Delhi Public School</h4><p class="edu-place">Lagma, Sitamarhi, Bihar · CBSE · 2020 · 64.60%</p></div>
         </article>
         <article class="edu-card">
-          <span class="edu-visual-top edu-icon-top" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></span>
+          <img class="edu-visual edu-logo-light" src="assets/kushal-yuva-logo.png" alt="Kushal Yuva Program logo" loading="lazy">
           <div class="edu-body"><h4>Kushal Yuva Program</h4><p class="edu-place">BS-CIT · BS-CLS · BS-CSS — IT, language &amp; soft skills · Nov 2021–Mar 2022 · Grade A+</p></div>
         </article>
         <article class="edu-card">
-          <img class="edu-visual-top edu-logo-dark" src="https://cdn.simpleicons.org/mongodb/47A248" alt="MongoDB logo" loading="lazy" onerror="this.remove()">
+          <img class="edu-visual edu-logo-dark" src="https://cdn.simpleicons.org/mongodb/47A248" alt="MongoDB logo" loading="lazy" onerror="this.remove()">
           <div class="edu-body"><h4>MongoDB Certification</h4><p class="edu-place">From Relational Model (SQL) to MongoDB's Document Model · Issued Jun 2025</p></div>
         </article>
         <article class="edu-card">
-          <img class="edu-visual-top edu-logo-dark" src="https://cdn.simpleicons.org/google/4285F4" alt="Google logo" loading="lazy" onerror="this.remove()">
+          <img class="edu-visual edu-logo-dark" src="https://cdn.simpleicons.org/google/4285F4" alt="Google logo" loading="lazy" onerror="this.remove()">
           <div class="edu-body"><h4>Foundations of Cybersecurity</h4><p class="edu-place">Google Cybersecurity Certificate · Coursera</p></div>
         </article>
       </div>
@@ -247,6 +248,30 @@
       <div class="journey-route">
         <p class="journey-path"><span>Sheohar, Bihar</span><span class="journey-line" aria-hidden="true"></span><span>Mumbai</span></p>
         <div class="journey-progress"><span style="--p:0.86"></span><em>You are here — 2026</em></div>
+        <svg class="journey-map" viewBox="0 0 520 280" role="img" aria-label="Route map: Sheohar, Bihar in 2020 to Mumbai in 2027">
+          <path class="jm-road" d="M 28 225 C 95 225, 95 70, 160 70 C 225 70, 225 225, 290 225 C 355 225, 355 70, 420 70 C 475 70, 490 150, 505 230" />
+          <path class="jm-road-gold" d="M 28 225 C 95 225, 95 70, 160 70 C 225 70, 225 225, 290 225 C 355 225, 355 70, 420 70 C 475 70, 490 150, 505 230" />
+          <path class="jm-pin" d="M28 176 c-9 0 -15 7 -15 15 c0 10 15 23 15 23 s15 -13 15 -23 c0 -8 -6 -15 -15 -15 z" />
+          <circle cx="28" cy="191" r="5" fill="#161009" />
+          <line x1="505" y1="230" x2="505" y2="196" stroke="#2dd4bf" stroke-width="3" stroke-linecap="round" />
+          <path class="jm-flag" d="M505 196 L505 214 L484 205 z" />
+          <g class="jm-person"><circle cx="466" cy="166" r="5.5" /><path d="M456 190 a10 10 0 0 1 20 0 z" /></g>
+          <circle class="jm-dot" cx="28" cy="225" r="7" />
+          <circle class="jm-dot" cx="158" cy="70" r="7" />
+          <circle class="jm-dot" cx="288" cy="225" r="7" />
+          <circle class="jm-dot" cx="403" cy="74" r="7" />
+          <circle class="jm-dot" cx="478" cy="120" r="7" />
+          <circle class="jm-dot jm-dot-now" cx="496" cy="183" r="7" />
+          <circle class="jm-dot jm-dot-dest" cx="505" cy="230" r="7" />
+          <text class="jm-year" x="158" y="44" text-anchor="middle">2022</text>
+          <text class="jm-year" x="403" y="48" text-anchor="middle">2024</text>
+          <text class="jm-year" x="288" y="255" text-anchor="middle">2023</text>
+          <text class="jm-year" x="28" y="258" text-anchor="middle">2020</text>
+          <text class="jm-year" x="470" y="150" text-anchor="end">2025</text>
+          <text class="jm-year" x="448" y="190" text-anchor="end">2026</text>
+          <text class="jm-year" x="488" y="262" text-anchor="middle">2027</text>
+          <text class="jm-place" x="28" y="274" text-anchor="middle">Sheohar</text>
+        </svg>
         <ol class="journey-track">
           <li><span class="track-dot" aria-hidden="true"></span><div class="track-card"><strong>2020</strong><span class="track-title">SSC — Sen Sec Delhi Public School, CBSE — 64.60%</span><p>Lagma, Sitamarhi, Bihar.</p></div></li>
           <li><span class="track-dot" aria-hidden="true"></span><div class="track-card"><strong>2022</strong><span class="track-title">HSC — Shri Nawab High School, Bihar Board — 64.40%</span><p>Sheohar, Bihar. August me Maharashtra shift.</p></div></li>
@@ -326,6 +351,6 @@
 </aside>
 <div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
-<script src="app.js?v=3.5.3"></script>
+<script src="app.js?v=3.6"></script>
 </body>
 </html>

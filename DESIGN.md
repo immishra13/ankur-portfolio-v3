@@ -1,6 +1,6 @@
 ---
 version: zeta
-name: Ankur Mishra Portfolio v3.5.3 "Home Orbit"
+name: Ankur Mishra Portfolio v3.6 "Home Orbit"
 description: Warm dark one-page orbit over a personal-area photo background. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos + bg-removed icons, per-section panel themes, MatchMate NLP (stemming + synonyms).
 colors:
   page-default: "#0d0a07"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.5.3 "Home Orbit"
+# Design Contract — Portfolio v3.6 "Home Orbit"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -146,3 +146,9 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 
 ## v3.5.3 — Background visibility fix (2026-11-11)
 - Live re-check found the background photo effectively invisible: the 0.78–0.86 dark overlay hid the Madhubani painting, lamp and laptop. Overlay lightened to 0.52–0.68 so the workspace scene shows through while cream text stays readable. Nothing else changed.
+
+## v3.6 — Ankur's own photos, moving avatar, journey map (2026-11-11)
+- BACKGROUND, REAL ROOT CAUSE: Ankur's phone screenshot proved the photo was STILL invisible after v3.5.3. The overlay was never the problem — `.orbit`'s opaque `var(--bg)` base painted over `body::before` across the whole 100dvh hero. Base is transparent now (warm glows only); overlay lightened to 0.48–0.62. Lesson: check what actually covers a layer, not just the layer itself.
+- EDUCATION — HIS EXACT IMAGES, AS ICONS: Ankur sent his own photos (DPS red/yellow building, Shri Nawab cream building, VIVA banner + glass building) and logos (NPTEL, Kushal Yuva). Cards now use 76px icons, not full-width banners: photos are rounded cover-crops; the two white-background logos got a clean white-to-alpha cut (rembg isnet made them foggy — verified visually — so PIL white-to-alpha + autocrop was used instead) and sit on a light cream tile. Building photos are NEVER bg-removed (rembg destroys them, verified 3x). Old reel-thumbnail / gate photos retired (files remain in assets/ unused).
+- AVATAR MOVES (code, not new video): the avatar system only makes dance videos — no walk/point/biceps/smile video exists and none can be generated. So the STAGE moves in JS: walk-in from off-screen left on load (1.5s, step-bob, "walking in — hi!"), a small stroll every 22s while idle, a shift away from the open panel + a pointing-hand SVG on the panel's side (bobbing toward it) on every box tap, and a flex-pose scale bounce + "FLEXING — hire me energy" on Hire Me. `prefers-reduced-motion` disables the movement.
+- JOURNEY MAP: the panel now opens with a hand-built SVG route map in the style of Ankur's reference sketch — winding road (pale + dashed gold centre line), one dot per year (positions verified numerically on the cubic path, max 0.5px off), pin at Sheohar 2020, person marker at YOU ARE HERE 2026, flag at DESTINATION 2027. The year-by-year list stays below it.

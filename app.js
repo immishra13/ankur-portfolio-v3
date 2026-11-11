@@ -153,6 +153,52 @@ if (finePointer && !reduced) {
   })();
 }
 
+// ---------- Avatar movement: walk-in, stroll, point, flex ----------
+// The avatar VIDEO cannot walk, point or flex — the avatar system only
+// makes dance videos — so the STAGE moves in code (--mx/--my). The
+// video keeps breathing/dancing; the stage does the walking.
+const pointHand = $("pointHand");
+let curMX = -Math.round(window.innerWidth * 0.46), curMY = 0, moveTimer = null;
+function moveStage(toX, toY, dur, bobAmp, done) {
+  if (reduced) {
+    stage.style.setProperty("--mx", toX + "px");
+    stage.style.setProperty("--my", toY + "px");
+    curMX = toX; curMY = toY;
+    if (done) done();
+    return;
+  }
+  if (moveTimer) cancelAnimationFrame(moveTimer);
+  const fromX = curMX, fromY = curMY, t0 = performance.now();
+  const step = (now) => {
+    const t = Math.min(1, (now - t0) / dur);
+    const e = 1 - Math.pow(1 - t, 3);
+    const bob = bobAmp ? Math.abs(Math.sin(t * Math.PI * 6)) * -bobAmp : 0;
+    curMX = fromX + (toX - fromX) * e;
+    curMY = fromY + (toY - fromY) * e + bob;
+    stage.style.setProperty("--mx", curMX.toFixed(1) + "px");
+    stage.style.setProperty("--my", curMY.toFixed(1) + "px");
+    if (t < 1) moveTimer = requestAnimationFrame(step);
+    else {
+      curMY = toY;
+      stage.style.setProperty("--my", toY + "px");
+      if (done) done();
+    }
+  };
+  moveTimer = requestAnimationFrame(step);
+}
+// Walk in on load: from off-screen left to centre, waving hi.
+stateLabel.textContent = "Right now: walking in — hi!";
+moveStage(0, 0, 1500, 5, () => {
+  if (!dancing) stateLabel.textContent = "Right now: idle — breathing, listening";
+});
+// A little stroll while idle, so he never looks stuck in one place.
+function stroll() {
+  if (openKey || document.hidden) return;
+  const dx = (Math.random() < 0.5 ? -1 : 1) * (50 + Math.random() * 40);
+  moveStage(dx, 0, 900, 4, () => setTimeout(() => { if (!openKey) moveStage(0, 0, 900, 4); }, 1200));
+}
+setInterval(stroll, 22000);
+
 // ---------- 3D cubes: drag to rotate ----------
 // Hover rotation is CSS (--rx/--ry vars). Drag sets the same vars inline;
 // on release the inline vars are cleared so the CSS resting pose returns.
@@ -228,8 +274,23 @@ function openPanel(key) {
   document.body.classList.add("panel-open");
   panel.classList.toggle("panel-left", LEFT_PANELS.has(key));
   panelTiltY = LEFT_PANELS.has(key) ? -12 : 12; // turn toward the panel's side
+  // Point at the panel: hand on the panel's side, avatar steps aside so
+  // he stays visible next to the sheet instead of under it.
+  const isLeft = LEFT_PANELS.has(key);
+  pointHand.classList.toggle("point-left", isLeft);
+  pointHand.classList.toggle("point-right", !isLeft);
+  stage.classList.add("pointing");
+  moveStage(isLeft ? 60 : -60, 0, 600, 0);
   setSpeech(SPEECH[key]);
   startDance(); // excitement on every open
+  if (key === "hire") {
+    // Flex emote: puff up and show off for recruiters.
+    stage.classList.remove("flexing");
+    void stage.offsetWidth;
+    stage.classList.add("flexing");
+    stateLabel.textContent = "Right now: FLEXING — hire me energy";
+    setTimeout(() => stage.classList.remove("flexing"), 950);
+  }
 }
 
 function closePanel() {
@@ -242,6 +303,9 @@ function closePanel() {
   document.querySelectorAll(".orbit-box").forEach((b) => b.classList.remove("is-active"));
   panelTiltY = 0;
   stopDance();
+  stage.classList.remove("pointing");
+  stage.classList.remove("flexing");
+  moveStage(0, 0, 600, 0); // walk back to centre
   setSpeech("Wapas aa gaya. Koi aur box try karo — main yahin hoon.");
 }
 

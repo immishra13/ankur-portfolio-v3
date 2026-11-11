@@ -42,13 +42,13 @@ body {
   overflow-x: hidden;
 }
 /* Personal-area background: his own warm workspace corner, fixed behind
-   everything. Overlay lightened in v3.5.3 (was 0.78/0.86 — the photo was
-   invisible): the Madhubani painting, lamp and laptop now show through
-   while cream text stays readable on desktop and phone. */
+   everything. v3.6: overlay lightened again (0.48/0.62) — but the REAL
+   fix is in .orbit below: its opaque var(--bg) base covered this layer
+   completely, which is why the photo NEVER showed, in any version. */
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
-    linear-gradient(rgba(13, 10, 7, 0.52), rgba(13, 10, 7, 0.68)),
+    linear-gradient(rgba(13, 10, 7, 0.48), rgba(13, 10, 7, 0.62)),
     url("assets/bg-personal.webp") center 28% / cover no-repeat;
 }
 a { color: var(--teal); text-decoration: none; }
@@ -75,11 +75,14 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   position: relative;
   height: 100dvh; min-height: 680px;
   overflow: hidden;
+  /* v3.6 ROOT-CAUSE FIX: the old base layer var(--bg) was opaque, so it
+     painted over body::before across the whole hero — the background
+     photo could never show. Base is transparent now; only the warm
+     glows sit on top of the photo. */
   background:
     radial-gradient(700px 500px at 50% 42%, rgba(245, 158, 11, 0.17), transparent 65%),
     radial-gradient(900px 600px at 85% 10%, rgba(214, 128, 60, 0.12), transparent 60%),
-    radial-gradient(800px 600px at 10% 90%, rgba(232, 89, 12, 0.13), transparent 60%),
-    var(--bg);
+    radial-gradient(800px 600px at 10% 90%, rgba(232, 89, 12, 0.13), transparent 60%);
 }
 
 /* 3D name */
@@ -102,7 +105,11 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 /* Avatar, centre */
 .avatar-stage {
   position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
+  /* --mx/--my are driven by JS: walk-in on load, a stroll while idle,
+     and a shift toward the open panel. The avatar MOVES; the video
+     itself cannot walk or point (the avatar system only makes dance
+     videos), so all movement is code, not a new video. */
+  transform: translate(calc(-50% + var(--mx, 0px)), calc(-50% + var(--my, 0px)));
   text-align: center; z-index: 2; perspective: 900px;
   margin-top: 8px;
 }
@@ -140,6 +147,30 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   66% { opacity: 1; transform: rotate(0deg); }
   85% { opacity: 1; transform: rotate(0deg); }
   100% { opacity: 0; transform: rotate(0deg) scale(0.9); }
+}
+/* Pointing hand: appears while a panel is open, on the panel's side,
+   bobbing toward it — the avatar points at what you tapped. */
+.point-hand {
+  position: absolute; top: 40%; width: 46px; height: 46px; z-index: 4;
+  pointer-events: none; opacity: 0; transform: scale(0.6);
+  transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+.point-hand.point-right { right: -16px; }
+.point-hand.point-left { left: -16px; transform: scaleX(-1) scale(0.6); }
+.avatar-stage.pointing .point-hand { opacity: 1; transform: scale(1); animation: point-bob 1.2s ease-in-out infinite; }
+.avatar-stage.pointing .point-hand.point-left { transform: scaleX(-1) scale(1); animation: point-bob-left 1.2s ease-in-out infinite; }
+@keyframes point-bob { 0%, 100% { translate: 0 0; } 50% { translate: 7px 0; } }
+@keyframes point-bob-left { 0%, 100% { translate: 0 0; } 50% { translate: -7px 0; } }
+/* Flex emote (Hire Me): the avatar puffs up and shows off — biceps energy. */
+.avatar-stage.flexing .avatar-canvas { animation: flex-pose 0.9s var(--ease-out); }
+@keyframes flex-pose {
+  0% { transform: scaleX(0.93) scale(1); }
+  30% { transform: scaleX(0.93) scale(1.07) rotate(-2deg); }
+  60% { transform: scaleX(0.93) scale(1.1) rotate(1.5deg); }
+  100% { transform: scaleX(0.93) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .avatar-stage.pointing .point-hand, .avatar-stage.flexing .avatar-canvas { animation: none; }
 }
 /* Source videos stay off-screen (never display:none — phones suspend
    display:none videos, which is how the avatar went missing on load). */
@@ -396,6 +427,20 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   position: absolute; right: 0; top: -22px; font-style: normal;
   font-size: 0.78rem; font-weight: 700; color: var(--gold);
 }
+/* Journey route map — a winding road like Ankur's reference sketch:
+   pale road with a dashed gold centre line, a dot per year, a pin at
+   Sheohar (2020), a person at YOU ARE HERE (2026), a flag at 2027. */
+.journey-map { width: 100%; height: auto; display: block; margin: 2px 0 4px; }
+.journey-map .jm-road { fill: none; stroke: rgba(245, 239, 230, 0.32); stroke-width: 10; stroke-linecap: round; }
+.journey-map .jm-road-gold { fill: none; stroke: var(--gold); stroke-width: 2.5; stroke-dasharray: 7 7; stroke-linecap: round; }
+.journey-map .jm-dot { fill: var(--bg); stroke: var(--gold); stroke-width: 3; }
+.journey-map .jm-dot-now { fill: var(--gold); }
+.journey-map .jm-dot-dest { fill: var(--teal); stroke: var(--teal); }
+.journey-map .jm-year { fill: var(--text); font-size: 13px; font-weight: 800; font-family: "Inter", sans-serif; }
+.journey-map .jm-place { fill: var(--muted); font-size: 11px; font-weight: 600; font-family: "Inter", sans-serif; }
+.journey-map .jm-pin { fill: var(--accent); }
+.journey-map .jm-flag { fill: var(--teal); }
+.journey-map .jm-person { fill: var(--gold); }
 .journey-track { list-style: none; margin: 0; padding: 0; position: relative; }
 .journey-track::before {
   content: ""; position: absolute; left: 10px; top: 10px; bottom: 10px; width: 2px;
@@ -423,9 +468,11 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   border-radius: 999px; padding: 3px 9px;
 }
 
-/* Education cards — real images as icons, not dumped in a box.
-   Visual sits on TOP of the card (wide slot fits photos and the
-   bg-removed VIVA banner icon); text below. */
+/* Education cards — Ankur's OWN photos/logos as ICONS (v3.6), not big
+   banners. Photos are small rounded crops; logos are bg-removed PNGs
+   on a light cream tile, so their transparent white reads like the
+   original. Building photos are never bg-removed (rembg destroys
+   them — verified 3x); only the two white-background logos are cut. */
 .edu-grid { display: grid; gap: 12px; }
 .edu-card {
   display: flex; flex-direction: column; gap: 0; align-items: stretch;
@@ -438,16 +485,14 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 .edu-card p { margin: 0; color: #cdd7e4; font-size: 0.93rem; line-height: 1.5; }
 .edu-place { color: var(--muted); font-size: 0.88rem; }
 .edu-body { padding: 12px 14px 14px; }
-.edu-visual-top {
-  width: 100%; height: 112px; object-fit: cover; display: block; background: #0a0805;
+.edu-visual {
+  width: 76px; height: 76px; margin: 14px auto 0; display: block;
+  border-radius: 18px; object-fit: cover; background: #0a0805;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
-.edu-visual-top.edu-banner { object-fit: contain; padding: 10px 14px; background: #14100a; }
-.edu-visual-top.edu-logo { object-fit: contain; padding: 16px; background: rgba(255, 255, 255, 0.94); }
-.edu-visual-top.edu-logo-dark { object-fit: contain; padding: 24px; background: #14100a; }
-.edu-visual-top.edu-icon-top {
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(232, 89, 12, 0.14); color: var(--accent);
-}
+.edu-visual-viva { object-position: center 12%; }
+.edu-visual.edu-logo-light { object-fit: contain; padding: 5px; background: #f7f1e6; }
+.edu-visual.edu-logo-dark { object-fit: contain; padding: 12px; background: #14100a; }
 
 /* MatchMate bot */
 .bot-label { display: block; font-weight: 700; font-size: 0.92rem; margin: 0 0 6px; color: var(--text); }
@@ -521,7 +566,7 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   .wave-hand { width: 34px; height: 34px; right: 2px; top: 30%; }
   body::before { background-position: center 22%; }
   .theme-proof .proof-list { grid-template-columns: 1fr 1fr; }
-  .edu-visual-top { height: 96px; }
+  .edu-visual { width: 64px; height: 64px; }
   .speech { font-size: 0.92rem; max-width: 300px; }
   .orbit-boxes { position: absolute; inset: 0; }
   .orbit-box { width: 104px; }
