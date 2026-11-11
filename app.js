@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v3.7.2 "Home Orbit".
+// Ankur Mishra — portfolio v3.7.3 "Home Orbit".
 // Full dark UI. Avatar in the centre, drawn on canvas with live chroma-key
 // (white video background removed per frame — no white box behind him).
 // Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a panel
@@ -112,6 +112,7 @@ function startDance() {
   dance.play().catch(() => {});
   stateLabel.textContent = "Right now: EXCITED — dance kar raha hai";
   startNotes(); // music notes float up while he dances
+  stage.classList.add("show-shadow"); // ground shadow: only the dance video has feet
 }
 function stopDance() {
   if (!dancing) return;
@@ -120,6 +121,7 @@ function stopDance() {
   activeVideo = idle;
   lastTime = -1;
   stopNotes();
+  stage.classList.remove("show-shadow");
   if (!reduced) idle.play().catch(() => {});
   stateLabel.textContent = "Right now: idle — breathing, listening";
 }
@@ -229,7 +231,7 @@ function spawnFx(cls, x, y, extra) {
   return el;
 }
 function sparkle() {
-  if (fxLayer.childElementCount > 10) return;
+  if (fxLayer.childElementCount > 12) return;
   spawnFx("fx-spark" + (Math.random() < 0.3 ? " teal" : ""), 20 + Math.random() * 300, 120 + Math.random() * 340);
 }
 function musicNote() {
@@ -238,12 +240,13 @@ function musicNote() {
   spawnFx("fx-note", x, 300 + Math.random() * 80, (el) => { el.innerHTML = NOTE_SVG; });
 }
 function confettiBurst() {
-  // Fired twice (350ms apart) so the burst lasts ~1.8s — a single 0.9s
-  // burst was too quick to catch. 16 pieces, bigger, with glow.
+  // Three waves (0/400/800ms), 24 pieces each, 2.2s flight — visible ~3s.
+  // The single 0.9s burst was too quick to catch, and the panel backdrop
+  // (55% dark) veiled it; the stage now lifts above the backdrop too.
   const once = () => {
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 24; i++) {
       const a = Math.random() * Math.PI * 2;
-      const d = 60 + Math.random() * 80;
+      const d = 60 + Math.random() * 90;
       const cls = ["fx-burst", "fx-burst teal", "fx-burst pink"][i % 3];
       spawnFx(cls, 170, 240, (el) => {
         el.style.setProperty("--dx", (Math.cos(a) * d).toFixed(0) + "px");
@@ -252,9 +255,10 @@ function confettiBurst() {
     }
   };
   once();
-  setTimeout(once, 350);
+  setTimeout(once, 400);
+  setTimeout(once, 800);
 }
-setInterval(() => { if (!document.hidden) sparkle(); }, 800);
+setInterval(() => { if (!document.hidden) { sparkle(); sparkle(); } }, 900);
 let noteTimer = null;
 function startNotes() {
   if (noteTimer) return;

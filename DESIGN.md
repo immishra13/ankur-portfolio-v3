@@ -1,6 +1,6 @@
 ---
 version: zeta
-name: Ankur Mishra Portfolio v3.7.2 "Home Orbit"
+name: Ankur Mishra Portfolio v3.7.3 "Home Orbit"
 description: Warm dark one-page orbit over a personal-area photo background. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos + bg-removed icons, per-section panel themes, MatchMate NLP (stemming + synonyms).
 colors:
   page-default: "#0d0a07"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.7.2 "Home Orbit"
+# Design Contract — Portfolio v3.7.3 "Home Orbit"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -161,6 +161,9 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 - Tap the avatar himself: he waves again, a sparkle burst fires, a random line appears in the speech bubble, and he starts dancing.
 - Hire Me now fires a 12-piece gold/teal/pink confetti burst with the flex pose.
 - Restraint: all effects are transform/opacity only, capped counts, `prefers-reduced-motion` hides them entirely.
+
+## v3.7.3 — Fix: confetti veiled by backdrop, shadow has no ground at idle (2026-11-11)
+- Visual check of v3.7.2 passed the avatar tap (dances, waves, new bubble lines) — but confetti was still unseen in 3 attempts and sparkles still looked sparse (1–2 at once), and the shadow was still invisible. Root causes, found by reading the actual video frames, not guessing: (1) The confetti fires exactly when the panel opens — and the panel backdrop is a 55% dark veil (z-index 20) over the whole hero, dimming the burst. Fixed: `body.panel-open .avatar-stage { z-index: 21 }` lifts the avatar + all its effects above the backdrop (panel itself is 30), so he stays bright while a panel is open. (2) The burst was still too small/fast for a screenshot-based check. Fixed: 24 pieces × 3 waves (0/400/800ms), 14px dots with strong glow, 2.2s flight, opacity holds to 55% — visible ~3s. Sparkles: 8px, 2 per tick, opacity holds to 65% (~5–6 clearly visible). (3) The shadow: I extracted real frames — the IDLE video is framed waist-up (kurta hem cut at the frame edge, no feet, no ground), the DANCE video is full-body with feet. So a shadow at idle floats over the desk in the background photo and reads as nothing. Fixed: the shadow is now opacity 0 at idle and fades in only while he dances (`show-shadow` class in startDance/stopDance). Honest limit to tell Ankur: the idle video itself is waist-up — feet appear only when he dances. That is the generated video, not a bug.
 
 ## v3.7.2 — Fix: avatar untappable, confetti too quick to see (2026-11-11)
 - Visual check of v3.7.1 passed the avatar position, boxes, sparkles (sparse) and music notes — but tapping the avatar did nothing and no confetti was seen on Hire Me. Root causes: (1) `.orbit-boxes` covers the whole hero (`inset: 0`, z-index 3, above the stage) with NO `pointer-events: none` — it ate every click meant for the avatar, while the buttons inside still worked. Fixed: container `pointer-events: none`, boxes `pointer-events: auto`, avatar gets `cursor: pointer`. Lesson: a full-screen overlay layer must always declare pointer-events, or everything under it is dead. (2) The confetti DID fire (the FLEXING label in the same branch was seen), but one 0.9s burst of 8px dots is too quick to catch while the panel slides in. Fixed: 16 pieces, 10px with glow, 1.4s, fired twice 350ms apart (~1.8s total). Sparkles also thickened (every 800ms, was 1100ms) after the "sparse" note, and the ground shadow got a faint warm halo so it reads against the dark desk in the background photo.

@@ -1,4 +1,4 @@
-/* Ankur Mishra — portfolio v3.7.2 "Home Orbit".
+/* Ankur Mishra — portfolio v3.7.3 "Home Orbit".
    Concept: full dark UI, Ankur in the centre, real 3D cubes floating around him.
    Avatar: canvas chroma-key — white video background removed live, avatar floats
    on the dark page. Tap a box → panel opens on THAT box's side, avatar gets
@@ -113,6 +113,10 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   text-align: center; z-index: 2; perspective: 900px;
   margin-top: 8px;
 }
+/* When a panel is open, the backdrop (z-index 20) would dim the avatar and
+   veil the confetti. Lift the stage above it (panel itself is 30). */
+body.panel-open .avatar-stage { z-index: 21; }
+
 .avatar-glow {
   position: absolute; left: 50%; top: 38%; width: 360px; height: 360px;
   transform: translate(-50%, -50%); border-radius: 50%;
@@ -181,19 +185,25 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   border-radius: 50%; pointer-events: none;
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.22) 60%, transparent 75%);
   box-shadow: 0 0 28px 10px rgba(245, 158, 11, 0.13);
+  /* Only visible while dancing: the idle video is framed waist-up (no feet,
+     no ground), the dance video is full-body — a shadow at idle floats over
+     the desk in the background photo and reads as nothing. */
+  opacity: 0; transition: opacity 0.4s var(--ease-out);
 }
+.avatar-stage.show-shadow .avatar-shadow { opacity: 1; }
 /* Motion-graphics layer: sparkles, music notes, confetti — all spawned
    by JS, transform/opacity only, pointer-events none. */
 .avatar-fx { position: absolute; left: 50%; top: 0; width: 340px; height: 520px; transform: translateX(-50%); pointer-events: none; z-index: 3; overflow: visible; }
 .fx-spark {
-  position: absolute; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--gold); box-shadow: 0 0 8px 2px rgba(245, 158, 11, 0.55);
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold); box-shadow: 0 0 10px 3px rgba(245, 158, 11, 0.6);
   animation: fx-rise 3.6s ease-out forwards;
 }
-.fx-spark.teal { background: var(--teal); box-shadow: 0 0 8px 2px rgba(45, 212, 191, 0.5); }
+.fx-spark.teal { background: var(--teal); box-shadow: 0 0 10px 3px rgba(45, 212, 191, 0.55); }
 @keyframes fx-rise {
   0% { opacity: 0; transform: translateY(0) scale(0.5); }
-  15% { opacity: 1; transform: translateY(-14px) scale(1); }
+  12% { opacity: 1; transform: translateY(-14px) scale(1); }
+  65% { opacity: 1; transform: translateY(-90px) scale(1); }
   100% { opacity: 0; transform: translateY(-120px) scale(0.4); }
 }
 .fx-note {
@@ -207,15 +217,16 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   100% { opacity: 0; transform: translateY(-110px) rotate(-10deg) scale(0.9); }
 }
 .fx-burst {
-  position: absolute; width: 10px; height: 10px; border-radius: 50%;
-  background: var(--gold); box-shadow: 0 0 10px 2px rgba(245, 158, 11, 0.4);
-  animation: fx-burst-fly 1.4s var(--ease-out) forwards;
+  position: absolute; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--gold); box-shadow: 0 0 16px 4px rgba(245, 158, 11, 0.55);
+  animation: fx-burst-fly 2.2s var(--ease-out) forwards;
 }
-.fx-burst.teal { background: var(--teal); }
-.fx-burst.pink { background: var(--pink); }
+.fx-burst.teal { background: var(--teal); box-shadow: 0 0 16px 4px rgba(45, 212, 191, 0.55); }
+.fx-burst.pink { background: var(--pink); box-shadow: 0 0 16px 4px rgba(214, 51, 108, 0.55); }
 @keyframes fx-burst-fly {
   0% { opacity: 1; transform: translate(0, 0) scale(1); }
-  100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0.3); }
+  55% { opacity: 1; transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0.8); }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0.5); }
 }
 @media (prefers-reduced-motion: reduce) {
   .fx-spark, .fx-note, .fx-burst { animation: none; display: none; }

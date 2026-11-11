@@ -1,4 +1,4 @@
-# Ankur Mishra — Portfolio v3.7.2 "Home Orbit"
+# Ankur Mishra — Portfolio v3.7.3 "Home Orbit"
 
 **Concept: Madhubani roots, modern code — everything revolves around the builder.**
 
@@ -36,7 +36,7 @@ Tap a card, it opens that place directly.
 - `avatar-idle.mp4` — 9.7s idle loop · `avatar-dance.mp4` — 8s dance
 - `avatar.png` — poster still · `og-image.png` — share image
 - `Ankur_Mishra_Tech_Resume.pdf` · `Ankur_Kumar_Mishra_Event_Management_CV.docx`
-- `DESIGN.md` — the design contract (v3.7.2)
+- `DESIGN.md` — the design contract (v3.7.3)
 - `assets/viva-campus.jpg` — real VIVA campus photo · `assets/nptel-logo.png` — real transparent NPTEL logo
 
 ## Stack
@@ -57,4 +57,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v3.7 — more motion graphics on the avatar: ambient sparkles, music notes while dancing, ground shadow, idle look-around sway, tap-the-avatar reaction, confetti burst on Hire Me
 - v3.7.1 — hotfix: v3.7's look-around read a later-declared variable at eval time (TDZ ReferenceError) and killed the whole script — avatar stuck off-screen, boxes dead; fixed with a safe proxy + a DOM-stub smoke test that now runs on every JS change
 - v3.7.2 — fix: avatar untappable (full-screen boxes layer ate clicks — added pointer-events), confetti too quick to see (bigger, longer, double-fired), sparkles thickened, ground shadow given a warm halo
+- v3.7.3 — fix: confetti was veiled by the 55% panel backdrop (stage now lifts above it when a panel is open), burst made much bigger/longer (24×3 waves, ~3s), shadow now shows only while dancing (idle video is waist-up — verified on real frames, feet exist only in the dance video)
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)
