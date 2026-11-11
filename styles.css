@@ -1,4 +1,4 @@
-/* Ankur Mishra — portfolio v4.0 "Living Model".
+/* Ankur Mishra — portfolio v4.1.0.
    Concept: full dark UI, Ankur in the centre, real 3D cubes floating around him.
    Avatar: canvas chroma-key — white video background removed live, avatar floats
    on the dark page. Tap a box → panel opens on THAT box's side, avatar gets
@@ -516,19 +516,24 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   /* Phone: same orbit idea, smaller — the boxes stay AROUND the avatar,
      they do not drop into a grid below him. */
   .orbit { height: 100dvh; min-height: 720px; overflow: hidden; padding: 0; }
-  .name-block { top: 14px; }
+  /* Phone fix (v4.1.0): the name text touched the screen edges, and the
+     stage sat too LOW — its speech bubble + state label overlapped the
+     Proof/Contact boxes. Smaller mount, stage lifted UP (negative
+     margin), compact bubble, Proof/Contact moved down to 71%. */
+  .name-block { top: 14px; padding: 0 16px; box-sizing: border-box; }
   .intro-hi { font-size: 0.95rem; }
   .name-3d { font-size: 2.1rem; }
   .intro-line { font-size: 1rem; }
   .intro-sub { font-size: 0.85rem; }
   .intro-hint { font-size: 0.85rem; }
-  .avatar-stage { margin-top: 34px; }
-  .avatar-3d { width: 260px; height: 420px; }
-  .avatar-glow { width: 240px; height: 240px; }
+  .avatar-stage { margin-top: -30px; }
+  .avatar-3d { width: 170px; height: 275px; }
+  .avatar-glow { width: 180px; height: 180px; }
+  .avatar-state { font-size: 0.78rem; }
   body::before { background-position: center 22%; }
   .theme-proof .proof-list { grid-template-columns: 1fr 1fr; }
   .edu-visual { width: 64px; height: 64px; }
-  .speech { font-size: 0.92rem; max-width: 300px; }
+  .speech { font-size: 0.85rem; max-width: 240px; padding: 8px 12px; }
   .orbit-boxes { position: absolute; inset: 0; }
   .orbit-box { width: 104px; }
   .cube { --w: 104px; --h: 80px; --d: 28px; touch-action: none; }
@@ -540,8 +545,8 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   .box-skills { right: 2%; top: 25%; }
   .box-education { left: 2%; top: 46%; }
   .box-journey { right: 2%; top: 46%; }
-  .box-proof { left: 6%; top: 63%; }
-  .box-contact { right: 6%; top: 63%; }
+  .box-proof { left: 6%; top: 71%; }
+  .box-contact { right: 6%; top: 71%; }
   .box-hire { bottom: 2%; width: 150px; }
   .box-hire .cube { --w: 150px; --h: 80px; }
   .orbit-source { left: 10px; bottom: 8px; }

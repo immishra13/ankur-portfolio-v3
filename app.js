@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v4.0 "Living Model".
+// Ankur Mishra — portfolio v4.1.0.
 // Full dark UI. A REAL 3D model avatar (Three.js, avatar3d.js) in the
 // centre — he waves hi on load, walks in, turns toward the panel you
 // tapped and points at it with his OWN arm, flexes for Hire Me, and
@@ -51,7 +51,7 @@ function startDance() {
   if (dancing) return;
   dancing = true;
   whenAvatar((A) => A.danceStart());
-  stateLabel.textContent = "Right now: EXCITED — dance kar raha hai";
+  stateLabel.textContent = "Right now: EXCITED — dancing right now";
 }
 function stopDance() {
   if (!dancing) return;
@@ -84,10 +84,10 @@ setInterval(stroll, 22000);
 // Tap the model himself: he waves again, answers back, and does a short
 // dance if no panel is open.
 const TAP_LINES = [
-  "Arre — tap kar diya! Main yahin hoon.",
-  "Hi! Kuch chahiye to koi box dabao.",
-  "Main dance bhi karta hoon — Hire Me dabao!",
-  "Bihar se Mumbai — poori kahani Journey me hai.",
+  "Hey — you tapped me! I am right here.",
+  "Hi! Tap a box if you need anything.",
+  "I dance too — tap Hire Me!",
+  "My full story is in Journey.",
 ];
 stage.addEventListener("click", () => {
   setSpeech(TAP_LINES[Math.floor(Math.random() * TAP_LINES.length)]);
@@ -96,7 +96,7 @@ stage.addEventListener("click", () => {
     stateLabel.textContent = "Right now: waving hi!";
     setTimeout(() => {
       stateLabel.textContent = dancing
-        ? "Right now: EXCITED — dance kar raha hai"
+        ? "Right now: EXCITED — dancing right now"
         : "Right now: idle — breathing, listening";
     }, 2600);
     if (!openKey) {
@@ -154,13 +154,13 @@ const TITLES = {
   journey: "Journey", proof: "Proof", hire: "Hire Me — MatchMate", contact: "Contact",
 };
 const SPEECH = {
-  work: "Ye raha mera kaam — sab live hai, khud check kar lo!",
-  skills: "Ye tools main sach me use karta hoon — copy-paste list nahi hai.",
-  education: "Padhai ka safar — Bihar se Mumbai, VIVA tak.",
-  journey: "2020 se 2027 — har saal kuch banaya.",
-  proof: "Numbers bolte hain. Promises nahi.",
-  hire: "Apni requirement likho — main khud check karunga kitna match karta hoon.",
-  contact: "Baaki sab chhodo — seedha baat karte hain!",
+  work: "Here is my work — all live, check it yourself.",
+  skills: "These are the tools I actually use — not a copied list.",
+  education: "My education journey — from school to VIVA.",
+  journey: "2020 to 2027 — I built something every year.",
+  proof: "Numbers speak. Promises don't.",
+  hire: "Write your requirement — I will check how much I match.",
+  contact: "Let's talk directly.",
 };
 const panel = $("panel");
 const backdrop = $("panelBackdrop");
@@ -200,7 +200,7 @@ function openPanel(key) {
     // dances. (Caught by the v4.0.5 flex check: label outlived the pose.)
     setTimeout(() => {
       if (openKey === "hire" && dancing) {
-        stateLabel.textContent = "Right now: EXCITED — dance kar raha hai";
+        stateLabel.textContent = "Right now: EXCITED — dancing right now";
       }
     }, 2500);
   }
@@ -219,7 +219,7 @@ function closePanel() {
     A.walkTo(0, 600); // walk back to centre
   });
   stopDance();
-  setSpeech("Wapas aa gaya. Koi aur box try karo — main yahin hoon.");
+  setSpeech("I am back. Try another box — I am right here.");
 }
 
 document.querySelectorAll(".orbit-box").forEach((b) => {
@@ -356,20 +356,20 @@ function checkMatch() {
   const input = $("reqInput").value.trim();
   const result = $("botResult");
   if (!input) {
-    result.innerHTML = `<p class="bot-empty">Pehle apni requirement likho — ya neeche ek example dabao.</p>`;
+    result.innerHTML = `<p class="bot-empty">Write your requirement first — or tap an example below.</p>`;
     return;
   }
   const matched = SKILLS.filter((s) => skillMatches(input, s));
   const missing = NOT_HAVE.filter((n) => hasKeyword(input, n));
   const total = matched.length + missing.length;
   if (total === 0) {
-    result.innerHTML = `<p class="bot-empty">Isme koi pehchana hua skill nahi mila. Thoda detail me likho — jaise: <em>“Python backend intern — FastAPI, REST APIs, MySQL, Git”</em>.</p>`;
+    result.innerHTML = `<p class="bot-empty">No skill I know was found in this. Write a little more detail — like: <em>“Python backend intern — FastAPI, REST APIs, MySQL, Git”</em>.</p>`;
     return;
   }
   const score = Math.round((matched.length / total) * 100);
-  const verdict = score >= 80 ? "Strong match — baat karni chahiye."
-    : score >= 50 ? "Good match — kuch cheezein seekhni hongi, but base solid hai."
-    : "Partial match — main honest rahunga, ye sab mere stack me nahi hai.";
+  const verdict = score >= 80 ? "Strong match — we should talk."
+    : score >= 50 ? "Good match — I will need to learn a few things, but the base is solid."
+    : "Partial match — to be honest, some of this is not in my stack.";
   const proofs = [...new Set(matched.flatMap((s) => s.proof))].slice(0, 3);
   result.innerHTML = `
     <div class="match-score"><strong>${score}%</strong><span>match — ${verdict}</span></div>
@@ -385,7 +385,7 @@ function checkMatch() {
     const bar = result.querySelector(".match-bar span");
     if (bar) bar.classList.add("go");
   });
-  setSpeech(score >= 80 ? "Strong match! Ye role mere liye hai — baat karo!" : score >= 50 ? "Good match hai — kuch seekhna padega, but base solid hai." : "Honest answer: isme kuch cheezein mere stack me nahi hain. Phir bhi baat kar sakte ho.");
+  setSpeech(score >= 80 ? "Strong match! This role is for me — let's talk!" : score >= 50 ? "Good match — I will need to learn a few things, but the base is solid." : "Honest answer: some of this is not in my stack. We can still talk.");
 }
 
 $("botCheck").addEventListener("click", checkMatch);
