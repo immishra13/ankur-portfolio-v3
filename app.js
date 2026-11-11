@@ -1,19 +1,16 @@
-// Ankur Mishra — portfolio v4.1.0.
+// Ankur Mishra — portfolio v4.2.0.
 // Full dark UI. A REAL 3D model avatar (Three.js, avatar3d.js) in the
-// centre — he waves hi on load, walks in, turns toward the panel you
-// tapped and points at it with his OWN arm, flexes for Hire Me, and
-// dances while a panel is open. No video, no side graphics (Ankur's call:
-// sparkles / music notes / confetti / pointing-hand are gone — the MODEL
-// itself moves now, not emojis around him).
+// centre — he is the NARRATOR and nothing else (Ankur's call, 2026-11-11):
+// he stands ready, and when you open a box he turns toward it, points at
+// it with his own arm and narrates it in the speech bubble. No walk-in,
+// no wave, no stroll, no tap reaction, no dance, no flex — the model does
+// not perform, he narrates. No video, no side graphics.
 // Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a
 // panel on THAT box's side.
 // MatchMate bot: recruiter posts a requirement, bot checks the match honestly.
 // Motion: transform / opacity only. prefers-reduced-motion respected.
 
 const $ = (id) => document.getElementById(id);
-const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const finePointer = window.matchMedia("(pointer: fine)").matches;
-const stage = $("avatarStage");
 const bubble = $("speechBubble");
 const stateLabel = $("avatarState");
 
@@ -25,7 +22,6 @@ function setSpeech(text) { bubble.textContent = text; }
 // rendered. Everything below waits for that; if it never arrives (CDN or
 // WebGL blocked) the poster fallback shows instead — the page never sits
 // empty with no avatar at all.
-let dancing = false;
 function whenAvatar(fn) {
   if (window.Avatar3D) { fn(window.Avatar3D); return; }
   window.addEventListener("avatar3d-ready", () => fn(window.Avatar3D), { once: true });
@@ -47,64 +43,10 @@ window.addEventListener("avatar3d-ready", () => {
 });
 setTimeout(() => { if (!window.Avatar3D) showFallback(); }, 10000);
 
-function startDance() {
-  if (dancing) return;
-  dancing = true;
-  whenAvatar((A) => A.danceStart());
-  stateLabel.textContent = "Right now: EXCITED — dancing right now";
-}
-function stopDance() {
-  if (!dancing) return;
-  dancing = false;
-  whenAvatar((A) => A.danceStop());
-  stateLabel.textContent = "Right now: idle — breathing, listening";
-}
+// The model is the NARRATOR and nothing else: he stands at centre,
+// breathing, and narrates when a box opens. No walk-in, no wave on load,
+// no stroll, no tap reaction, no dance, no flex — Ankur's call.
 
-// Walk in on load: from off-screen left to centre, then he waves hi
-// himself — his own right hand goes up. (Reduced motion: he just stands.)
-stateLabel.textContent = "Right now: walking in — hi!";
-whenAvatar((A) => {
-  if (reduced) { stateLabel.textContent = "Right now: idle — breathing, listening"; return; }
-  A.setX(-1.7);
-  A.walkTo(0, 1500, () => {
-    A.wave();
-    stateLabel.textContent = "Right now: idle — breathing, listening";
-  });
-});
-// A little stroll while idle, so he never looks stuck in one place.
-function stroll() {
-  if (openKey || document.hidden || reduced) return;
-  whenAvatar((A) => {
-    const dx = (Math.random() < 0.5 ? -1 : 1) * (0.18 + Math.random() * 0.14);
-    A.walkTo(dx, 900, () => setTimeout(() => { if (!openKey) A.walkTo(0, 900); }, 1200));
-  });
-}
-setInterval(stroll, 22000);
-
-// Tap the model himself: he waves again, answers back, and does a short
-// dance if no panel is open.
-const TAP_LINES = [
-  "Hey — you tapped me! I am right here.",
-  "Hi! Tap a box if you need anything.",
-  "I dance too — tap Hire Me!",
-  "My full story is in Journey.",
-];
-stage.addEventListener("click", () => {
-  setSpeech(TAP_LINES[Math.floor(Math.random() * TAP_LINES.length)]);
-  whenAvatar((A) => {
-    A.wave();
-    stateLabel.textContent = "Right now: waving hi!";
-    setTimeout(() => {
-      stateLabel.textContent = dancing
-        ? "Right now: EXCITED — dancing right now"
-        : "Right now: idle — breathing, listening";
-    }, 2600);
-    if (!openKey) {
-      A.danceStart();
-      setTimeout(() => { if (!openKey) A.danceStop(); }, 3000);
-    }
-  });
-});
 
 // ---------- 3D cubes: drag to rotate ----------
 // Hover rotation is CSS (--rx/--ry vars). Drag sets the same vars inline;
@@ -182,28 +124,16 @@ function openPanel(key) {
   document.body.classList.add("panel-open");
   panel.classList.toggle("panel-left", LEFT_PANELS.has(key));
   const isLeft = LEFT_PANELS.has(key);
-  // He turns toward the panel, points at it with his own arm, and steps
-  // aside so he stays visible next to the sheet instead of under it.
+  // NARRATOR: he turns toward the panel, points at it with his own arm,
+  // and steps aside so he stays visible next to the sheet instead of
+  // under it — then he narrates the section in the speech bubble.
+  // No dance, no flex: narrating is his only job.
   whenAvatar((A) => {
     A.pointAt(isLeft ? "left" : "right");
     A.walkTo(isLeft ? 0.35 : -0.35, 600);
   });
   setSpeech(SPEECH[key]);
-  startDance(); // excitement on every open
-  if (key === "hire") {
-    // Flex emote: he puffs up and shows off for recruiters — no confetti,
-    // the MODEL does the celebrating now.
-    whenAvatar((A) => A.flex());
-    stateLabel.textContent = "Right now: FLEXING — hire me energy";
-    // The flex pose itself lasts 2.5s; after that he is dancing/pointing,
-    // so the label must follow — otherwise it still says FLEXING while he
-    // dances. (Caught by the v4.0.5 flex check: label outlived the pose.)
-    setTimeout(() => {
-      if (openKey === "hire" && dancing) {
-        stateLabel.textContent = "Right now: EXCITED — dancing right now";
-      }
-    }, 2500);
-  }
+  stateLabel.textContent = "Right now: narrating — " + (key === "hire" ? "Hire Me" : TITLES[key]);
 }
 
 function closePanel() {
@@ -218,8 +148,8 @@ function closePanel() {
     A.pointAt(null);
     A.walkTo(0, 600); // walk back to centre
   });
-  stopDance();
   setSpeech("I am back. Try another box — I am right here.");
+  stateLabel.textContent = "Right now: ready — tap a box";
 }
 
 document.querySelectorAll(".orbit-box").forEach((b) => {

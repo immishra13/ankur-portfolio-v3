@@ -1,7 +1,11 @@
-// Ankur Mishra — portfolio v4.1.0.
+// Ankur Mishra — portfolio v4.2.0.
 // A REAL 3D model avatar (Three.js, procedural, styled like his illustrated
-// avatar: cream Madhubani kurta, magenta dhoti, yellow paag). No video:
-// the model itself waves, walks, points, flexes and dances — all code.
+// avatar: cream Madhubani kurta, magenta dhoti, yellow paag, his real
+// illustrated face as a texture). He is the NARRATOR and nothing else
+// (Ankur's call, 2026-11-11): he stands at centre, and when a box opens
+// he turns toward it, points at it and narrates it. No walk-in, no wave,
+// no stroll, no dance, no flex — the animation system below still has
+// those moves (the test page uses them), but app.js never calls them.
 // Exposes window.Avatar3D and dispatches 'avatar3d-ready' when the first
 // frame has rendered. app.js (classic script) talks to it through that
 // event + window.Avatar3D guards.
@@ -355,7 +359,7 @@ function init(mountEl) {
   scene.add(blob);
 
   char = buildCharacter();
-  char.root.position.x = -1.7; // walk-in starts off-canvas left
+  char.root.position.x = 0; // narrator: he starts at centre, no walk-in
   scene.add(char.root);
 
   const resize = () => {

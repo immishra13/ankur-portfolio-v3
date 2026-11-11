@@ -37,14 +37,15 @@
     <p class="intro-hint">Tap a box around me — I will show you that world. No long scrolling here.</p>
   </header>
 
-  <!-- Living 3D model avatar, centre — a real model (Three.js) that waves,
-       walks, points and dances. No video, no side graphics. -->
+  <!-- Narrator avatar, centre — a real 3D model (Three.js). He stands
+       ready; when you open a box, he turns toward it, points at it and
+       narrates it in the speech bubble. Nothing else is his job. -->
   <div class="avatar-stage" id="avatarStage">
     <div class="avatar-glow" aria-hidden="true"></div>
-    <div id="avatar3d" class="avatar-3d" aria-label="Ankur's 3D avatar — he waves, walks and points"></div>
+    <div id="avatar3d" class="avatar-3d" aria-label="Ankur's 3D avatar — he narrates each section"></div>
     <img id="avatarFallback" class="avatar-fallback" src="avatar.png" alt="Ankur's avatar" hidden>
     <p class="speech" id="speechBubble" aria-live="polite">Hi! I'm Ankur — tap a box, let's talk.</p>
-    <p class="avatar-state" id="avatarState">Right now: walking in — hi!</p>
+    <p class="avatar-state" id="avatarState">Right now: ready — tap a box</p>
   </div>
 
   <!-- Orbit boxes — real 3D cubes: hover to turn, drag to rotate, tap to open -->
@@ -348,7 +349,7 @@
 </aside>
 <div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
-<script type="module" src="avatar3d.js?v=4.1.2"></script>
-<script src="app.js?v=4.1.0"></script>
+<script type="module" src="avatar3d.js?v=4.2.0"></script>
+<script src="app.js?v=4.2.0"></script>
 </body>
 </html>
