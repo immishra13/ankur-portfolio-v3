@@ -1,4 +1,4 @@
-/* Ankur Mishra — portfolio v3.7.1 "Home Orbit".
+/* Ankur Mishra — portfolio v3.7.2 "Home Orbit".
    Concept: full dark UI, Ankur in the centre, real 3D cubes floating around him.
    Avatar: canvas chroma-key — white video background removed live, avatar floats
    on the dark page. Tap a box → panel opens on THAT box's side, avatar gets
@@ -119,7 +119,7 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(245, 158, 11, 0.08) 55%, rgba(245, 158, 11, 0) 70%);
   pointer-events: none;
 }
-.avatar-tilt { position: relative; display: inline-block; transform-style: preserve-3d; will-change: transform; }
+.avatar-tilt { position: relative; display: inline-block; transform-style: preserve-3d; will-change: transform; cursor: pointer; }
 /* Canvas avatar: video frames are drawn here after live chroma-key,
    so the avatar floats on the dark page with no white box behind him. */
 .avatar-canvas {
@@ -179,7 +179,8 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   position: absolute; left: 50%; bottom: 4px; z-index: 0;
   width: 190px; height: 22px; transform: translateX(-50%) scaleX(var(--sh, 1));
   border-radius: 50%; pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.18) 60%, transparent 75%);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.22) 60%, transparent 75%);
+  box-shadow: 0 0 28px 10px rgba(245, 158, 11, 0.13);
 }
 /* Motion-graphics layer: sparkles, music notes, confetti — all spawned
    by JS, transform/opacity only, pointer-events none. */
@@ -206,9 +207,9 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   100% { opacity: 0; transform: translateY(-110px) rotate(-10deg) scale(0.9); }
 }
 .fx-burst {
-  position: absolute; width: 8px; height: 8px; border-radius: 50%;
-  background: var(--gold);
-  animation: fx-burst-fly 0.9s var(--ease-out) forwards;
+  position: absolute; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--gold); box-shadow: 0 0 10px 2px rgba(245, 158, 11, 0.4);
+  animation: fx-burst-fly 1.4s var(--ease-out) forwards;
 }
 .fx-burst.teal { background: var(--teal); }
 .fx-burst.pink { background: var(--pink); }
@@ -235,10 +236,10 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 /* Orbit boxes — real 3D cubes (cuboid W x H x D).
    Resting pose shows front + right + top faces. Hover turns the cube,
    drag (pointer) rotates it freely, tap opens the panel. */
-.orbit-boxes { position: absolute; inset: 0; z-index: 3; }
+.orbit-boxes { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .orbit-box {
   position: absolute; padding: 0; background: none; border: none;
-  width: 158px; min-height: 108px; perspective: 600px;
+  width: 158px; min-height: 108px; perspective: 600px; pointer-events: auto;
 }
 .cube-float { display: block; transform-style: preserve-3d; animation: float 6s var(--ease-out) infinite; }
 .cube {

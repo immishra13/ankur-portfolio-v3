@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v3.7.1 "Home Orbit".
+// Ankur Mishra — portfolio v3.7.2 "Home Orbit".
 // Full dark UI. Avatar in the centre, drawn on canvas with live chroma-key
 // (white video background removed per frame — no white box behind him).
 // Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a panel
@@ -238,17 +238,23 @@ function musicNote() {
   spawnFx("fx-note", x, 300 + Math.random() * 80, (el) => { el.innerHTML = NOTE_SVG; });
 }
 function confettiBurst() {
-  for (let i = 0; i < 12; i++) {
-    const a = Math.random() * Math.PI * 2;
-    const d = 50 + Math.random() * 70;
-    const cls = ["fx-burst", "fx-burst teal", "fx-burst pink"][i % 3];
-    spawnFx(cls, 170, 240, (el) => {
-      el.style.setProperty("--dx", (Math.cos(a) * d).toFixed(0) + "px");
-      el.style.setProperty("--dy", (Math.sin(a) * d - 40).toFixed(0) + "px");
-    });
-  }
+  // Fired twice (350ms apart) so the burst lasts ~1.8s — a single 0.9s
+  // burst was too quick to catch. 16 pieces, bigger, with glow.
+  const once = () => {
+    for (let i = 0; i < 16; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const d = 60 + Math.random() * 80;
+      const cls = ["fx-burst", "fx-burst teal", "fx-burst pink"][i % 3];
+      spawnFx(cls, 170, 240, (el) => {
+        el.style.setProperty("--dx", (Math.cos(a) * d).toFixed(0) + "px");
+        el.style.setProperty("--dy", (Math.sin(a) * d - 40).toFixed(0) + "px");
+      });
+    }
+  };
+  once();
+  setTimeout(once, 350);
 }
-setInterval(() => { if (!document.hidden) sparkle(); }, 1100);
+setInterval(() => { if (!document.hidden) sparkle(); }, 800);
 let noteTimer = null;
 function startNotes() {
   if (noteTimer) return;

@@ -1,6 +1,6 @@
 ---
 version: zeta
-name: Ankur Mishra Portfolio v3.7.1 "Home Orbit"
+name: Ankur Mishra Portfolio v3.7.2 "Home Orbit"
 description: Warm dark one-page orbit over a personal-area photo background. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos + bg-removed icons, per-section panel themes, MatchMate NLP (stemming + synonyms).
 colors:
   page-default: "#0d0a07"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.7.1 "Home Orbit"
+# Design Contract — Portfolio v3.7.2 "Home Orbit"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -161,6 +161,9 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 - Tap the avatar himself: he waves again, a sparkle burst fires, a random line appears in the speech bubble, and he starts dancing.
 - Hire Me now fires a 12-piece gold/teal/pink confetti burst with the flex pose.
 - Restraint: all effects are transform/opacity only, capped counts, `prefers-reduced-motion` hides them entirely.
+
+## v3.7.2 — Fix: avatar untappable, confetti too quick to see (2026-11-11)
+- Visual check of v3.7.1 passed the avatar position, boxes, sparkles (sparse) and music notes — but tapping the avatar did nothing and no confetti was seen on Hire Me. Root causes: (1) `.orbit-boxes` covers the whole hero (`inset: 0`, z-index 3, above the stage) with NO `pointer-events: none` — it ate every click meant for the avatar, while the buttons inside still worked. Fixed: container `pointer-events: none`, boxes `pointer-events: auto`, avatar gets `cursor: pointer`. Lesson: a full-screen overlay layer must always declare pointer-events, or everything under it is dead. (2) The confetti DID fire (the FLEXING label in the same branch was seen), but one 0.9s burst of 8px dots is too quick to catch while the panel slides in. Fixed: 16 pieces, 10px with glow, 1.4s, fired twice 350ms apart (~1.8s total). Sparkles also thickened (every 800ms, was 1100ms) after the "sparse" note, and the ground shadow got a faint warm halo so it reads against the dark desk in the background photo.
 
 ## v3.7.1 — Hotfix: v3.7 killed the whole script on load (2026-11-11)
 - Visual check found the avatar stuck off-screen left, boxes dead, no effects at all. Root cause: the new idle look-around line read `openKey` inside the tilt loop's IIFE, which runs synchronously during script evaluation — but `openKey` is declared later (`let`, temporal dead zone) → `ReferenceError` → the ENTIRE script died before the walk-in, panels, and effects were even defined. The old status text ("idle — breathing, listening") was just the hardcoded HTML, not a completed walk-in. Fixed by using `panelTiltY !== 0` (set in lockstep with panel open/close, declared before the loop) as the "panel open" proxy. Lessons: (1) never read a later-declared `let` from code that runs synchronously at eval time — `node --check` only proves syntax, it cannot see TDZ errors; (2) a DOM-stub smoke test (`/tmp/appjs-smoke.js`) now proves the script evaluates without throwing — run it on every JS change, and it was verified to catch the v3.7 bug (ReferenceError) while passing the fix.
