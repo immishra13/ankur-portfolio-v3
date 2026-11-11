@@ -156,6 +156,9 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 ## v3.6.1 — Hotfix: pointing hand was never uploaded (2026-11-11)
 - Visual check caught a broken-image placeholder beside the dancing avatar in every excited state. Root cause: `assets/point-hand.svg` was created locally but never included in the v3.6 push manifest (only the 5 text files were listed) — so the live page referenced a 404. Fixed by pushing the file itself, plus the two stale header comments (styles.css said v3.5, app.js said v3.3). Lesson: when a new asset is referenced, the push manifest must list it — verify every new asset URL returns 200 live, not just the text files.
 
+## v4.0.6 — Polish: FLEXING label outlived the pose (2026-11-11)
+- The v4.0.5 flex check passed (double-biceps verified, both fists at shoulder/head height) but caught one inaccuracy: after the 2.5s flex ends, the state label still said FLEXING while he was dancing/pointing. Fixed: 2.5s after opening Hire Me, the label returns to EXCITED if the panel is still open (guarded by openKey/dancing). Note: the flex is a "low" flex — upper arms ~24° below horizontal, elbows at chest height — because the elbow hinge can only bend the forearm up from that angle; raising the upper arms fully horizontal (z=1.45, tested numerically) points the forearms at the camera instead of up, which reads worse. The current pose reads unmistakably as a two-arm flex, so it stays.
+
 ## v4.0.5 — Fix: walk completion killed the flex at 600ms (2026-11-11)
 - Focused flex check on v4.0.4 (footer confirmed) still saw no biceps: one arm pointing, the other down/dancing. Root cause: the walk block's completion handler set `mode = "idle"` unconditionally — Hire Me calls walkTo AND flex together, so the 600ms walk's end killed the 2.5s flex before it could be seen. Fixed: the walk only falls back to idle if mode is still 'walk'. (Also explains why the v4.0.4 check's frames showed point + dance arms throughout.)
 

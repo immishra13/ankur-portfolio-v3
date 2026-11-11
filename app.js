@@ -195,6 +195,14 @@ function openPanel(key) {
     // the MODEL does the celebrating now.
     whenAvatar((A) => A.flex());
     stateLabel.textContent = "Right now: FLEXING — hire me energy";
+    // The flex pose itself lasts 2.5s; after that he is dancing/pointing,
+    // so the label must follow — otherwise it still says FLEXING while he
+    // dances. (Caught by the v4.0.5 flex check: label outlived the pose.)
+    setTimeout(() => {
+      if (openKey === "hire" && dancing) {
+        stateLabel.textContent = "Right now: EXCITED — dance kar raha hai";
+      }
+    }, 2500);
   }
 }
 
