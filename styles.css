@@ -42,11 +42,13 @@ body {
   overflow-x: hidden;
 }
 /* Personal-area background: his own warm workspace corner, fixed behind
-   everything, darkened so text stays readable on desktop and phone. */
+   everything. Overlay lightened in v3.5.3 (was 0.78/0.86 — the photo was
+   invisible): the Madhubani painting, lamp and laptop now show through
+   while cream text stays readable on desktop and phone. */
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
-    linear-gradient(rgba(13, 10, 7, 0.78), rgba(13, 10, 7, 0.86)),
+    linear-gradient(rgba(13, 10, 7, 0.52), rgba(13, 10, 7, 0.68)),
     url("assets/bg-personal.webp") center 28% / cover no-repeat;
 }
 a { color: var(--teal); text-decoration: none; }

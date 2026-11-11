@@ -1,6 +1,6 @@
 ---
 version: zeta
-name: Ankur Mishra Portfolio v3.5.1 "Home Orbit"
+name: Ankur Mishra Portfolio v3.5.3 "Home Orbit"
 description: Warm dark one-page orbit over a personal-area photo background. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos + bg-removed icons, per-section panel themes, MatchMate NLP (stemming + synonyms).
 colors:
   page-default: "#0d0a07"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.5.1 "Home Orbit"
+# Design Contract — Portfolio v3.5.3 "Home Orbit"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -140,3 +140,9 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 - Skills: added PHP, Firebase, React Native, RAG, LangChain, MCP, People & Process group (Project Management, Management, Communication, Web Design, Responsive Web Design); note about Office/Excel/PowerPoint LinkedIn assessments.
 - MatchMate: added Firebase, PHP, React Native, LangChain/RAG, MCP, n8n/Zapier automation, Web Design, Project Management, Communication; PHP REMOVED from NOT_HAVE (he has it — LinkedIn lists PHP). 12/12 new tests pass, 23/23 old tests still pass.
 - Work cards enriched from his LinkedIn posts: RTI Black Hole (transparency score, 4 role portals), Financial Complaint Classifier (CFPB dataset, VADER sentiment, probability breakdown).
+
+## v3.5.2 — Hotfix (2026-11-11)
+- A version-bump typo put a stray space in the asset URLs (`styles.css ?v=3.5.1`), so the live site briefly loaded with no styling and no JS. Fixed to `?v=3.5.2`; live index.html href/src and all versioned URLs verified 200. Lesson: after any version bump, verify the LIVE index.html href/src values and that the versioned CSS/JS URLs return 200 — checking the unversioned file is NOT enough.
+
+## v3.5.3 — Background visibility fix (2026-11-11)
+- Live re-check found the background photo effectively invisible: the 0.78–0.86 dark overlay hid the Madhubani painting, lamp and laptop. Overlay lightened to 0.52–0.68 so the workspace scene shows through while cream text stays readable. Nothing else changed.

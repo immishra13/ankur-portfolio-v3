@@ -1,4 +1,4 @@
-# Ankur Mishra — Portfolio v3.5.1 "Home Orbit"
+# Ankur Mishra — Portfolio v3.5.3 "Home Orbit"
 
 **Concept: Madhubani roots, modern code — everything revolves around the builder.**
 
@@ -36,7 +36,7 @@ Tap a card, it opens that place directly.
 - `avatar-idle.mp4` — 9.7s idle loop · `avatar-dance.mp4` — 8s dance
 - `avatar.png` — poster still · `og-image.png` — share image
 - `Ankur_Mishra_Tech_Resume.pdf` · `Ankur_Kumar_Mishra_Event_Management_CV.docx`
-- `DESIGN.md` — the design contract (v3.5.1)
+- `DESIGN.md` — the design contract (v3.5.3)
 - `assets/viva-campus.jpg` — real VIVA campus photo · `assets/nptel-logo.png` — real transparent NPTEL logo
 
 ## Stack
@@ -50,4 +50,6 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v3.4 — "Home Orbit": poster head-crop bug fixed (contain-fit), warm home palette, "Hi, I am" intro, phone keeps the ring of cubes, journey route-map tracker, education cards with real VIVA photo + NPTEL logo, events skills added
 - v3.5 — "Home Orbit": personal-area background photo, slimmer avatar + Hi wave, real school photos + bg-removed VIVA banner icon, 12 work cards from CV + LinkedIn + GitHub, MatchMate NLP (stemming + synonyms, 23/23 tests), per-section panel themes
 - v3.5.1 — LinkedIn pass: Kushal Yuva Program + MongoDB + Cybersecurity certs, Firebase/LangChain/RAG/MCP/n8n/Zapier/PHP/React Native skills, PHP removed from MatchMate "not in stack"
+- v3.5.2 — hotfix: stray space in versioned asset URLs left the live site unstyled; fixed and live-verified
+- v3.5.3 — background overlay lightened (0.78–0.86 → 0.52–0.68) so the workspace photo is actually visible
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)
