@@ -20,7 +20,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=3.7.3">
+<link rel="stylesheet" href="styles.css?v=4.0">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
 
@@ -36,20 +37,14 @@
     <p class="intro-hint">Tap a box around me — I will show you that world. No long scrolling here.</p>
   </header>
 
-  <!-- Living avatar, centre — canvas chroma-key: white video background removed live -->
-  <div class="avatar-stage" id="avatarStage" style="--mx:-46vw">
+  <!-- Living 3D model avatar, centre — a real model (Three.js) that waves,
+       walks, points and dances. No video, no side graphics. -->
+  <div class="avatar-stage" id="avatarStage">
     <div class="avatar-glow" aria-hidden="true"></div>
-    <div class="avatar-fx" id="avatarFx" aria-hidden="true"></div>
-    <div class="avatar-tilt" id="avatarTilt">
-      <div class="avatar-shadow" id="avatarShadow" aria-hidden="true"></div>
-      <canvas id="avatarCanvas" class="avatar-canvas" aria-label="Ankur's avatar, standing and breathing"></canvas>
-      <img class="wave-hand" src="assets/wave-hand.svg" alt="" aria-hidden="true">
-      <img class="point-hand" id="pointHand" src="assets/point-hand.svg" alt="" aria-hidden="true">
-      <video id="videoIdle" class="avatar-video-src" src="avatar-idle.mp4" poster="avatar.png" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
-      <video id="videoDance" class="avatar-video-src" src="avatar-dance.mp4" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
-    </div>
+    <div id="avatar3d" class="avatar-3d" aria-label="Ankur's 3D avatar — he waves, walks and points"></div>
+    <img id="avatarFallback" class="avatar-fallback" src="avatar.png" alt="Ankur's avatar" hidden>
     <p class="speech" id="speechBubble" aria-live="polite">Hi! I'm Ankur — tap a box, let's talk.</p>
-    <p class="avatar-state" id="avatarState">Right now: idle — breathing, listening</p>
+    <p class="avatar-state" id="avatarState">Right now: walking in — hi!</p>
   </div>
 
   <!-- Orbit boxes — real 3D cubes: hover to turn, drag to rotate, tap to open -->
@@ -126,7 +121,7 @@
     </button>
   </nav>
 
-  <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · v3.7.3 “Home Orbit”</p>
+  <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · v4.0 “Living Model”</p>
 </div>
 
 <!-- ================= SIDE PANEL: one panel per box ================= -->
@@ -353,6 +348,7 @@
 </aside>
 <div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
-<script src="app.js?v=3.7.3"></script>
+<script type="module" src="avatar3d.js?v=4.0"></script>
+<script src="app.js?v=4.0"></script>
 </body>
 </html>

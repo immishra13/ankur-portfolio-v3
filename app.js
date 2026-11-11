@@ -1,273 +1,82 @@
-// Ankur Mishra — portfolio v3.7.3 "Home Orbit".
-// Full dark UI. Avatar in the centre, drawn on canvas with live chroma-key
-// (white video background removed per frame — no white box behind him).
-// Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a panel
-// on THAT box's side, avatar dances and turns toward it.
+// Ankur Mishra — portfolio v4.0 "Living Model".
+// Full dark UI. A REAL 3D model avatar (Three.js, avatar3d.js) in the
+// centre — he waves hi on load, walks in, turns toward the panel you
+// tapped and points at it with his OWN arm, flexes for Hire Me, and
+// dances while a panel is open. No video, no side graphics (Ankur's call:
+// sparkles / music notes / confetti / pointing-hand are gone — the MODEL
+// itself moves now, not emojis around him).
+// Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a
+// panel on THAT box's side.
 // MatchMate bot: recruiter posts a requirement, bot checks the match honestly.
-// Motion per design-motion-principles: Jakub primary · Jhey secondary · Emil selective.
-// transform / opacity / filter only. prefers-reduced-motion respected.
+// Motion: transform / opacity only. prefers-reduced-motion respected.
 
 const $ = (id) => document.getElementById(id);
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const finePointer = window.matchMedia("(pointer: fine)").matches;
-
-// ---------- Avatar: canvas chroma-key (white video background -> transparent) ----------
-// The avatar videos were generated on a white background. Transparent VP9
-// (WebM alpha) was tried first — the encoder fed yuva420p still wrote a
-// Profile 0 stream with no alpha — so the background is removed live, per
-// frame, on a canvas. A pixel is background when it is close to white
-// (Euclidean distance in RGB, like ffmpeg's colorkey). The cream kurta sits
-// ~135 away from white, so it survives; the grey dance backdrop (~66) and
-// the compression speckles in it are removed. Verified on real frames:
-// idle + dance both key cleanly, face/kurta/paag intact.
-const canvas = $("avatarCanvas");
-const ctx = canvas.getContext("2d", { willReadFrequently: true });
-const CW = 360, CH = 640;
-canvas.width = CW; canvas.height = CH;
-const idle = $("videoIdle");
-const dance = $("videoDance");
+const stage = $("avatarStage");
 const bubble = $("speechBubble");
 const stateLabel = $("avatarState");
-let dancing = false;
-let activeVideo = idle;
-let hasFrame = false;
-
-// Poster (transparent PNG) until the first keyed frame is ready.
-// The poster is a tall 610x1530 still — cover-fitting it cropped 131px off
-// the top and bottom, which cut the head off on first load (the "face gayab"
-// bug). So the poster is drawn CONTAINED: whole figure, head included,
-// until the video's first keyed frame takes over.
-const posterImg = new Image();
-posterImg.src = "avatar.png";
-posterImg.onload = () => { if (!hasFrame) drawContain(posterImg); };
-
-function drawContain(src) {
-  const sw = src.naturalWidth || 0;
-  const sh = src.naturalHeight || 0;
-  if (!sw || !sh) return;
-  const s = Math.min(CW / sw, CH / sh);
-  ctx.clearRect(0, 0, CW, CH);
-  ctx.drawImage(src, (CW - sw * s) / 2, (CH - sh * s) / 2, sw * s, sh * s);
-}
-
-function drawCover(src) {
-  const sw = src.videoWidth || src.naturalWidth || 0;
-  const sh = src.videoHeight || src.naturalHeight || 0;
-  if (!sw || !sh) return;
-  const s = Math.max(CW / sw, CH / sh);
-  ctx.drawImage(src, (CW - sw * s) / 2, (CH - sh * s) / 2, sw * s, sh * s);
-}
-
-function keyFrame() {
-  const v = activeVideo;
-  if (!v || v.readyState < 2 || !v.videoWidth) return;
-  drawCover(v);
-  const img = ctx.getImageData(0, 0, CW, CH);
-  const d = img.data;
-  for (let i = 0; i < d.length; i += 4) {
-    const r = d[i], g = d[i + 1], b = d[i + 2];
-    const dr = 255 - r, dg = 255 - g, db = 255 - b;
-    const dist2 = dr * dr + dg * dg + db * db; // squared distance from white
-    let a = 255;
-    if (dist2 < 5625) { // < 75 from white: background
-      a = 0;
-    } else if (dist2 < 9025) { // 75–95: soft edge
-      a = Math.round(((Math.sqrt(dist2) - 75) / 20) * 255);
-    }
-    if (a < 255) {
-      d[i + 3] = a;
-      // Despill: pull the white fringe toward the avatar's own colour.
-      const f = 0.35 + 0.65 * (a / 255);
-      d[i] = Math.round(r * f);
-      d[i + 1] = Math.round(g * f);
-      d[i + 2] = Math.round(b * f);
-    }
-  }
-  ctx.putImageData(img, 0, 0);
-  hasFrame = true;
-}
-
-// Key only when the video actually advanced a frame (~25fps, not 60).
-let lastTime = -1;
-function keyLoop() {
-  if (activeVideo && !activeVideo.paused && activeVideo.currentTime !== lastTime) {
-    lastTime = activeVideo.currentTime;
-    keyFrame();
-  }
-  requestAnimationFrame(keyLoop);
-}
-if (!reduced) keyLoop();
 
 function setSpeech(text) { bubble.textContent = text; }
+
+// ---------- 3D model avatar (avatar3d.js) ----------
+// app.js is a classic script, avatar3d.js is a module — it sets
+// window.Avatar3D and fires 'avatar3d-ready' when the first frame has
+// rendered. Everything below waits for that; if it never arrives (CDN or
+// WebGL blocked) the poster fallback shows instead — the page never sits
+// empty with no avatar at all.
+let dancing = false;
+function whenAvatar(fn) {
+  if (window.Avatar3D) { fn(window.Avatar3D); return; }
+  window.addEventListener("avatar3d-ready", () => fn(window.Avatar3D), { once: true });
+}
+let fallbackShown = false;
+function showFallback() {
+  if (fallbackShown) return;
+  fallbackShown = true;
+  const fb = $("avatarFallback");
+  if (fb) fb.hidden = false;
+  stateLabel.textContent = "Right now: 3D model could not load — showing photo";
+}
+window.addEventListener("avatar3d-failed", showFallback);
+setTimeout(() => { if (!window.Avatar3D) showFallback(); }, 6000);
+
 function startDance() {
   if (dancing) return;
   dancing = true;
-  idle.pause();
-  activeVideo = dance;
-  lastTime = -1;
-  canvas.classList.remove("dancing");
-  void canvas.offsetWidth;
-  canvas.classList.add("dancing");
-  dance.currentTime = 0;
-  dance.play().catch(() => {});
+  whenAvatar((A) => A.danceStart());
   stateLabel.textContent = "Right now: EXCITED — dance kar raha hai";
-  startNotes(); // music notes float up while he dances
-  stage.classList.add("show-shadow"); // ground shadow: only the dance video has feet
 }
 function stopDance() {
   if (!dancing) return;
   dancing = false;
-  dance.pause();
-  activeVideo = idle;
-  lastTime = -1;
-  stopNotes();
-  stage.classList.remove("show-shadow");
-  if (!reduced) idle.play().catch(() => {});
+  whenAvatar((A) => A.danceStop());
   stateLabel.textContent = "Right now: idle — breathing, listening";
 }
-dance.addEventListener("ended", stopDance);
-if (reduced) { idle.removeAttribute("autoplay"); idle.pause(); }
 
-// Kick the idle video explicitly (autoplay alone is unreliable on phones),
-// and key one frame immediately when a video actually starts playing, so
-// the canvas never shows a stale frame from the other video.
-if (!reduced) idle.play().catch(() => {});
-idle.addEventListener("playing", () => { if (activeVideo === idle) { lastTime = -1; keyFrame(); } });
-dance.addEventListener("playing", () => { if (activeVideo === dance) { lastTime = -1; keyFrame(); } });
-
-// ---------- Avatar tilt: follows cursor, turns toward the open panel ----------
-const stage = $("avatarStage");
-const tilt = $("avatarTilt");
-let tx = 0, ty = 0, cx = 0, cy = 0;
-let panelTiltY = 0; // +12 while a panel is open (turn toward it)
-
-if (!reduced) {
-  if (finePointer) {
-    document.querySelector(".orbit").addEventListener("pointermove", (e) => {
-      const r = stage.getBoundingClientRect();
-      const px = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
-      const py = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
-      tx = px * 14;
-      ty = py * -10;
-    });
-  }
-  (function tiltLoop() {
-    // Idle look-around: with no panel open he slowly glances around.
-    // NOTE: this IIFE runs synchronously on first call, so it must NOT
-    // read `openKey` (declared later — TDZ ReferenceError kills the whole
-    // script, as v3.7 proved: avatar stuck off-screen, boxes dead).
-    // panelTiltY is set in lockstep with panel open/close, so it is the
-    // safe proxy for "a panel is open".
-    const sway = panelTiltY !== 0 ? 0 : Math.sin(performance.now() / 2600) * 4;
-    cx += (tx + panelTiltY + sway - cx) * 0.1;
-    cy += (ty - cy) * 0.1;
-    tilt.style.transform = `rotateX(${cy.toFixed(2)}deg) rotateY(${cx.toFixed(2)}deg)`;
-    requestAnimationFrame(tiltLoop);
-  })();
-}
-
-// ---------- Avatar movement: walk-in, stroll, point, flex ----------
-// The avatar VIDEO cannot walk, point or flex — the avatar system only
-// makes dance videos — so the STAGE moves in code (--mx/--my). The
-// video keeps breathing/dancing; the stage does the walking.
-const pointHand = $("pointHand");
-const fxLayer = $("avatarFx");
-const shadowEl = $("avatarShadow");
-let curMX = -Math.round(window.innerWidth * 0.46), curMY = 0, moveTimer = null;
-function moveStage(toX, toY, dur, bobAmp, done) {
-  if (reduced) {
-    stage.style.setProperty("--mx", toX + "px");
-    stage.style.setProperty("--my", toY + "px");
-    curMX = toX; curMY = toY;
-    if (done) done();
-    return;
-  }
-  if (moveTimer) cancelAnimationFrame(moveTimer);
-  const fromX = curMX, fromY = curMY, t0 = performance.now();
-  const step = (now) => {
-    const t = Math.min(1, (now - t0) / dur);
-    const e = 1 - Math.pow(1 - t, 3);
-    const bob = bobAmp ? Math.abs(Math.sin(t * Math.PI * 6)) * -bobAmp : 0;
-    curMX = fromX + (toX - fromX) * e;
-    curMY = fromY + (toY - fromY) * e + bob;
-    stage.style.setProperty("--mx", curMX.toFixed(1) + "px");
-    stage.style.setProperty("--my", curMY.toFixed(1) + "px");
-    // Ground shadow shrinks as he lifts off the ground.
-    if (shadowEl) shadowEl.style.setProperty("--sh", Math.max(0.88, Math.min(1.05, 1 + curMY / 140)).toFixed(3));
-    if (t < 1) moveTimer = requestAnimationFrame(step);
-    else {
-      curMY = toY;
-      stage.style.setProperty("--my", toY + "px");
-      if (done) done();
-    }
-  };
-  moveTimer = requestAnimationFrame(step);
-}
-// Walk in on load: from off-screen left to centre, waving hi.
+// Walk in on load: from off-screen left to centre, then he waves hi
+// himself — his own right hand goes up. (Reduced motion: he just stands.)
 stateLabel.textContent = "Right now: walking in — hi!";
-moveStage(0, 0, 1500, 5, () => {
-  if (!dancing) stateLabel.textContent = "Right now: idle — breathing, listening";
+whenAvatar((A) => {
+  if (reduced) { stateLabel.textContent = "Right now: idle — breathing, listening"; return; }
+  A.setX(-1.7);
+  A.walkTo(0, 1500, () => {
+    A.wave();
+    stateLabel.textContent = "Right now: idle — breathing, listening";
+  });
 });
 // A little stroll while idle, so he never looks stuck in one place.
 function stroll() {
-  if (openKey || document.hidden) return;
-  const dx = (Math.random() < 0.5 ? -1 : 1) * (50 + Math.random() * 40);
-  moveStage(dx, 0, 900, 4, () => setTimeout(() => { if (!openKey) moveStage(0, 0, 900, 4); }, 1200));
+  if (openKey || document.hidden || reduced) return;
+  whenAvatar((A) => {
+    const dx = (Math.random() < 0.5 ? -1 : 1) * (0.18 + Math.random() * 0.14);
+    A.walkTo(dx, 900, () => setTimeout(() => { if (!openKey) A.walkTo(0, 900); }, 1200));
+  });
 }
 setInterval(stroll, 22000);
 
-// ---------- Motion graphics: sparkles, music notes, confetti ----------
-// All DOM spans, transform/opacity only. Nothing here touches the video.
-const NOTE_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
-function spawnFx(cls, x, y, extra) {
-  if (reduced || document.hidden || !fxLayer) return null;
-  const el = document.createElement("span");
-  el.className = cls;
-  el.style.left = x + "px";
-  el.style.top = y + "px";
-  if (extra) extra(el);
-  el.addEventListener("animationend", () => el.remove());
-  fxLayer.appendChild(el);
-  return el;
-}
-function sparkle() {
-  if (fxLayer.childElementCount > 12) return;
-  spawnFx("fx-spark" + (Math.random() < 0.3 ? " teal" : ""), 20 + Math.random() * 300, 120 + Math.random() * 340);
-}
-function musicNote() {
-  if (fxLayer.childElementCount > 10) return;
-  const x = (Math.random() < 0.5 ? 30 : 280) + Math.random() * 30;
-  spawnFx("fx-note", x, 300 + Math.random() * 80, (el) => { el.innerHTML = NOTE_SVG; });
-}
-function confettiBurst() {
-  // Three waves (0/400/800ms), 24 pieces each, 2.2s flight — visible ~3s.
-  // The single 0.9s burst was too quick to catch, and the panel backdrop
-  // (55% dark) veiled it; the stage now lifts above the backdrop too.
-  const once = () => {
-    for (let i = 0; i < 24; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const d = 60 + Math.random() * 90;
-      const cls = ["fx-burst", "fx-burst teal", "fx-burst pink"][i % 3];
-      spawnFx(cls, 170, 240, (el) => {
-        el.style.setProperty("--dx", (Math.cos(a) * d).toFixed(0) + "px");
-        el.style.setProperty("--dy", (Math.sin(a) * d - 40).toFixed(0) + "px");
-      });
-    }
-  };
-  once();
-  setTimeout(once, 400);
-  setTimeout(once, 800);
-}
-setInterval(() => { if (!document.hidden) { sparkle(); sparkle(); } }, 900);
-let noteTimer = null;
-function startNotes() {
-  if (noteTimer) return;
-  noteTimer = setInterval(() => { if (dancing) musicNote(); else stopNotes(); }, 750);
-}
-function stopNotes() {
-  if (noteTimer) { clearInterval(noteTimer); noteTimer = null; }
-}
-// Tap the avatar himself: he dances, waves again and answers back.
+// Tap the model himself: he waves again, answers back, and does a short
+// dance if no panel is open.
 const TAP_LINES = [
   "Arre — tap kar diya! Main yahin hoon.",
   "Hi! Kuch chahiye to koi box dabao.",
@@ -275,11 +84,14 @@ const TAP_LINES = [
   "Bihar se Mumbai — poori kahani Journey me hai.",
 ];
 stage.addEventListener("click", () => {
-  const wave = document.querySelector(".wave-hand");
-  if (wave) { wave.style.animation = "none"; void wave.offsetWidth; wave.style.animation = ""; }
-  for (let i = 0; i < 6; i++) sparkle();
   setSpeech(TAP_LINES[Math.floor(Math.random() * TAP_LINES.length)]);
-  if (!dancing) startDance();
+  whenAvatar((A) => {
+    A.wave();
+    if (!openKey) {
+      A.danceStart();
+      setTimeout(() => { if (!openKey) A.danceStop(); }, 3000);
+    }
+  });
 });
 
 // ---------- 3D cubes: drag to rotate ----------
@@ -322,7 +134,8 @@ document.querySelectorAll(".cube").forEach((cube) => {
 
 // ---------- Panels ----------
 // The panel opens on the same side as the box that was tapped, and the
-// avatar turns toward it. Left boxes: Work, Education, Proof.
+// MODEL turns toward it and points at it with his own arm.
+// Left boxes: Work, Education, Proof.
 const LEFT_PANELS = new Set(["work", "education", "proof"]);
 const TITLES = {
   work: "Work", skills: "Skills", education: "Education",
@@ -356,24 +169,20 @@ function openPanel(key) {
   panel.setAttribute("aria-hidden", "false");
   document.body.classList.add("panel-open");
   panel.classList.toggle("panel-left", LEFT_PANELS.has(key));
-  panelTiltY = LEFT_PANELS.has(key) ? -12 : 12; // turn toward the panel's side
-  // Point at the panel: hand on the panel's side, avatar steps aside so
-  // he stays visible next to the sheet instead of under it.
   const isLeft = LEFT_PANELS.has(key);
-  pointHand.classList.toggle("point-left", isLeft);
-  pointHand.classList.toggle("point-right", !isLeft);
-  stage.classList.add("pointing");
-  moveStage(isLeft ? 60 : -60, 0, 600, 0);
+  // He turns toward the panel, points at it with his own arm, and steps
+  // aside so he stays visible next to the sheet instead of under it.
+  whenAvatar((A) => {
+    A.pointAt(isLeft ? "left" : "right");
+    A.walkTo(isLeft ? 0.35 : -0.35, 600);
+  });
   setSpeech(SPEECH[key]);
   startDance(); // excitement on every open
   if (key === "hire") {
-    // Flex emote: puff up and show off for recruiters.
-    stage.classList.remove("flexing");
-    void stage.offsetWidth;
-    stage.classList.add("flexing");
+    // Flex emote: he puffs up and shows off for recruiters — no confetti,
+    // the MODEL does the celebrating now.
+    whenAvatar((A) => A.flex());
     stateLabel.textContent = "Right now: FLEXING — hire me energy";
-    confettiBurst(); // gold/teal/pink celebration burst
-    setTimeout(() => stage.classList.remove("flexing"), 950);
   }
 }
 
@@ -385,11 +194,11 @@ function closePanel() {
   panel.setAttribute("aria-hidden", "true");
   document.body.classList.remove("panel-open");
   document.querySelectorAll(".orbit-box").forEach((b) => b.classList.remove("is-active"));
-  panelTiltY = 0;
+  whenAvatar((A) => {
+    A.pointAt(null);
+    A.walkTo(0, 600); // walk back to centre
+  });
   stopDance();
-  stage.classList.remove("pointing");
-  stage.classList.remove("flexing");
-  moveStage(0, 0, 600, 0); // walk back to centre
   setSpeech("Wapas aa gaya. Koi aur box try karo — main yahin hoon.");
 }
 

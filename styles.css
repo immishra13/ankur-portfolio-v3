@@ -1,4 +1,4 @@
-/* Ankur Mishra — portfolio v3.7.3 "Home Orbit".
+/* Ankur Mishra — portfolio v4.0 "Living Model".
    Concept: full dark UI, Ankur in the centre, real 3D cubes floating around him.
    Avatar: canvas chroma-key — white video background removed live, avatar floats
    on the dark page. Tap a box → panel opens on THAT box's side, avatar gets
@@ -102,19 +102,16 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 .intro-sub { margin: 2px 0 0; font-size: 0.92rem; color: var(--muted); }
 .intro-hint { margin: 6px 0 0; font-size: 0.88rem; font-weight: 600; color: var(--teal); }
 
-/* Avatar, centre */
+/* Avatar, centre — a REAL 3D model (Three.js, avatar3d.js). The model
+   itself waves, walks, points and dances; no video, no side graphics. */
 .avatar-stage {
   position: absolute; left: 50%; top: 50%;
-  /* --mx/--my are driven by JS: walk-in on load, a stroll while idle,
-     and a shift toward the open panel. The avatar MOVES; the video
-     itself cannot walk or point (the avatar system only makes dance
-     videos), so all movement is code, not a new video. */
-  transform: translate(calc(-50% + var(--mx, 0px)), calc(-50% + var(--my, 0px)));
-  text-align: center; z-index: 2; perspective: 900px;
+  transform: translate(-50%, -50%);
+  text-align: center; z-index: 2;
   margin-top: 8px;
 }
-/* When a panel is open, the backdrop (z-index 20) would dim the avatar and
-   veil the confetti. Lift the stage above it (panel itself is 30). */
+/* When a panel is open, the backdrop (z-index 20) would dim the model.
+   Lift the stage above it (panel itself is 30). */
 body.panel-open .avatar-stage { z-index: 21; }
 
 .avatar-glow {
@@ -123,118 +120,17 @@ body.panel-open .avatar-stage { z-index: 21; }
   background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(245, 158, 11, 0.08) 55%, rgba(245, 158, 11, 0) 70%);
   pointer-events: none;
 }
-.avatar-tilt { position: relative; display: inline-block; transform-style: preserve-3d; will-change: transform; cursor: pointer; }
-/* Canvas avatar: video frames are drawn here after live chroma-key,
-   so the avatar floats on the dark page with no white box behind him. */
-.avatar-canvas {
-  display: block; width: 280px; height: 498px;
-  /* Slimmer figure: the generated idle frame draws him a little wide. */
-  transform: scaleX(0.93);
+/* The 3D mount: the WebGL canvas fills it. The model walks inside it. */
+.avatar-3d {
+  display: block; width: 380px; height: 520px; margin: 0 auto;
+  cursor: pointer;
+}
+.avatar-3d canvas { width: 100% !important; height: 100% !important; display: block; }
+/* Poster fallback: only shown if the 3D model cannot load (CDN/WebGL). */
+.avatar-fallback {
+  display: block; width: 280px; margin: 0 auto;
   filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.55));
 }
-.avatar-canvas.dancing { animation: dance-pop 0.6s var(--bounce); }
-/* Hi wave: a small waving hand that greets on load, then fades away. */
-.wave-hand {
-  position: absolute; right: 6px; top: 34%; width: 44px; height: 44px;
-  z-index: 4; pointer-events: none;
-  transform-origin: 50% 85%;
-  animation: wave-hi 5s var(--ease-out) forwards;
-}
-@keyframes wave-hi {
-  0% { opacity: 0; transform: rotate(0deg) scale(0.6); }
-  8% { opacity: 1; transform: rotate(0deg) scale(1); }
-  16% { transform: rotate(18deg); }
-  26% { transform: rotate(-14deg); }
-  36% { transform: rotate(18deg); }
-  46% { transform: rotate(-10deg); }
-  56% { transform: rotate(8deg); }
-  66% { opacity: 1; transform: rotate(0deg); }
-  85% { opacity: 1; transform: rotate(0deg); }
-  100% { opacity: 0; transform: rotate(0deg) scale(0.9); }
-}
-/* Pointing hand: appears while a panel is open, on the panel's side,
-   bobbing toward it — the avatar points at what you tapped. */
-.point-hand {
-  position: absolute; top: 40%; width: 46px; height: 46px; z-index: 4;
-  pointer-events: none; opacity: 0; transform: scale(0.6);
-  transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
-}
-.point-hand.point-right { right: -16px; }
-.point-hand.point-left { left: -16px; transform: scaleX(-1) scale(0.6); }
-.avatar-stage.pointing .point-hand { opacity: 1; transform: scale(1); animation: point-bob 1.2s ease-in-out infinite; }
-.avatar-stage.pointing .point-hand.point-left { transform: scaleX(-1) scale(1); animation: point-bob-left 1.2s ease-in-out infinite; }
-@keyframes point-bob { 0%, 100% { translate: 0 0; } 50% { translate: 7px 0; } }
-@keyframes point-bob-left { 0%, 100% { translate: 0 0; } 50% { translate: -7px 0; } }
-/* Flex emote (Hire Me): the avatar puffs up and shows off — biceps energy. */
-.avatar-stage.flexing .avatar-canvas { animation: flex-pose 0.9s var(--ease-out); }
-@keyframes flex-pose {
-  0% { transform: scaleX(0.93) scale(1); }
-  30% { transform: scaleX(0.93) scale(1.07) rotate(-2deg); }
-  60% { transform: scaleX(0.93) scale(1.1) rotate(1.5deg); }
-  100% { transform: scaleX(0.93) scale(1); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .avatar-stage.pointing .point-hand, .avatar-stage.flexing .avatar-canvas { animation: none; }
-}
-/* Ground shadow under the avatar's feet — it shrinks when he bobs up, so
-   the walk reads as steps, and it hides the faint white patch under his
-   feet in the dance video. Scale is driven by JS (--sh). */
-.avatar-shadow {
-  position: absolute; left: 50%; bottom: 4px; z-index: 0;
-  width: 190px; height: 22px; transform: translateX(-50%) scaleX(var(--sh, 1));
-  border-radius: 50%; pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.22) 60%, transparent 75%);
-  box-shadow: 0 0 28px 10px rgba(245, 158, 11, 0.13);
-  /* Only visible while dancing: the idle video is framed waist-up (no feet,
-     no ground), the dance video is full-body — a shadow at idle floats over
-     the desk in the background photo and reads as nothing. */
-  opacity: 0; transition: opacity 0.4s var(--ease-out);
-}
-.avatar-stage.show-shadow .avatar-shadow { opacity: 1; }
-/* Motion-graphics layer: sparkles, music notes, confetti — all spawned
-   by JS, transform/opacity only, pointer-events none. */
-.avatar-fx { position: absolute; left: 50%; top: 0; width: 340px; height: 520px; transform: translateX(-50%); pointer-events: none; z-index: 3; overflow: visible; }
-.fx-spark {
-  position: absolute; width: 8px; height: 8px; border-radius: 50%;
-  background: var(--gold); box-shadow: 0 0 10px 3px rgba(245, 158, 11, 0.6);
-  animation: fx-rise 3.6s ease-out forwards;
-}
-.fx-spark.teal { background: var(--teal); box-shadow: 0 0 10px 3px rgba(45, 212, 191, 0.55); }
-@keyframes fx-rise {
-  0% { opacity: 0; transform: translateY(0) scale(0.5); }
-  12% { opacity: 1; transform: translateY(-14px) scale(1); }
-  65% { opacity: 1; transform: translateY(-90px) scale(1); }
-  100% { opacity: 0; transform: translateY(-120px) scale(0.4); }
-}
-.fx-note {
-  position: absolute; width: 22px; height: 22px; color: var(--gold);
-  animation: fx-note-float 2.6s ease-out forwards;
-}
-.fx-note svg { width: 100%; height: 100%; display: block; }
-@keyframes fx-note-float {
-  0% { opacity: 0; transform: translateY(0) rotate(-8deg) scale(0.7); }
-  20% { opacity: 1; transform: translateY(-20px) rotate(6deg) scale(1); }
-  100% { opacity: 0; transform: translateY(-110px) rotate(-10deg) scale(0.9); }
-}
-.fx-burst {
-  position: absolute; width: 14px; height: 14px; border-radius: 50%;
-  background: var(--gold); box-shadow: 0 0 16px 4px rgba(245, 158, 11, 0.55);
-  animation: fx-burst-fly 2.2s var(--ease-out) forwards;
-}
-.fx-burst.teal { background: var(--teal); box-shadow: 0 0 16px 4px rgba(45, 212, 191, 0.55); }
-.fx-burst.pink { background: var(--pink); box-shadow: 0 0 16px 4px rgba(214, 51, 108, 0.55); }
-@keyframes fx-burst-fly {
-  0% { opacity: 1; transform: translate(0, 0) scale(1); }
-  55% { opacity: 1; transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0.8); }
-  100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0.5); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .fx-spark, .fx-note, .fx-burst { animation: none; display: none; }
-}
-/* Source videos stay off-screen (never display:none — phones suspend
-   display:none videos, which is how the avatar went missing on load). */
-.avatar-video-src { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-@keyframes dance-pop { 0% { transform: scaleX(0.93) scale(0.96); } 100% { transform: scaleX(0.93) scale(1); } }
 .speech {
   display: inline-block; margin: 14px auto 0; max-width: 340px;
   background: var(--surface-2); color: var(--text);
@@ -620,9 +516,8 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   .intro-sub { font-size: 0.85rem; }
   .intro-hint { font-size: 0.85rem; }
   .avatar-stage { margin-top: 34px; }
-  .avatar-canvas { width: 200px; height: 356px; }
+  .avatar-3d { width: 260px; height: 420px; }
   .avatar-glow { width: 240px; height: 240px; }
-  .wave-hand { width: 34px; height: 34px; right: 2px; top: 30%; }
   body::before { background-position: center 22%; }
   .theme-proof .proof-list { grid-template-columns: 1fr 1fr; }
   .edu-visual { width: 64px; height: 64px; }
@@ -649,7 +544,7 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 }
 /* Short screens: shrink the avatar so nothing collides with the bottom boxes */
 @media (max-height: 840px) and (min-width: 961px) {
-  .avatar-canvas { width: 250px; height: 444px; }
+  .avatar-3d { width: 320px; height: 470px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

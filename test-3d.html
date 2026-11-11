@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avatar 3D test — v4.0</title>
+<style>
+  body { margin: 0; background: #0d0a07; color: #f5efe6; font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+  #avatar3d { width: 380px; height: 520px; margin-top: 20px; }
+  #avatar3d canvas { width: 100% !important; height: 100% !important; display: block; }
+  #status { margin-top: 12px; color: #f59e0b; font-weight: 600; }
+  #fallback { display: none; margin-top: 20px; color: #ff8080; }
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="module" src="avatar3d.js?v=4.0"></script>
+</head>
+<body>
+<div id="avatar3d" aria-label="Ankur's 3D avatar"></div>
+<p id="status">Loading 3D model…</p>
+<p id="fallback">3D failed to load — WebGL or CDN unavailable.</p>
+<script>
+  const status = document.getElementById('status');
+  const set = (s) => { status.textContent = s; };
+  window.addEventListener('avatar3d-ready', () => {
+    const A = window.Avatar3D;
+    set('READY — walking in…');
+    A.setX(-1.7);
+    A.walkTo(0, 1500, () => {
+      set('WAVING hi…');
+      A.wave();
+      setTimeout(() => {
+        set('POINTING left + dancing…');
+        A.pointAt('left');
+        A.danceStart();
+      }, 3500);
+      setTimeout(() => {
+        set('FLEXING…');
+        A.pointAt(null);
+        A.flex();
+      }, 8000);
+      setTimeout(() => {
+        set('IDLE — demo done. Model stays live.');
+        A.danceStop();
+      }, 11000);
+    });
+  });
+  window.addEventListener('avatar3d-failed', () => {
+    document.getElementById('fallback').style.display = 'block';
+    set('FAILED');
+  });
+  setTimeout(() => {
+    if (!window.Avatar3D) {
+      document.getElementById('fallback').style.display = 'block';
+      set('TIMEOUT — Avatar3D never loaded');
+    }
+  }, 8000);
+</script>
+</body>
+</html>

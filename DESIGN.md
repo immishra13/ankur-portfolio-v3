@@ -1,7 +1,7 @@
 ---
 version: zeta
-name: Ankur Mishra Portfolio v3.7.3 "Home Orbit"
-description: Warm dark one-page orbit over a personal-area photo background. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos + bg-removed icons, per-section panel themes, MatchMate NLP (stemming + synonyms).
+name: Ankur Mishra Portfolio v4.0 "Living Model"
+description: Warm dark one-page orbit over a personal-area photo background. REAL 3D model avatar (Three.js) in the centre — he waves, walks, points and dances himself; no video, no side graphics. Real 3D cubes in a phone ring too, journey tracker, education cards with real photos + bg-removed icons, per-section panel themes, MatchMate NLP (stemming + synonyms).
 colors:
   page-default: "#0d0a07"
   surface-default: "#1c150e"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.7.3 "Home Orbit"
+# Design Contract — Portfolio v4.0 "Living Model"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -155,6 +155,15 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 
 ## v3.6.1 — Hotfix: pointing hand was never uploaded (2026-11-11)
 - Visual check caught a broken-image placeholder beside the dancing avatar in every excited state. Root cause: `assets/point-hand.svg` was created locally but never included in the v3.6 push manifest (only the 5 text files were listed) — so the live page referenced a 404. Fixed by pushing the file itself, plus the two stale header comments (styles.css said v3.5, app.js said v3.3). Lesson: when a new asset is referenced, the push manifest must list it — verify every new asset URL returns 200 live, not just the text files.
+
+## v4.0 — Living Model: the avatar is a real 3D model now (2026-11-11)
+- Ankur's correction, 2026-11-11 evening: the v3.7 sparkles / music notes / confetti / pointing-hand were winner's misread — he never asked for side graphics. He wants the avatar MODEL itself to move: raise his own hand to say hi and move himself toward the selected cube. The wave-video try failed honestly (all 7 existing clips checked frame-by-frame — no wave anywhere; avatar.edit generate_videos returned no_missing, dance catalog exhausted). He chose the 3D model path.
+- `avatar3d.js` (new, Three.js r160 via jsdelivr importmap): procedural low-poly character styled like his illustrated avatar — cream Madhubani kurta (canvas texture: sun neckline design, placket + buttons, diamond hem border), magenta dhoti, yellow paag with fish + diamond border (canvas texture), skin-tone head with geometry face (eyes, brows, nose, mustache, beard, two mouths — neutral line + smile arc), cream juttis. Face is a stylised illustration-style face, NOT his photo — told to him when he picked this path.
+- Animation is all code (damped joint targets + timed modes): idle breathing + look-around + cursor follow (fine pointers only); walk-in from off-screen left then a real WAVE (right arm up beside the head, forearm waving); stroll every 22s; on panel open he TURNS toward the panel (root Y ±0.3), POINTS at it with his own arm (shoulder ±1.5 rad), steps aside, and dances (procedural: hips sway, arms pump, knees bounce); Hire Me fires a FLEX (both elbows bent up, chest out, smile); tap him = wave + short dance. Real contact shadow (directional light + ShadowMaterial plane) + a soft blob that follows his feet. `prefers-reduced-motion` renders one static frame.
+- app.js talks to it through `window.Avatar3D` + the `avatar3d-ready` event (module scripts load after the classic script); if the CDN/WebGL fails, a poster fallback (`avatar.png`, hidden by default) shows after 6s / on `avatar3d-failed` — the page never sits empty.
+- REMOVED in v4.0: avatar videos (files stay in the repo, unused — delete later), canvas chroma-key, fx layer (sparkles/notes/confetti), pointing-hand + wave-hand SVGs (files stay, unused), ground-shadow div, tilt loop, moveStage. The stage no longer moves via --mx/--my — the MODEL walks inside the 380×520 mount.
+- New file `test-3d.html` (not linked): standalone model demo — walk-in → wave → point + dance → flex — for isolated render checks.
+- Honest limit: the model is a stylised low-poly character. It moves exactly as asked, but it is not photoreal and its face is drawn, not his photo.
 
 ## v3.7 — More motion graphics on the avatar (2026-11-11)
 - Still code-only (no new video exists): gold sparkles drift up around him every ~1.1s (max 10 live), music notes float up while he dances, a ground shadow under his feet shrinks as he bobs (also hides the faint white patch under his feet in the dance video), and with no panel open he slowly glances around (idle look-around sway ±4°, ~16s cycle — the tilt loop now runs on touch devices too, not just fine pointers).
