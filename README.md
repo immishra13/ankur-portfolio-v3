@@ -67,4 +67,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v4.0.6 — polish: FLEXING state label outlived the 2.5s pose (now returns to EXCITED while Hire Me stays open); flex stays a "low" double-biceps (upper arms ~24° below horizontal) — raising them fully horizontal points the forearms at the camera, which reads worse
 - v4.1.0 — real face (his illustrated face from avatar.png as the head texture; geometry zombie face removed), phone overlap fixed (smaller mount, stage lifted, Proof/Contact to 71%), professional simple-English copy everywhere (footer version, "Numbers talk", "Bihar → Mumbai" and Hinglish speech/bot lines removed)
 - v4.1.1 — face scaled up to fill the head (was a small portrait on a big bald head), paag straightened; face image embedded as a base64 data URI in avatar3d.js (push-files cannot carry a binary PNG)
+- v4.1.2 — face widened to fill the head horizontally too (v4.1.1 still left a wide blank tan band on each side)
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)

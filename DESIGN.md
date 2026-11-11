@@ -156,6 +156,9 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 ## v3.6.1 — Hotfix: pointing hand was never uploaded (2026-11-11)
 - Visual check caught a broken-image placeholder beside the dancing avatar in every excited state. Root cause: `assets/point-hand.svg` was created locally but never included in the v3.6 push manifest (only the 5 text files were listed) — so the live page referenced a 404. Fixed by pushing the file itself, plus the two stale header comments (styles.css said v3.5, app.js said v3.3). Lesson: when a new asset is referenced, the push manifest must list it — verify every new asset URL returns 200 live, not just the text files.
 
+## v4.1.2 — Face widened to fill the head horizontally (2026-11-11)
+- The v4.1.1 face check: face much bigger, beard reaches the chin, paag straight — but the portrait still covered only ~half the head's width, with a wide blank tan band on each side. Fixed: face rect 256×220 → 341×260 (120° of longitude, u 0.084–0.417), so the face fills the head side to side; eyes stay ~59°, beard ~117° (wrapping the jaw).
+
 ## v4.1.1 — Face scaled up to fill the head, paag straightened (2026-11-11)
 - The v4.1.0 face check passed (real face, centred, upright, no zombie) but the face was too SMALL — it read as a small portrait pasted on a big bald head, beard floating high above the chin. Fixed: face rect 184×140 → 256×220 (u 0.125–0.375, hairline ~40° to chin ~110° from the top pole), so the face fills the head and the beard reaches the chin. Paag tilt reduced (rotation.x -0.10 → -0.06, rotation.z 0.04 → 0) — the jaunty angle was pronounced at close range.
 - Note: the face image is EMBEDDED in avatar3d.js as a base64 data URI (FACE_DATA_URI) — push-files only accepts UTF-8 text, so the binary assets/face.png cannot be pushed as a separate file. The local assets/face.png is the source for regeneration.
