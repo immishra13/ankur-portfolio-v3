@@ -491,7 +491,12 @@ function update(dt, t) {
       walk.active = false;
       const done = walk.done;
       walk = null;
-      mode = "idle";
+      // Only fall back to idle if nothing else took over mid-walk.
+      // (Hire Me calls walkTo AND flex together — the old unconditional
+      // `mode = "idle"` here killed the flex the moment the 600ms walk
+      // ended, so the 2.5s biceps pose never showed. That is exactly what
+      // the v4.0.4 flex check saw: point + dance arms, no flex.)
+      if (mode === "walk") mode = "idle";
       if (done) done();
     }
   }

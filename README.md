@@ -63,4 +63,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v4.0.2 — hotfix: poster fallback could stay visible under a late-loading live model (now re-hidden on ready); fallback timeouts raised to 10s/12s for cold CDN loads
 - v4.0.3 — hotfix: the poster's `display:block` CSS beat the `hidden` attribute, so it was always visible and pushed the 3D mount off the top of the screen (`.avatar-fallback[hidden]{display:none}` fixes it); tap now shows a "waving hi!" state label
 - v4.0.4 — fix: Hire Me flex read as a T-pose (old targets left upper arms pointing down-forward; hold was 1.0s and the walk overwrote the flex arms) — new targets verified numerically as a clear double-biceps, 2.5s hold, walk no longer overwrites flex arms
+- v4.0.5 — fix: the walk's completion handler reset mode to idle unconditionally, killing the flex when the 600ms walk ended — walk now only falls back to idle if mode is still 'walk'
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)
