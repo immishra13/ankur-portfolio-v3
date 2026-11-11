@@ -22,6 +22,7 @@
   const status = document.getElementById('status');
   const set = (s) => { status.textContent = s; };
   window.addEventListener('avatar3d-ready', () => {
+    document.getElementById('fallback').style.display = 'none';
     const A = window.Avatar3D;
     set('READY — walking in…');
     A.setX(-1.7);
@@ -53,7 +54,7 @@
       document.getElementById('fallback').style.display = 'block';
       set('TIMEOUT — Avatar3D never loaded');
     }
-  }, 8000);
+  }, 12000);
 </script>
 </body>
 </html>

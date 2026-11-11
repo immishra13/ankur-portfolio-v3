@@ -156,6 +156,9 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 ## v3.6.1 — Hotfix: pointing hand was never uploaded (2026-11-11)
 - Visual check caught a broken-image placeholder beside the dancing avatar in every excited state. Root cause: `assets/point-hand.svg` was created locally but never included in the v3.6 push manifest (only the 5 text files were listed) — so the live page referenced a 404. Fixed by pushing the file itself, plus the two stale header comments (styles.css said v3.5, app.js said v3.3). Lesson: when a new asset is referenced, the push manifest must list it — verify every new asset URL returns 200 live, not just the text files.
 
+## v4.0.2 — Hotfix: poster fallback could overlap the live model (2026-11-11)
+- Re-check of v4.0.1 passed (model renders, waves, points, flexes, dances — see below) but exposed two robustness gaps: (1) if the model loads AFTER the fallback timeout fired, the poster stayed visible under the live canvas — now `avatar3d-ready` re-hides the fallback; (2) the fallback timeouts were tight for a cold CDN load (6s main page / 8s test page) — raised to 10s / 12s. Note: the re-check's first run showed the OLD v4.0 page (title "v4.0", cached) timing out — that was the stale cache, not v4.0.1 failing.
+
 ## v4.0.1 — Hotfix: the model never started (2026-11-11)
 - First visual check (test-3d.html, two loads): black viewport, "TIMEOUT — Avatar3D never loaded" — no figure at all. Root cause: `avatar3d.js` defined `init()` and exposed it on `window.Avatar3D`, but NOTHING ever called `init()` — neither the module itself nor app.js. The page waited for `avatar3d-ready` forever. Fixed: the module auto-starts when it finds `#avatar3d` (module scripts run after the document parses, so the mount exists). Lesson: an API that is never invoked is dead code — verify the init path, not just the API shape.
 

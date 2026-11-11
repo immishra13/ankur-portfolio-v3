@@ -60,4 +60,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v3.7.3 — fix: confetti was veiled by the 55% panel backdrop (stage now lifts above it when a panel is open), burst made much bigger/longer (24×3 waves, ~3s), shadow now shows only while dancing (idle video is waist-up — verified on real frames, feet exist only in the dance video)
 - v4.0 — Living Model: the video avatar is replaced by a REAL 3D model (Three.js, `avatar3d.js`) that waves hi, walks in, turns toward the tapped cube and points at it with his own arm, flexes for Hire Me and dances — all code. All side graphics removed (sparkles, notes, confetti, pointing/wave hands) per Ankur's correction; the wave-video try failed first (no wave in any clip, dance catalog exhausted)
 - v4.0.1 — hotfix: the model never rendered — `init()` was defined but never called by anyone; the module now auto-starts when it finds `#avatar3d`
+- v4.0.2 — hotfix: poster fallback could stay visible under a late-loading live model (now re-hidden on ready); fallback timeouts raised to 10s/12s for cold CDN loads
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)

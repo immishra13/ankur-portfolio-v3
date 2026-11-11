@@ -39,7 +39,13 @@ function showFallback() {
   stateLabel.textContent = "Right now: 3D model could not load — showing photo";
 }
 window.addEventListener("avatar3d-failed", showFallback);
-setTimeout(() => { if (!window.Avatar3D) showFallback(); }, 6000);
+// If the fallback showed on a slow load and the model arrives later,
+// hide the poster again — never show both the photo and the live model.
+window.addEventListener("avatar3d-ready", () => {
+  const fb = $("avatarFallback");
+  if (fb) fb.hidden = true;
+});
+setTimeout(() => { if (!window.Avatar3D) showFallback(); }, 10000);
 
 function startDance() {
   if (dancing) return;
