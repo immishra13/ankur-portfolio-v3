@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=3.2.1">
+<link rel="stylesheet" href="styles.css?v=3.3">
 </head>
 <body>
 
@@ -32,46 +32,96 @@
     <h1 class="name-3d">ANKUR MISHRA</h1>
     <p class="intro-line">I ship products, not promises.</p>
     <p class="intro-sub">Python Backend · GenAI · Co-Founder, FixMateHub — Rooted in Mithila. Building for the world.</p>
+    <p class="intro-hint">Tap a box around me — I will show you that world. No long scrolling here.</p>
   </header>
 
-  <!-- Living avatar, centre -->
+  <!-- Living avatar, centre — canvas chroma-key: white video background removed live -->
   <div class="avatar-stage" id="avatarStage">
     <div class="avatar-glow" aria-hidden="true"></div>
     <div class="avatar-tilt" id="avatarTilt">
-      <video id="videoIdle" class="avatar-video" src="avatar-idle.mp4" poster="avatar.png" autoplay muted loop playsinline aria-label="Ankur's avatar, standing and breathing"></video>
-      <video id="videoDance" class="avatar-video avatar-video-hidden" src="avatar-dance.mp4" muted loop playsinline preload="auto" aria-label="Ankur's avatar dancing with excitement"></video>
+      <canvas id="avatarCanvas" class="avatar-canvas" aria-label="Ankur's avatar, standing and breathing"></canvas>
+      <video id="videoIdle" class="avatar-video-src" src="avatar-idle.mp4" poster="avatar.png" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
+      <video id="videoDance" class="avatar-video-src" src="avatar-dance.mp4" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
     </div>
     <p class="speech" id="speechBubble" aria-live="polite">Namaste! I am Ankur. Tap any box around me.</p>
     <p class="avatar-state" id="avatarState">Right now: idle — breathing, listening</p>
   </div>
 
-  <!-- Orbit boxes -->
+  <!-- Orbit boxes — real 3D cubes: hover to turn, drag to rotate, tap to open -->
   <nav class="orbit-boxes" aria-label="Sections around Ankur">
     <button type="button" class="orbit-box box-work" data-panel="work">
-      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span><span class="box-label">Work</span><span class="box-sub">7 live things</span></span>
+      <span class="cube-float"><span class="cube" data-cube>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span><span class="box-label">Work</span><span class="box-sub">7 live things</span></span>
+        <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
+        <span class="cube-face cube-top" aria-hidden="true"></span>
+        <span class="cube-face cube-back" aria-hidden="true"><span>Work</span></span>
+        <span class="cube-face cube-left" aria-hidden="true"></span>
+        <span class="cube-face cube-bottom" aria-hidden="true"></span>
+      </span></span>
     </button>
     <button type="button" class="orbit-box box-skills" data-panel="skills">
-      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8L4.5 10l5.6 1.2L12 17l1.9-5.8L19.5 10l-5.6-1.2L12 3Z"/><path d="M19 15l-.9 2.6L15.5 18.5l2.6.9L19 22l.9-2.6 2.6-.9-2.6-.9L19 15Z"/></svg></span><span class="box-label">Skills</span><span class="box-sub">What I use</span></span>
+      <span class="cube-float"><span class="cube" data-cube>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8L4.5 10l5.6 1.2L12 17l1.9-5.8L19.5 10l-5.6-1.2L12 3Z"/><path d="M19 15l-.9 2.6L15.5 18.5l2.6.9L19 22l.9-2.6 2.6-.9-2.6-.9L19 15Z"/></svg></span><span class="box-label">Skills</span><span class="box-sub">What I use</span></span>
+        <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
+        <span class="cube-face cube-top" aria-hidden="true"></span>
+        <span class="cube-face cube-back" aria-hidden="true"><span>Skills</span></span>
+        <span class="cube-face cube-left" aria-hidden="true"></span>
+        <span class="cube-face cube-bottom" aria-hidden="true"></span>
+      </span></span>
     </button>
     <button type="button" class="orbit-box box-education" data-panel="education">
-      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></span><span class="box-label">Education</span><span class="box-sub">VIVA · 2027</span></span>
+      <span class="cube-float"><span class="cube" data-cube>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></span><span class="box-label">Education</span><span class="box-sub">VIVA · 2027</span></span>
+        <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
+        <span class="cube-face cube-top" aria-hidden="true"></span>
+        <span class="cube-face cube-back" aria-hidden="true"><span>Education</span></span>
+        <span class="cube-face cube-left" aria-hidden="true"></span>
+        <span class="cube-face cube-bottom" aria-hidden="true"></span>
+      </span></span>
     </button>
     <button type="button" class="orbit-box box-journey" data-panel="journey">
-      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/></svg></span><span class="box-label">Journey</span><span class="box-sub">Bihar → Mumbai</span></span>
+      <span class="cube-float"><span class="cube" data-cube>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/></svg></span><span class="box-label">Journey</span><span class="box-sub">Bihar → Mumbai</span></span>
+        <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
+        <span class="cube-face cube-top" aria-hidden="true"></span>
+        <span class="cube-face cube-back" aria-hidden="true"><span>Journey</span></span>
+        <span class="cube-face cube-left" aria-hidden="true"></span>
+        <span class="cube-face cube-bottom" aria-hidden="true"></span>
+      </span></span>
     </button>
     <button type="button" class="orbit-box box-proof" data-panel="proof">
-      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4a2 2 0 0 0 2 4h1M17 6h3a2 2 0 0 1-2 4h-1"/></svg></span><span class="box-label">Proof</span><span class="box-sub">Numbers talk</span></span>
+      <span class="cube-float"><span class="cube" data-cube>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4a2 2 0 0 0 2 4h1M17 6h3a2 2 0 0 1-2 4h-1"/></svg></span><span class="box-label">Proof</span><span class="box-sub">Numbers talk</span></span>
+        <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
+        <span class="cube-face cube-top" aria-hidden="true"></span>
+        <span class="cube-face cube-back" aria-hidden="true"><span>Proof</span></span>
+        <span class="cube-face cube-left" aria-hidden="true"></span>
+        <span class="cube-face cube-bottom" aria-hidden="true"></span>
+      </span></span>
     </button>
     <button type="button" class="orbit-box box-contact" data-panel="contact">
-      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="m22 6-10 7L2 6"/></svg></span><span class="box-label">Contact</span><span class="box-sub">Talk to me</span></span>
+      <span class="cube-float"><span class="cube" data-cube>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="m22 6-10 7L2 6"/></svg></span><span class="box-label">Contact</span><span class="box-sub">Talk to me</span></span>
+        <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
+        <span class="cube-face cube-top" aria-hidden="true"></span>
+        <span class="cube-face cube-back" aria-hidden="true"><span>Contact</span></span>
+        <span class="cube-face cube-left" aria-hidden="true"></span>
+        <span class="cube-face cube-bottom" aria-hidden="true"></span>
+      </span></span>
     </button>
     <button type="button" class="orbit-box box-hire" data-panel="hire">
-      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12h.01M15 12h.01M9 16h6"/></svg></span><span class="box-label">Hire Me</span><span class="box-sub">MatchMate bot</span></span>
+      <span class="cube-float"><span class="cube" data-cube>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12h.01M15 12h.01M9 16h6"/></svg></span><span class="box-label">Hire Me</span><span class="box-sub">MatchMate bot</span></span>
+        <span class="cube-face cube-right" aria-hidden="true"><span>Talk →</span></span>
+        <span class="cube-face cube-top" aria-hidden="true"></span>
+        <span class="cube-face cube-back" aria-hidden="true"><span>Hire Me</span></span>
+        <span class="cube-face cube-left" aria-hidden="true"></span>
+        <span class="cube-face cube-bottom" aria-hidden="true"></span>
+      </span></span>
     </button>
   </nav>
 
-  <p class="orbit-hint">Tap a box — I will show you that world. No long scrolling here.</p>
-  <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · v3.2 “The Orbit”</p>
+  <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · v3.3 “Cube Orbit”</p>
 </div>
 
 <!-- ================= SIDE PANEL: one panel per box ================= -->
@@ -84,25 +134,46 @@
 
     <div class="panel-section" data-section="work">
       <p class="panel-intro">Real things. All live or on GitHub — check them yourself.</p>
-      <ul class="panel-list">
-        <li><strong>FixMateHub</strong> — home services &amp; deep cleaning, Thane &amp; Mumbai. 1000+ customers, 4.9 rating. I lead frontend &amp; admin panel. <a href="https://fixmatehub.com" target="_blank" rel="noopener">Visit site</a></li>
-        <li><strong>AwaazRoute</strong> — speak a Hindi/Hinglish complaint, AI classifies it into 6 categories and routes it. 144 samples, 14/14 tests pass. <a href="https://immishra13.github.io/AwaazRoute/" target="_blank" rel="noopener">Try it live</a> · <a href="https://github.com/immishra13/AwaazRoute" target="_blank" rel="noopener">GitHub</a></li>
-        <li><strong>RTI Black Hole</strong> — flags RTI requests that vanish unanswered. MUSA Codex 2026. <a href="https://github.com/immishra13/RTI-black-hole" target="_blank" rel="noopener">GitHub</a></li>
-        <li><strong>Financial Complaint Classifier</strong> — TF-IDF + Logistic Regression routes finance complaints. <a href="https://github.com/immishra13/-Financial-Complaint-Classifier" target="_blank" rel="noopener">GitHub</a></li>
-        <li><strong>Preview Cloud</strong> — instant preview links for web projects. <a href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></li>
-        <li><strong>E-WasteChain</strong> — blockchain-tracked e-waste collection. <a href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></li>
-        <li><strong>Sign Language + YOLO</strong> — real-time sign recognition + XGBoost personality prediction. <a href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></li>
-      </ul>
+      <div class="work-grid">
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z"/><path d="M9 22V12h6v10"/></svg></span>
+          <div><h4>FixMateHub</h4><p>Home services &amp; deep cleaning, Thane &amp; Mumbai. 1000+ customers, 4.9 rating. I lead frontend &amp; admin panel.</p><div class="work-actions"><a class="btn btn-small btn-primary" href="https://fixmatehub.com" target="_blank" rel="noopener">Visit site</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg></span>
+          <div><h4>AwaazRoute</h4><p>Speak a Hindi/Hinglish complaint, AI classifies it into 6 categories and routes it. 144 samples, 14/14 tests pass.</p><div class="work-actions"><a class="btn btn-small btn-primary" href="https://immishra13.github.io/AwaazRoute/" target="_blank" rel="noopener">Try it live</a><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/AwaazRoute" target="_blank" rel="noopener">GitHub</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><circle cx="11.5" cy="14.5" r="2"/><path d="m13 16 2 2"/></svg></span>
+          <div><h4>RTI Black Hole</h4><p>Flags RTI requests that vanish unanswered. MUSA Codex 2026.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/RTI-black-hole" target="_blank" rel="noopener">GitHub</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></span>
+          <div><h4>Financial Complaint Classifier</h4><p>TF-IDF + Logistic Regression routes finance complaints.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/-Financial-Complaint-Classifier" target="_blank" rel="noopener">GitHub</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 .4-9A7 7 0 0 0 4.3 12 3.5 3.5 0 0 0 6 19h11.5Z"/></svg></span>
+          <div><h4>Preview Cloud</h4><p>Instant preview links for web projects.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span>
+          <div><h4>E-WasteChain</h4><p>Blockchain-tracked e-waste collection.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></span>
+          <div><h4>Sign Language + YOLO</h4><p>Real-time sign recognition + XGBoost personality prediction.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div></div>
+        </article>
+      </div>
     </div>
 
     <div class="panel-section" data-section="skills">
       <p class="panel-intro">Tools I actually use — not a copied list.</p>
-      <h3>Languages</h3><p class="chips"><span>Python</span><span>JavaScript</span><span>SQL</span><span>HTML</span><span>CSS</span></p>
-      <h3>AI &amp; ML</h3><p class="chips"><span>scikit-learn</span><span>XGBoost</span><span>NLP</span><span>YOLO</span><span>OpenCV</span><span>GenAI</span></p>
-      <h3>Backend</h3><p class="chips"><span>FastAPI</span><span>Node.js</span><span>Flask</span><span>REST APIs</span></p>
-      <h3>Frontend</h3><p class="chips"><span>React</span><span>JavaScript</span><span>CSS</span><span>Chrome Extensions</span></p>
-      <h3>Tools</h3><p class="chips"><span>Git</span><span>GitHub</span><span>Docker</span><span>MySQL</span><span>MongoDB</span></p>
-      <h3>Blockchain</h3><p class="chips"><span>Solidity basics</span><span>Web3</span></p>
+      <h3>Languages</h3><p class="chips"><span><img src="https://cdn.simpleicons.org/python/3776AB" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">Python</span><span><img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">JavaScript</span><span>SQL</span><span><img src="https://cdn.simpleicons.org/html5/E34F26" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">HTML</span><span><img src="https://cdn.simpleicons.org/css/1572B6" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">CSS</span></p>
+      <h3>AI &amp; ML</h3><p class="chips"><span><img src="https://cdn.simpleicons.org/scikitlearn/F7931E" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">scikit-learn</span><span>XGBoost</span><span>NLP</span><span>YOLO</span><span><img src="https://cdn.simpleicons.org/opencv/5C3EE8" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">OpenCV</span><span>GenAI</span></p>
+      <h3>Backend</h3><p class="chips"><span><img src="https://cdn.simpleicons.org/fastapi/009688" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">FastAPI</span><span><img src="https://cdn.simpleicons.org/nodedotjs/5FA04E" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">Node.js</span><span><img src="https://cdn.simpleicons.org/flask/white" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">Flask</span><span>REST APIs</span></p>
+      <h3>Frontend</h3><p class="chips"><span><img src="https://cdn.simpleicons.org/react/61DAFB" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">React</span><span><img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">JavaScript</span><span><img src="https://cdn.simpleicons.org/css/1572B6" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">CSS</span><span><img src="https://cdn.simpleicons.org/googlechrome/4285F4" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">Chrome Extensions</span></p>
+      <h3>Tools</h3><p class="chips"><span><img src="https://cdn.simpleicons.org/git/F05032" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">Git</span><span><img src="https://cdn.simpleicons.org/github/white" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">GitHub</span><span><img src="https://cdn.simpleicons.org/docker/2496ED" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">Docker</span><span><img src="https://cdn.simpleicons.org/mysql/4479A1" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">MySQL</span><span><img src="https://cdn.simpleicons.org/mongodb/47A248" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">MongoDB</span></p>
+      <h3>Blockchain</h3><p class="chips"><span><img src="https://cdn.simpleicons.org/solidity/white" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">Solidity basics</span><span><img src="https://cdn.simpleicons.org/web3dotjs/F16822" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">Web3</span></p>
       <h3>Human languages</h3><p class="chips"><span>Hindi</span><span>English</span><span>Maithili</span><span>Bhojpuri</span><span>Marathi</span></p>
     </div>
 
@@ -193,6 +264,6 @@
 </aside>
 <div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
-<script src="app.js?v=3.2.1"></script>
+<script src="app.js?v=3.3"></script>
 </body>
 </html>

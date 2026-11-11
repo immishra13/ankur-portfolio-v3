@@ -1,7 +1,7 @@
 ---
-version: gamma
-name: Ankur Mishra Portfolio v3.2 "The Orbit"
-description: Dark one-page orbit. Living avatar in the centre, 3D boxes around him, panels on tap, MatchMate hiring bot.
+version: delta
+name: Ankur Mishra Portfolio v3.3 "Cube Orbit"
+description: Dark one-page orbit. Canvas keyed avatar (no white box), real 3D cubes around him, panels open on the box's side, MatchMate hiring bot.
 colors:
   page-default: "#070B14"
   surface-default: "#111A2E"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.2 "The Orbit"
+# Design Contract — Portfolio v3.3 "Cube Orbit"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -32,23 +32,43 @@ below; tapping redirects straight there. See `~/workspace/custom-skills/ankur_de
 for the standing version of this taste.
 
 ## Avatar
-Same look (his face, Maithili kurta-paag-dhoti). Real video, no fake pupils:
+Same look (his face, Maithili kurta-paag-dhoti). Real video, no fake pupils,
+drawn on a canvas with LIVE chroma-key — the white video background is removed
+per frame, so the avatar floats directly on the dark page (no white box):
 - `avatar-idle.mp4` — 9.7s loop: breathing, head tilt, talking.
 - `avatar-dance.mp4` — 8s full body: arms, legs, turning, smiling. Plays when any box
   opens (excitement), then returns to idle.
+- Keying: per-pixel Euclidean distance from white (< 75 → transparent, 75–95 soft
+  edge, despill on fringe). Transparent VP9/WebM alpha was tried first and failed
+  (encoder fed yuva420p still wrote Profile 0, no alpha) — canvas keying is the
+  shipped route. Verified on real frames: idle + dance key cleanly, face/kurta/paag
+  intact, no speckles. Poster = transparent avatar.png.
 - Pointing: the avatar system only generates dance videos, so there is no separate
   pointing video — the "follow" is the stage tilting in 3D toward the open panel
-  (rotateY +12deg, rAF-lerped) plus the dance. Poster = avatar.png.
+  (rotateY ±12deg, rAF-lerped) plus the dance.
 - Reduced-motion: no autoplay, poster still, no tilt, no float.
 
 ## Layout
 Desktop: 100dvh stage. 3D extruded name top-centre ("ANKUR MISHRA", layered
-saffron text-shadow, perspective tilt) + one-line intro. Avatar centred. Seven boxes
-in a ring (Work left-top, Skills right-top, Education left-mid, Journey right-mid,
+saffron text-shadow, perspective tilt) + one-line intro + hint line under it
+(the old floor hint overlapped the Hire Me box, so it moved up here).
+Avatar centred (canvas 280×498, drop-shadow, no card). Seven REAL 3D cubes in a
+ring (Work left-top, Skills right-top, Education left-mid, Journey right-mid,
 Proof left-bottom, Contact right-bottom, Hire Me bottom-centre, saffron highlight).
-Each box floats gently (different delays, transform only). Panel: fixed right sheet
-(460px), slides in with transform; mobile: bottom sheet. Panel content scrolls
-internally — the page itself does not scroll.
+Each cube is a W×H×D cuboid: front face (icon + label), right face (accent,
+"Open →"), top face (accent edge), back face (label). Resting pose
+rotateX(-14deg) rotateY(-20deg); hover turns it further; drag (pointer) rotates
+freely and snaps back; a drag never opens the panel. Panel: fixed sheet, 560px
+wide, slides in from the SAME side as the box that was tapped (left boxes →
+left sheet, avatar tilts the other way); mobile: bottom sheet. Panel content
+scrolls internally — the page itself does not scroll. While a panel is open the
+orbit dims to 0.45 with NO blur (blur made the boxes look smeared).
+
+## Panels
+- Work: real cards — icon + title + one-liner + proper buttons (Visit site /
+  Try it live / GitHub), slight 3D lift on hover. No more plain text links.
+- Skills: official brand icons (Simple Icons CDN, `onerror` removes a missing
+  one) + 3D tilt chips (hover rotateX/rotateY, perspective parent).
 
 ## MatchMate bot (Hire Me)
 Input + 5 example chips → keyword match against a real skill DB (26 skills with

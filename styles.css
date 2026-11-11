@@ -1,7 +1,8 @@
-/* Ankur Mishra — portfolio v3.2 "The Orbit".
-   Concept: full dark UI, Ankur in the centre, 3D boxes floating around him.
-   One page, almost no scroll. Tap a box → panel opens, avatar gets excited
-   and follows (turns toward the panel). Motion per design-motion-principles:
+/* Ankur Mishra — portfolio v3.3 "Cube Orbit".
+   Concept: full dark UI, Ankur in the centre, real 3D cubes floating around him.
+   Avatar: canvas chroma-key — white video background removed live, avatar floats
+   on the dark page. Tap a box → panel opens on THAT box's side, avatar gets
+   excited and turns toward it. Motion per design-motion-principles:
    creative portfolio → Jakub primary · Jhey secondary · Emil selective.
    Custom cubic-bezier only. transform/opacity/filter only. */
 :root {
@@ -82,13 +83,14 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 }
 .intro-line { margin: 6px 0 0; font-size: 1.15rem; font-weight: 700; color: var(--gold); }
 .intro-sub { margin: 2px 0 0; font-size: 0.92rem; color: var(--muted); }
+.intro-hint { margin: 6px 0 0; font-size: 0.88rem; font-weight: 600; color: var(--teal); }
 
 /* Avatar, centre */
 .avatar-stage {
   position: absolute; left: 50%; top: 50%;
   transform: translate(-50%, -50%);
   text-align: center; z-index: 2; perspective: 900px;
-  margin-top: 40px;
+  margin-top: 8px;
 }
 .avatar-glow {
   position: absolute; left: 50%; top: 38%; width: 360px; height: 360px;
@@ -97,13 +99,14 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   pointer-events: none;
 }
 .avatar-tilt { position: relative; display: inline-block; transform-style: preserve-3d; will-change: transform; }
-.avatar-video {
-  display: block; width: 300px; height: 520px; object-fit: cover;
-  border-radius: 26px; background: #fff;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.14);
+/* Canvas avatar: video frames are drawn here after live chroma-key,
+   so the avatar floats on the dark page with no white box behind him. */
+.avatar-canvas {
+  display: block; width: 280px; height: 498px;
+  filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.55));
 }
-.avatar-video-hidden { display: none; }
-.avatar-video.dancing { animation: dance-pop 0.6s var(--bounce); }
+.avatar-canvas.dancing { animation: dance-pop 0.6s var(--bounce); }
+.avatar-video-src { display: none; }
 @keyframes dance-pop { 0% { transform: scale(0.96); } 100% { transform: scale(1); } }
 .speech {
   display: inline-block; margin: 14px auto 0; max-width: 340px;
@@ -114,65 +117,99 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 }
 .avatar-state { color: var(--gold); font-size: 0.88rem; font-weight: 600; margin: 8px 0 0; }
 
-/* Orbit boxes */
+/* Orbit boxes — real 3D cubes (cuboid W x H x D).
+   Resting pose shows front + right + top faces. Hover turns the cube,
+   drag (pointer) rotates it freely, tap opens the panel. */
 .orbit-boxes { position: absolute; inset: 0; z-index: 3; }
 .orbit-box {
   position: absolute; padding: 0; background: none; border: none;
-  width: 158px; min-height: 108px;
+  width: 158px; min-height: 108px; perspective: 600px;
 }
-.orbit-box-inner {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  width: 100%; min-height: 108px; padding: 14px 10px;
-  background: rgba(17, 26, 46, 0.82);
+.cube-float { display: block; transform-style: preserve-3d; animation: float 6s var(--ease-out) infinite; }
+.cube {
+  --w: 158px; --h: 108px; --d: 44px;
+  position: relative; display: block; width: var(--w); height: var(--h);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, -14deg)) rotateY(var(--ry, -20deg));
+  transition: transform 0.35s var(--ease-out);
+}
+.cube.dragging { transition: none; }
+.orbit-box:hover .cube, .orbit-box:focus-visible .cube { --rx: -8deg; --ry: -38deg; }
+.cube-face {
+  position: absolute; backface-visibility: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  text-align: center; overflow: hidden;
+}
+.cube-front {
+  width: var(--w); height: var(--h); padding: 14px 10px;
+  background: rgba(17, 26, 46, 0.88);
   border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(6px);
-  transition: transform 0.18s var(--ease-snappy), border-color 0.18s var(--ease-snappy), box-shadow 0.18s var(--ease-snappy);
-  animation: float 6s var(--ease-out) infinite;
+  transform: translateZ(calc(var(--d) / 2));
+  transition: border-color 0.18s var(--ease-snappy), box-shadow 0.18s var(--ease-snappy);
 }
-.orbit-box:hover .orbit-box-inner, .orbit-box:focus-visible .orbit-box-inner {
-  transform: translateY(-4px) scale(1.03);
-  border-color: var(--box-accent, var(--accent));
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+.orbit-box:hover .cube-front, .orbit-box:focus-visible .cube-front { border-color: var(--box-accent, var(--accent)); }
+.orbit-box:active .cube { --rx: -14deg; --ry: -20deg; }
+.orbit-box.is-active .cube-front { border-color: var(--box-accent, var(--accent)); box-shadow: 0 0 0 2px var(--box-accent, var(--accent)); }
+.cube-right {
+  width: var(--d); height: var(--h); left: calc((var(--w) - var(--d)) / 2);
+  background: var(--box-accent, var(--accent)); color: #fff;
+  font-weight: 800; font-size: 0.95rem;
+  transform: rotateY(90deg) translateZ(calc(var(--w) / 2));
 }
-.orbit-box:active .orbit-box-inner { transform: scale(0.97); }
-.orbit-box.is-active .orbit-box-inner { border-color: var(--box-accent, var(--accent)); box-shadow: 0 0 0 2px var(--box-accent, var(--accent)); }
+.cube-left {
+  width: var(--d); height: var(--h); left: calc((var(--w) - var(--d)) / 2);
+  background: #0a0f1c;
+  transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+}
+.cube-top {
+  width: var(--w); height: var(--d); top: calc((var(--h) - var(--d)) / 2);
+  background: var(--surface-2); border-top: 2px solid var(--box-accent, var(--accent));
+  transform: rotateX(90deg) translateZ(calc(var(--h) / 2));
+}
+.cube-bottom {
+  width: var(--w); height: var(--d); top: calc((var(--h) - var(--d)) / 2);
+  background: #0a0f1c;
+  transform: rotateX(-90deg) translateZ(calc(var(--h) / 2));
+}
+.cube-back {
+  width: var(--w); height: var(--h);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  color: var(--box-accent, var(--accent)); font-weight: 800; font-size: 1.05rem;
+  transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+}
 .box-icon { color: var(--box-accent, var(--accent)); }
 .box-label { font-weight: 800; font-size: 1.05rem; color: var(--text); }
 .box-sub { font-size: 0.8rem; color: var(--muted); }
 .box-work { --box-accent: var(--accent); left: 3%; top: 24%; }
-.box-skills { --box-accent: var(--teal); right: 3%; top: 24%; animation-delay: -1s; }
-.box-education { --box-accent: var(--gold); left: 3%; top: 56%; animation-delay: -2s; }
-.box-journey { --box-accent: var(--violet); right: 3%; top: 56%; animation-delay: -3s; }
-.box-proof { --box-accent: var(--green); left: 13%; bottom: 5%; animation-delay: -1.5s; }
-.box-contact { --box-accent: var(--pink); right: 13%; bottom: 5%; animation-delay: -2.5s; }
-.box-hire { --box-accent: var(--accent); left: 50%; bottom: 3%; transform: translateX(-50%); width: 180px; animation-delay: -0.5s; }
-.box-hire .orbit-box-inner { background: linear-gradient(135deg, rgba(232, 89, 12, 0.9), rgba(201, 74, 8, 0.9)); border-color: var(--gold); }
+.box-skills { --box-accent: var(--teal); right: 3%; top: 24%; }
+.box-education { --box-accent: var(--gold); left: 3%; top: 56%; }
+.box-journey { --box-accent: var(--violet); right: 3%; top: 56%; }
+.box-proof { --box-accent: var(--green); left: 13%; bottom: 5%; }
+.box-contact { --box-accent: var(--pink); right: 13%; bottom: 5%; }
+.box-hire { --box-accent: var(--accent); left: 50%; bottom: 2%; transform: translateX(-50%); width: 180px; min-height: 96px; }
+.box-hire .cube { --w: 180px; --h: 96px; }
+.box-hire .cube-front { background: linear-gradient(135deg, rgba(232, 89, 12, 0.92), rgba(201, 74, 8, 0.92)); border-color: var(--gold); }
 .box-hire .box-icon, .box-hire .box-label { color: #fff; }
 .box-hire .box-sub { color: rgba(255, 255, 255, 0.85); }
-.box-skills .orbit-box-inner, .box-education .orbit-box-inner, .box-journey .orbit-box-inner,
-.box-proof .orbit-box-inner, .box-contact .orbit-box-inner, .box-hire .orbit-box-inner { animation-delay: inherit; }
+.box-skills .cube-float { animation-delay: -1s; }
+.box-education .cube-float { animation-delay: -2s; }
+.box-journey .cube-float { animation-delay: -3s; }
+.box-proof .cube-float { animation-delay: -1.5s; }
+.box-contact .cube-float { animation-delay: -2.5s; }
+.box-hire .cube-float { animation-delay: -0.5s; }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
-.box-skills .orbit-box-inner { animation-delay: -1s; }
-.box-education .orbit-box-inner { animation-delay: -2s; }
-.box-journey .orbit-box-inner { animation-delay: -3s; }
-.box-proof .orbit-box-inner { animation-delay: -1.5s; }
-.box-contact .orbit-box-inner { animation-delay: -2.5s; }
-.box-hire .orbit-box-inner { animation-delay: -0.5s; }
 
-.orbit-hint {
-  position: absolute; bottom: 86px; left: 0; right: 0; text-align: center;
-  color: var(--muted); font-size: 0.88rem; margin: 0; z-index: 2; pointer-events: none;
-}
 .orbit-source {
   position: absolute; left: 16px; bottom: 12px; margin: 0; z-index: 3;
   color: var(--muted); font-size: 0.8rem;
 }
 .orbit-source a { color: var(--muted); }
 
-/* Dim the orbit while a panel is open */
-body.panel-open .orbit-boxes, body.panel-open .orbit-hint { opacity: 0.3; filter: blur(1px); transition: opacity 0.3s var(--ease-out), filter 0.3s var(--ease-out); }
-.orbit-boxes, .orbit-hint { transition: opacity 0.3s var(--ease-out), filter 0.3s var(--ease-out); }
+/* Dim the orbit while a panel is open (no blur — blur made the boxes look smeared) */
+body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--ease-out); }
+.orbit-boxes { transition: opacity 0.3s var(--ease-out); }
 
 /* ============ SIDE PANEL ============ */
 .panel-backdrop {
@@ -181,7 +218,7 @@ body.panel-open .orbit-boxes, body.panel-open .orbit-hint { opacity: 0.3; filter
 }
 .panel-backdrop.open { opacity: 1; pointer-events: auto; }
 .panel {
-  position: fixed; top: 0; right: 0; height: 100dvh; width: min(460px, 94vw);
+  position: fixed; top: 0; right: 0; height: 100dvh; width: min(560px, 94vw);
   background: rgba(14, 21, 36, 0.97); border-left: 1px solid var(--line);
   box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
   transform: translateX(102%);
@@ -189,11 +226,18 @@ body.panel-open .orbit-boxes, body.panel-open .orbit-hint { opacity: 0.3; filter
   z-index: 30; display: flex; flex-direction: column;
 }
 .panel.open { transform: translateX(0); }
+/* Panel opens on the same side as the box that was tapped */
+.panel.panel-left {
+  left: 0; right: auto; border-left: none; border-right: 1px solid var(--line);
+  box-shadow: 20px 0 60px rgba(0, 0, 0, 0.5);
+  transform: translateX(-102%);
+}
+.panel.panel-left.open { transform: translateX(0); }
 .panel-head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 22px; border-bottom: 1px solid var(--line); flex-shrink: 0;
 }
-.panel-head h2 { margin: 0; font-family: "Fraunces", serif; font-size: 1.7rem; color: #fff; }
+.panel-head h2 { margin: 0; font-family: "Fraunces", serif; font-size: 1.9rem; color: #fff; }
 .panel-close {
   background: rgba(255, 255, 255, 0.08); border: 1px solid var(--line);
   width: 44px; height: 44px; border-radius: 50%; font-size: 1.5rem; line-height: 1;
@@ -201,7 +245,7 @@ body.panel-open .orbit-boxes, body.panel-open .orbit-hint { opacity: 0.3; filter
 }
 .panel-close:hover { background: rgba(255, 255, 255, 0.16); transform: scale(1.05); }
 .panel-close:active { transform: scale(0.95); }
-.panel-body { overflow-y: auto; padding: 20px 22px 28px; scrollbar-width: thin; }
+.panel-body { overflow-y: auto; padding: 22px 26px 30px; scrollbar-width: thin; }
 .panel-section { display: none; }
 .panel-section.is-active { display: block; animation: panel-wipe 0.45s var(--ease-out); }
 @keyframes panel-wipe {
@@ -219,12 +263,36 @@ body.panel-open .orbit-boxes, body.panel-open .orbit-hint { opacity: 0.3; filter
 }
 .panel-list li strong { color: #fff; display: block; margin-bottom: 2px; }
 .journey-list li strong { color: var(--gold); font-family: "Fraunces", serif; font-size: 1.2rem; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; perspective: 500px; }
 .chips span {
-  font-size: 0.85rem; font-weight: 600; background: rgba(45, 212, 191, 0.12);
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.88rem; font-weight: 600; background: linear-gradient(135deg, rgba(45, 212, 191, 0.14), rgba(45, 212, 191, 0.07));
   color: var(--teal); border: 1px solid rgba(45, 212, 191, 0.35);
-  border-radius: 999px; padding: 5px 11px;
+  border-radius: 999px; padding: 6px 12px;
+  transform: rotateX(0) rotateY(0);
+  transition: transform 0.18s var(--ease-snappy), box-shadow 0.18s var(--ease-snappy);
 }
+.chips span:hover { transform: translateY(-2px) rotateX(10deg) rotateY(-8deg); box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4); }
+.chips span img { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Work cards — icon + text + real buttons, slight 3D lift on hover */
+.work-grid { display: grid; gap: 12px; }
+.work-card {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 16px;
+  transition: transform 0.18s var(--ease-snappy), border-color 0.18s var(--ease-snappy), box-shadow 0.18s var(--ease-snappy);
+}
+.work-card:hover { transform: translateY(-2px) rotateX(3deg); border-color: var(--gold); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4); }
+.work-icon {
+  flex-shrink: 0; width: 46px; height: 46px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(232, 89, 12, 0.14); color: var(--accent);
+}
+.work-card h4 { margin: 0 0 3px; color: #fff; font-size: 1.05rem; }
+.work-card p { margin: 0 0 10px; color: #cdd7e4; font-size: 0.95rem; line-height: 1.5; }
+.work-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn-small { min-height: 40px; padding: 8px 14px; font-size: 0.9rem; }
 .proof-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .proof-list li {
   display: flex; flex-direction: column; background: var(--surface);
@@ -295,21 +363,26 @@ body.panel-open .orbit-boxes, body.panel-open .orbit-hint { opacity: 0.3; filter
   .name-block { position: static; pointer-events: auto; }
   .name-3d { font-size: 2.2rem; }
   .avatar-stage { position: relative; left: auto; top: auto; transform: none; margin: 26px auto 0; }
-  .avatar-video { width: 260px; height: 450px; }
+  .avatar-canvas { width: 240px; height: 427px; }
   .avatar-glow { width: 280px; height: 280px; }
   .orbit-boxes { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
-  .orbit-box { position: static; width: auto; min-height: 0; transform: none !important; }
+  .orbit-box { position: static; width: auto; min-height: 0; transform: none !important; perspective: none; }
   .box-hire { grid-column: 1 / -1; width: auto; }
-  .orbit-box-inner { min-height: 96px; animation: none; }
-  .orbit-hint, .orbit-source { position: static; text-align: center; margin-top: 16px; pointer-events: auto; }
-  .orbit-source { margin-top: 6px; }
-  .panel { width: 100vw; height: 86dvh; top: auto; bottom: 0; right: 0; border-left: none; border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; transform: translateY(102%); }
-  .panel.open { transform: translateY(0); }
-  body.panel-open .orbit-boxes, body.panel-open .orbit-hint { opacity: 1; filter: none; }
+  .cube-float { animation: none; }
+  .cube { transform: none !important; width: 100% !important; height: auto; min-height: 96px; }
+  .cube-face:not(.cube-front) { display: none; }
+  .cube-front { position: static; width: 100%; min-height: 96px; transform: none; }
+  .orbit-source { position: static; text-align: center; margin-top: 16px; pointer-events: auto; }
+  .panel, .panel.panel-left { width: 100vw; height: 86dvh; top: auto; bottom: 0; left: 0; right: 0; border-left: none; border-right: none; border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; transform: translateY(102%); box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5); }
+  .panel.open, .panel.panel-left.open { transform: translateY(0); }
+  body.panel-open .orbit-boxes { opacity: 1; }
+}
+/* Short screens: shrink the avatar so nothing collides with the bottom boxes */
+@media (max-height: 840px) and (min-width: 961px) {
+  .avatar-canvas { width: 250px; height: 444px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .orbit-box-inner { animation: none; }
   .name-3d { transform: none; }
 }

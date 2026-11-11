@@ -1,6 +1,8 @@
-// Ankur Mishra — portfolio v3.2 "The Orbit".
-// Full dark UI. Avatar in the centre. 3D boxes orbit around him.
-// Tap a box → panel opens, avatar gets excited (dance) and turns toward the panel.
+// Ankur Mishra — portfolio v3.3 "Cube Orbit".
+// Full dark UI. Avatar in the centre, drawn on canvas with live chroma-key
+// (white video background removed per frame — no white box behind him).
+// Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a panel
+// on THAT box's side, avatar dances and turns toward it.
 // MatchMate bot: recruiter posts a requirement, bot checks the match honestly.
 // Motion per design-motion-principles: Jakub primary · Jhey secondary · Emil selective.
 // transform / opacity / filter only. prefers-reduced-motion respected.
@@ -9,23 +11,89 @@ const $ = (id) => document.getElementById(id);
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const finePointer = window.matchMedia("(pointer: fine)").matches;
 
-// ---------- Avatar videos: idle <-> dance ----------
+// ---------- Avatar: canvas chroma-key (white video background -> transparent) ----------
+// The avatar videos were generated on a white background. Transparent VP9
+// (WebM alpha) was tried first — the encoder fed yuva420p still wrote a
+// Profile 0 stream with no alpha — so the background is removed live, per
+// frame, on a canvas. A pixel is background when it is close to white
+// (Euclidean distance in RGB, like ffmpeg's colorkey). The cream kurta sits
+// ~135 away from white, so it survives; the grey dance backdrop (~66) and
+// the compression speckles in it are removed. Verified on real frames:
+// idle + dance both key cleanly, face/kurta/paag intact.
+const canvas = $("avatarCanvas");
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
+const CW = 360, CH = 640;
+canvas.width = CW; canvas.height = CH;
 const idle = $("videoIdle");
 const dance = $("videoDance");
 const bubble = $("speechBubble");
 const stateLabel = $("avatarState");
 let dancing = false;
+let activeVideo = idle;
+let hasFrame = false;
+
+// Poster (transparent PNG) until the first keyed frame is ready.
+const posterImg = new Image();
+posterImg.src = "avatar.png";
+posterImg.onload = () => { if (!hasFrame) drawCover(posterImg); };
+
+function drawCover(src) {
+  const sw = src.videoWidth || src.naturalWidth || 0;
+  const sh = src.videoHeight || src.naturalHeight || 0;
+  if (!sw || !sh) return;
+  const s = Math.max(CW / sw, CH / sh);
+  ctx.drawImage(src, (CW - sw * s) / 2, (CH - sh * s) / 2, sw * s, sh * s);
+}
+
+function keyFrame() {
+  const v = activeVideo;
+  if (!v || v.readyState < 2 || !v.videoWidth) return;
+  drawCover(v);
+  const img = ctx.getImageData(0, 0, CW, CH);
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], g = d[i + 1], b = d[i + 2];
+    const dr = 255 - r, dg = 255 - g, db = 255 - b;
+    const dist2 = dr * dr + dg * dg + db * db; // squared distance from white
+    let a = 255;
+    if (dist2 < 5625) { // < 75 from white: background
+      a = 0;
+    } else if (dist2 < 9025) { // 75–95: soft edge
+      a = Math.round(((Math.sqrt(dist2) - 75) / 20) * 255);
+    }
+    if (a < 255) {
+      d[i + 3] = a;
+      // Despill: pull the white fringe toward the avatar's own colour.
+      const f = 0.35 + 0.65 * (a / 255);
+      d[i] = Math.round(r * f);
+      d[i + 1] = Math.round(g * f);
+      d[i + 2] = Math.round(b * f);
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  hasFrame = true;
+}
+
+// Key only when the video actually advanced a frame (~25fps, not 60).
+let lastTime = -1;
+function keyLoop() {
+  if (activeVideo && !activeVideo.paused && activeVideo.currentTime !== lastTime) {
+    lastTime = activeVideo.currentTime;
+    keyFrame();
+  }
+  requestAnimationFrame(keyLoop);
+}
+if (!reduced) keyLoop();
 
 function setSpeech(text) { bubble.textContent = text; }
 function startDance() {
   if (dancing) return;
   dancing = true;
   idle.pause();
-  idle.classList.add("avatar-video-hidden");
-  dance.classList.remove("avatar-video-hidden");
-  dance.classList.remove("dancing");
-  void dance.offsetWidth;
-  dance.classList.add("dancing");
+  activeVideo = dance;
+  canvas.classList.remove("dancing");
+  void canvas.offsetWidth;
+  canvas.classList.add("dancing");
   dance.currentTime = 0;
   dance.play().catch(() => {});
   stateLabel.textContent = "Right now: EXCITED — dance kar raha hai";
@@ -34,8 +102,7 @@ function stopDance() {
   if (!dancing) return;
   dancing = false;
   dance.pause();
-  dance.classList.add("avatar-video-hidden");
-  idle.classList.remove("avatar-video-hidden");
+  activeVideo = idle;
   if (!reduced) idle.play().catch(() => {});
   stateLabel.textContent = "Right now: idle — breathing, listening";
 }
@@ -64,7 +131,49 @@ if (finePointer && !reduced) {
   })();
 }
 
+// ---------- 3D cubes: drag to rotate ----------
+// Hover rotation is CSS (--rx/--ry vars). Drag sets the same vars inline;
+// on release the inline vars are cleared so the CSS resting pose returns.
+// A drag that moved never opens the panel (see the click guard below).
+document.querySelectorAll(".cube").forEach((cube) => {
+  let dragging = false, moved = false, startX = 0, startY = 0;
+  const setRot = (rx, ry) => {
+    cube.style.setProperty("--rx", rx.toFixed(1) + "deg");
+    cube.style.setProperty("--ry", ry.toFixed(1) + "deg");
+  };
+  cube.addEventListener("pointerdown", (e) => {
+    if (window.innerWidth <= 960) return; // mobile: cubes are flat cards
+    dragging = true; moved = false; startX = e.clientX; startY = e.clientY;
+    cube.classList.add("dragging");
+    try { cube.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  cube.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+    if (moved) {
+      setRot(
+        Math.max(-50, Math.min(20, -14 - dy * 0.3)),
+        Math.max(-55, Math.min(55, -20 + dx * 0.35))
+      );
+    }
+  });
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    cube.classList.remove("dragging");
+    cube.style.removeProperty("--rx");
+    cube.style.removeProperty("--ry");
+    if (moved) window.__cubeDragAt = Date.now();
+  };
+  cube.addEventListener("pointerup", endDrag);
+  cube.addEventListener("pointercancel", endDrag);
+});
+
 // ---------- Panels ----------
+// The panel opens on the same side as the box that was tapped, and the
+// avatar turns toward it. Left boxes: Work, Education, Proof.
+const LEFT_PANELS = new Set(["work", "education", "proof"]);
 const TITLES = {
   work: "Work", skills: "Skills", education: "Education",
   journey: "Journey", proof: "Proof", hire: "Hire Me — MatchMate", contact: "Contact",
@@ -96,7 +205,8 @@ function openPanel(key) {
   backdrop.classList.add("open");
   panel.setAttribute("aria-hidden", "false");
   document.body.classList.add("panel-open");
-  panelTiltY = 12; // avatar turns toward the panel (right side)
+  panel.classList.toggle("panel-left", LEFT_PANELS.has(key));
+  panelTiltY = LEFT_PANELS.has(key) ? -12 : 12; // turn toward the panel's side
   setSpeech(SPEECH[key]);
   startDance(); // excitement on every open
 }
@@ -116,6 +226,7 @@ function closePanel() {
 
 document.querySelectorAll(".orbit-box").forEach((b) => {
   b.addEventListener("click", () => {
+    if (Date.now() - (window.__cubeDragAt || 0) < 250) return; // it was a drag, not a tap
     if (openKey === b.dataset.panel) { closePanel(); return; }
     openPanel(b.dataset.panel);
   });
