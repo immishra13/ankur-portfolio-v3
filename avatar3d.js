@@ -457,11 +457,17 @@ function update(dt, t) {
     setSmile(true);
     if (modeT > 2.6) { mode = danceOn ? "idle" : "idle"; setSmile(danceOn); modeT = 0; }
   } else if (mode === "flex") {
-    P.shLx = -0.9; P.shLz = 0.55; P.elLx = -2.1;
-    P.shRx = -0.9; P.shRz = -0.55; P.elRx = -2.1;
-    pelvisS = 1.06;
+    // Double-biceps: upper arms raised OUT to the sides (near-horizontal),
+    // forearms curled up. Verified numerically: upper (±0.91, -0.38, 0.14),
+    // forearm (±0.61, 0.51, 0.61) — unmistakable from the front.
+    // (The old targets, shoulder.x -0.9 / z ±0.55, left the upper arms
+    // pointing DOWN-forward — from a screenshot it read as arms-down, and
+    // the 1.0s hold was too short to catch at all.)
+    P.shLx = -0.35; P.shLz = 1.15; P.elLx = -2.3;
+    P.shRx = -0.35; P.shRz = -1.15; P.elRx = -2.3;
+    pelvisS = 1.07;
     setSmile(true);
-    if (modeT > 1.0) { mode = "idle"; setSmile(danceOn); modeT = 0; }
+    if (modeT > 2.5) { mode = "idle"; setSmile(danceOn); modeT = 0; }
   }
 
   // --- Walk ---
@@ -474,7 +480,12 @@ function update(dt, t) {
     P.hipLx = s * 0.55; P.hipRx = -s * 0.55;
     P.kneeLx = Math.max(0, -s) * 0.7;
     P.kneeRx = Math.max(0, s) * 0.7;
-    P.shLx = -s * 0.4; P.shRx = s * 0.4;
+    // Arm swing only while actually walking — during a flex (Hire Me calls
+    // walkTo AND flex together) the walk must not overwrite the flex arms,
+    // or the biceps pose never shows during the 600ms walk-in.
+    if (mode === "walk") {
+      P.shLx = -s * 0.4; P.shRx = s * 0.4;
+    }
     char.body.position.y = Math.abs(Math.cos(walkPhase)) * 0.045;
     if (p >= 1) {
       walk.active = false;
