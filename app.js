@@ -1,175 +1,228 @@
-// Ankur Mishra — portfolio v3.
-// Avatar follows the cursor (pupils + tilt, transform only).
-// Role filter reshapes the work grid. Counters animate on view.
+// Ankur Mishra — portfolio v3.1.
+// Motion per design-motion-principles (Create mode):
+// context = creative portfolio → Primary Jakub · Secondary Jhey · Selective Emil.
+// Avatar is a LIVING video now (idle loop + dance on tap) — no fake pupils.
+// transform / opacity / filter only. prefers-reduced-motion respected everywhere.
 
 const $ = (id) => document.getElementById(id);
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer = window.matchMedia("(pointer: fine)").matches;
 
-// ---- Avatar: pupils + tilt follow the pointer ----
+// ---- Speech lines ----
+const SPEECH = [
+  "Namaste! I am Ankur. Move your cursor — I follow.",
+  "I ship products, not promises. Scroll down, the proof is there.",
+  "FixMateHub is my business — 1000+ customers and counting.",
+  "AwaazRoute samajhta hai Hindi complaint. Try it live.",
+  "Hire me? Filter the work above by your role.",
+  "Madhubani roots, modern code. Bihar se Mumbai tak.",
+];
+let speechIdx = 0;
+const bubble = $("speechBubble");
+const stateLabel = $("avatarState");
+
+// ---- Avatar: idle video <-> dance video ----
+const idle = $("videoIdle");
+const dance = $("videoDance");
+const danceBtn = $("danceBtn");
+const waveBtn = $("waveBtn");
+let dancing = false;
+
+function setSpeech(text) { bubble.textContent = text; }
+
+function startDance() {
+  if (dancing) return;
+  dancing = true;
+  idle.pause();
+  idle.classList.add("avatar-video-hidden");
+  dance.classList.remove("avatar-video-hidden");
+  dance.classList.remove("dancing");
+  void dance.offsetWidth; // restart the pop animation
+  dance.classList.add("dancing");
+  dance.currentTime = 0;
+  dance.play().catch(() => {});
+  danceBtn.textContent = "Bas, wapas baitho";
+  stateLabel.textContent = "Right now: DANCE — haath-pair poora move kar raha hai";
+  setSpeech("Arey waah! Dekho — haath bhi, pair bhi. Yehi toh asli avatar hai!");
+}
+
+function stopDance() {
+  if (!dancing) return;
+  dancing = false;
+  dance.pause();
+  dance.classList.add("avatar-video-hidden");
+  idle.classList.remove("avatar-video-hidden");
+  if (!reduced) idle.play().catch(() => {});
+  danceBtn.textContent = "Dance karo";
+  stateLabel.textContent = "Right now: idle — breathing, listening";
+  setSpeech("Wapas aa gaya. Thak gaya thoda — dance karna easy nahi hai!");
+}
+
+danceBtn.addEventListener("click", () => (dancing ? stopDance() : startDance()));
+dance.addEventListener("ended", stopDance);
+waveBtn.addEventListener("click", () => {
+  speechIdx = (speechIdx + 1) % SPEECH.length;
+  setSpeech(SPEECH[speechIdx]);
+  if (dancing) stopDance();
+});
+
+// Reduced motion: no autoplay video — show the poster still.
+if (reduced) {
+  idle.removeAttribute("autoplay");
+  idle.pause();
+}
+
+// ---- Hero stage 3D tilt — spring-smoothed via rAF lerp (interruptible) ----
 const stage = $("avatarStage");
 const tilt = $("avatarTilt");
-const pupilL = $("pupilL");
-const pupilR = $("pupilR");
-const img = $("avatarImg");
+let tx = 0, ty = 0, cx = 0, cy = 0, tiltOn = false;
 
-// Pupil home positions, in % of the avatar image box.
-const PUPILS = [
-  { el: pupilL, x: 44.5, y: 11.4 },
-  { el: pupilR, x: 55.5, y: 11.4 },
-];
-
-function followPointer(clientX, clientY) {
-  if (reduced || !stage || !tilt) return;
-  const r = img.getBoundingClientRect();
-  if (!r.width) return;
-  // Where is the pointer, relative to the centre of the avatar?
-  const dx = (clientX - (r.left + r.width / 2)) / window.innerWidth;
-  const dy = (clientY - (r.top + r.height / 2)) / window.innerHeight;
-  const cx = Math.max(-1, Math.min(1, dx * 2));
-  const cy = Math.max(-1, Math.min(1, dy * 2));
-  // Whole avatar leans toward the cursor (small, transform only).
-  tilt.style.transform = `rotateY(${cx * 5}deg) rotateX(${-cy * 4}deg) translateX(${cx * 6}px)`;
-  // Pupils move a few px toward the cursor.
-  for (const p of PUPILS) {
-    p.el.style.left = `calc(${p.x}% + ${cx * 4}px)`;
-    p.el.style.top = `calc(${p.y}% + ${cy * 3}px)`;
-  }
+if (finePointer && !reduced) {
+  stage.addEventListener("pointermove", (e) => {
+    const r = stage.getBoundingClientRect();
+    tx = ((e.clientX - r.left) / r.width - 0.5) * 10; // rotateY
+    ty = ((e.clientY - r.top) / r.height - 0.5) * -8; // rotateX
+    tiltOn = true;
+  });
+  stage.addEventListener("pointerleave", () => { tx = 0; ty = 0; });
+  (function tiltLoop() {
+    cx += (tx - cx) * 0.12;
+    cy += (ty - cy) * 0.12;
+    tilt.style.transform = `rotateX(${cy.toFixed(2)}deg) rotateY(${cx.toFixed(2)}deg)`;
+    requestAnimationFrame(tiltLoop);
+  })();
 }
 
-if (stage) {
-  stage.addEventListener("pointermove", (e) => followPointer(e.clientX, e.clientY));
-  document.addEventListener("pointermove", (e) => {
-    // Keep following even when the pointer leaves the avatar card.
-    if (!stage.matches(":hover")) followPointer(e.clientX, e.clientY);
+// ---- 3D tilt cards with glare — direct style updates (Emil) ----
+document.querySelectorAll(".tilt-card").forEach((card) => {
+  if (!finePointer || reduced) return;
+  card.addEventListener("pointermove", (e) => {
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    card.style.transform = `perspective(800px) rotateX(${((0.5 - py) * 7).toFixed(2)}deg) rotateY(${((px - 0.5) * 7).toFixed(2)}deg) translateY(-2px)`;
+    card.style.setProperty("--mx", `${(px * 100).toFixed(1)}%`);
+    card.style.setProperty("--my", `${(py * 100).toFixed(1)}%`);
   });
-  stage.addEventListener("pointerleave", () => {
-    if (tilt) tilt.style.transform = "";
-    for (const p of PUPILS) {
-      p.el.style.left = `${p.x}%`;
-      p.el.style.top = `${p.y}%`;
-    }
-  });
-}
+  card.addEventListener("pointerleave", () => { card.style.transform = ""; });
+});
 
-// ---- Speech bubble: tap the avatar, it talks ----
-const LINES = [
-  "Namaste! I am Ankur — move your cursor, I am watching. Tap me.",
-  "I build things that work. Scroll down and try them live.",
-  "Hiring for AI/ML? Tap the AI & ML filter above.",
-  "Hiring for events? I have run 50+ weddings. See the Events filter.",
-  "My CV is one tap away — Tech or Events, your pick.",
-  "FixMateHub is my real business. 1000+ customers, not a college demo.",
-];
-let lineIdx = 0;
-const speechBtn = $("speechBtn");
-if (speechBtn) {
-  speechBtn.addEventListener("click", () => {
-    lineIdx = (lineIdx + 1) % LINES.length;
-    speechBtn.textContent = LINES[lineIdx];
-  });
-}
-
-// ---- Role filter: the work reshapes for the recruiter ----
-const filterBtns = document.querySelectorAll(".role-filter button");
-const cards = document.querySelectorAll("#projectGrid .project");
+// ---- Role filter — frequent interaction: 180ms, no bounce ----
+const ROLE_LABELS = { all: "All work", ai: "AI & ML", backend: "Backend", fullstack: "Full-stack", events: "Events" };
+const filterButtons = document.querySelectorAll(".role-filter button");
+const cards = document.querySelectorAll("#projectGrid .card");
 const filterStatus = $("filterStatus");
-const ROLE_LABELS = { all: "all", ai: "AI & ML", backend: "Backend", fullstack: "Full-stack", events: "Events" };
 
-filterBtns.forEach((btn) => {
+filterButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
-    filterBtns.forEach((b) => {
-      b.classList.remove("active");
-      b.setAttribute("aria-pressed", "false");
-    });
+    filterButtons.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    btn.setAttribute("aria-pressed", "true");
-    const role = btn.getAttribute("data-role");
+    const role = btn.dataset.role;
     let shown = 0;
     cards.forEach((card) => {
-      const roles = (card.getAttribute("data-roles") || "").split(" ");
-      const show = role === "all" || roles.includes(role);
-      card.hidden = !show;
-      if (show) shown += 1;
+      const match = role === "all" || card.dataset.roles.split(" ").includes(role);
+      card.style.display = match ? "" : "none";
+      if (match) shown += 1;
     });
-    if (filterStatus) {
-      filterStatus.textContent =
-        role === "all"
-          ? `Showing all ${shown} pieces of work.`
-          : `Showing ${shown} piece${shown === 1 ? "" : "s"} of work for ${ROLE_LABELS[role]}.`;
+    filterStatus.textContent = role === "all"
+      ? `Showing all ${shown} projects.`
+      : `Showing ${shown} project${shown === 1 ? "" : "s"} for ${ROLE_LABELS[role]}.`;
+  });
+});
+
+// ---- Two worlds toggle — clip-path wipe is CSS; JS only switches state ----
+document.querySelectorAll(".world-toggle button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".world-toggle button").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    $("panelTech").classList.toggle("is-active", btn.dataset.world === "tech");
+    $("panelEvents").classList.toggle("is-active", btn.dataset.world === "events");
+  });
+});
+
+// ---- Proof counters — count up once when visible ----
+const counters = document.querySelectorAll(".count");
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    counterObserver.unobserve(el);
+    const target = parseFloat(el.dataset.target);
+    const decimals = parseInt(el.dataset.decimals || "0", 10);
+    const suffix = el.dataset.suffix || "";
+    if (reduced) { el.textContent = target.toFixed(decimals) + suffix; return; }
+    const start = performance.now();
+    const dur = 1200;
+    (function tick(now) {
+      const p = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = (target * eased).toFixed(decimals) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    })(start);
+  });
+}, { threshold: 0.4 });
+counters.forEach((c) => counterObserver.observe(c));
+
+// ---- Skills cube — drag to spin (direct style), JS auto-rotate when idle ----
+const scene = $("cubeScene");
+const cube = $("cube");
+let rotX = -12, rotY = 24, dragging = false, hovering = false, lastX = 0, lastY = 0;
+
+function applyCube() { cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
+applyCube();
+
+if (!reduced) {
+  // Gentle auto-rotation from the current angle — no jump after a drag.
+  (function spinLoop() {
+    if (!dragging && !hovering) { rotY += 0.12; applyCube(); }
+    requestAnimationFrame(spinLoop);
+  })();
+  scene.addEventListener("pointerdown", (e) => {
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+    scene.setPointerCapture(e.pointerId);
+  });
+  scene.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    rotY += (e.clientX - lastX) * 0.4;
+    rotX = Math.max(-60, Math.min(60, rotX - (e.clientY - lastY) * 0.3));
+    lastX = e.clientX; lastY = e.clientY;
+    applyCube();
+  });
+  const endDrag = () => { dragging = false; };
+  scene.addEventListener("pointerup", endDrag);
+  scene.addEventListener("pointercancel", endDrag);
+  scene.addEventListener("pointerenter", () => { hovering = true; });
+  scene.addEventListener("pointerleave", () => { hovering = false; });
+}
+
+// ---- Journey progress bar — transform scaleX only ----
+const journey = $("journeyScroll");
+const journeyBar = $("journeyBar");
+journey.addEventListener("scroll", () => {
+  const max = journey.scrollWidth - journey.clientWidth;
+  const p = max > 0 ? journey.scrollLeft / max : 0;
+  journeyBar.style.transform = `scaleX(${p.toFixed(3)})`;
+}, { passive: true });
+
+// ---- Magnetic buttons — small pull toward cursor, transform only ----
+document.querySelectorAll(".magnetic").forEach((el) => {
+  if (!finePointer || reduced) return;
+  el.addEventListener("pointermove", (e) => {
+    const r = el.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width / 2)) * 0.12;
+    const dy = (e.clientY - (r.top + r.height / 2)) * 0.2;
+    el.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+  });
+  el.addEventListener("pointerleave", () => { el.style.transform = ""; });
+});
+
+// ---- Selective reveal — hero + section headers ONLY (anti-checklist) ----
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("in");
+      revealObserver.unobserve(entry.target);
     }
   });
-});
-
-// ---- Two worlds toggle ----
-const worldBtns = document.querySelectorAll(".world-toggle button");
-const worldTech = $("worldTech");
-const worldEvents = $("worldEvents");
-worldBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    worldBtns.forEach((b) => {
-      b.classList.remove("active");
-      b.setAttribute("aria-pressed", "false");
-    });
-    btn.classList.add("active");
-    btn.setAttribute("aria-pressed", "true");
-    const world = btn.getAttribute("data-world");
-    if (worldTech) worldTech.hidden = world !== "tech";
-    if (worldEvents) worldEvents.hidden = world !== "events";
-  });
-});
-
-// ---- Counters animate once, on view ----
-const counters = document.querySelectorAll(".count");
-function animateCount(el) {
-  const target = parseFloat(el.getAttribute("data-count"));
-  const decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
-  if (reduced) {
-    el.textContent = target.toFixed(decimals);
-    return;
-  }
-  const start = performance.now();
-  const dur = 900;
-  function tick(now) {
-    const p = Math.min(1, (now - start) / dur);
-    const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = (target * eased).toFixed(decimals);
-    if (p < 1) requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
-if ("IntersectionObserver" in window) {
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          animateCount(entry.target);
-          io.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.5 }
-  );
-  counters.forEach((c) => io.observe(c));
-} else {
-  counters.forEach(animateCount);
-}
-
-// ---- Reveal on scroll ----
-const revealEls = document.querySelectorAll(".card, .world-panel, .timeline li, .skills div");
-revealEls.forEach((el) => el.classList.add("reveal"));
-if ("IntersectionObserver" in window && !reduced) {
-  const ro = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in");
-          ro.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12 }
-  );
-  revealEls.forEach((el) => ro.observe(el));
-} else {
-  revealEls.forEach((el) => el.classList.add("in"));
-}
+}, { threshold: 0.15 });
+document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
