@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ankur Mishra — I ship products, not promises</title>
-<meta name="description" content="Ankur Mishra — CSE (AI & ML) student at VIVA Institute of Technology, Python backend & GenAI developer, Co-Founder of FixMateHub. Rooted in Mithila. Building for the world.">
+<title>Ankur Mishra — The Orbit. I ship products, not promises.</title>
+<meta name="description" content="Ankur Mishra — CSE (AI & ML) student, Python backend & GenAI developer, Co-Founder of FixMateHub. One page, one avatar, everything around him. Tap a box.">
 <link rel="canonical" href="https://immishra13.github.io/ankur-portfolio-v3/">
-<meta property="og:title" content="Ankur Mishra — I ship products, not promises">
-<meta property="og:description" content="Rooted in Mithila. Building for the world. Python backend, GenAI, and a home-services business that actually runs.">
+<meta property="og:title" content="Ankur Mishra — The Orbit">
+<meta property="og:description" content="Rooted in Mithila. Building for the world. Tap a box around him — Work, Skills, Proof, Hire Me.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://immishra13.github.io/ankur-portfolio-v3/">
 <meta property="og:image" content="https://immishra13.github.io/ankur-portfolio-v3/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Ankur Mishra — I ship products, not promises">
-<meta name="twitter:description" content="Rooted in Mithila. Building for the world. Python backend, GenAI, and a home-services business that actually runs.">
+<meta name="twitter:title" content="Ankur Mishra — The Orbit">
+<meta name="twitter:description" content="Rooted in Mithila. Building for the world. Tap a box around him — Work, Skills, Proof, Hire Me.">
 <meta name="twitter:image" content="https://immishra13.github.io/ankur-portfolio-v3/og-image.png">
-<meta name="theme-color" content="#16233a">
+<meta name="theme-color" content="#070b14">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23e8590c'/><text x='50' y='66' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>A</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,276 +24,174 @@
 </head>
 <body>
 
-<header class="topbar">
-  <div class="wrap topbar-in">
-    <a class="wordmark" href="#top"><span class="wordmark-fish" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 12c1.5-2.5 4-4 7-4 2.5 0 4.5 1.5 5 4-0.5 2.5-2.5 4-5 4-3 0-5.5-1.5-7-4Z"/><circle cx="16" cy="11" r="0.6" fill="currentColor"/><path d="M6.5 12 3 9.5M6.5 12 3 14.5"/></svg></span>Ankur Mishra</a>
-    <nav aria-label="Sections">
-      <a href="#work">Work</a>
-      <a href="#proof">Proof</a>
-      <a href="#worlds">Two Worlds</a>
-      <a href="#skills">Skills</a>
-      <a href="#journey">Journey</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </div>
-</header>
+<!-- ================= THE ORBIT: one page, avatar in the centre ================= -->
+<div class="orbit" id="orbit">
 
-<main id="top">
+  <!-- 3D name + intro -->
+  <header class="name-block">
+    <h1 class="name-3d">ANKUR MISHRA</h1>
+    <p class="intro-line">I ship products, not promises.</p>
+    <p class="intro-sub">Python Backend · GenAI · Co-Founder, FixMateHub — Rooted in Mithila. Building for the world.</p>
+  </header>
 
-<!-- ============ HERO: navy, 3D stage, LIVING video avatar ============ -->
-<section class="hero">
-  <div class="wrap hero-in">
-    <div class="hero-copy reveal">
-      <p class="eyebrow">Rooted in Mithila. Building for the world.</p>
-      <h1>I ship products,<br>not promises.</h1>
-      <p class="tagline">I am Ankur Mishra — CSE (AI &amp; ML) student at VIVA Institute of Technology, Python backend &amp; GenAI developer, and Co-Founder of FixMateHub, a home-services business that actually runs in Thane &amp; Mumbai.</p>
-      <p class="concept">Madhubani roots. Modern code. The avatar next to me is alive — he breathes, he dances. Try him.</p>
-      <div class="hero-cta">
-        <a class="btn btn-primary magnetic" href="#work">See the work</a>
-        <a class="btn btn-ghost magnetic" href="Ankur_Mishra_Tech_Resume.pdf" download>Download Tech CV</a>
-      </div>
-      <p class="hero-note">Hiring for a role? Filter the work below:</p>
-      <div class="role-filter" role="group" aria-label="Filter projects by role">
-        <button type="button" class="active" data-role="all">All work</button>
-        <button type="button" data-role="ai">AI &amp; ML</button>
-        <button type="button" data-role="backend">Backend</button>
-        <button type="button" data-role="fullstack">Full-stack</button>
-        <button type="button" data-role="events">Events</button>
-      </div>
+  <!-- Living avatar, centre -->
+  <div class="avatar-stage" id="avatarStage">
+    <div class="avatar-glow" aria-hidden="true"></div>
+    <div class="avatar-tilt" id="avatarTilt">
+      <video id="videoIdle" class="avatar-video" src="avatar-idle.mp4" poster="avatar.png" autoplay muted loop playsinline aria-label="Ankur's avatar, standing and breathing"></video>
+      <video id="videoDance" class="avatar-video avatar-video-hidden" src="avatar-dance.mp4" muted loop playsinline preload="auto" aria-label="Ankur's avatar dancing with excitement"></video>
     </div>
-
-    <div class="hero-avatar">
-      <div class="avatar-stage" id="avatarStage">
-        <div class="avatar-sun" aria-hidden="true"></div>
-        <div class="avatar-tilt" id="avatarTilt">
-          <video id="videoIdle" class="avatar-video" src="avatar-idle.mp4" poster="avatar.png" autoplay muted loop playsinline aria-label="Ankur's avatar, standing and breathing"></video>
-          <video id="videoDance" class="avatar-video avatar-video-hidden" src="avatar-dance.mp4" muted loop playsinline preload="auto" aria-label="Ankur's avatar dancing"></video>
-        </div>
-        <p class="speech" id="speechBubble" aria-live="polite">Namaste! I am Ankur. Move your cursor — I follow.</p>
-        <p class="avatar-state" id="avatarState">Right now: idle — breathing, listening</p>
-        <div class="avatar-actions">
-          <button type="button" class="btn btn-primary" id="danceBtn">Dance karo</button>
-          <button type="button" class="btn btn-ghost" id="waveBtn">Bolo kuch</button>
-        </div>
-        <p class="avatar-caption">Same avatar as my assistant — Maithili kurta, paag, dhoti. Tap Dance and watch his hands and feet move.</p>
-      </div>
-    </div>
+    <p class="speech" id="speechBubble" aria-live="polite">Namaste! I am Ankur. Tap any box around me.</p>
+    <p class="avatar-state" id="avatarState">Right now: idle — breathing, listening</p>
   </div>
-</section>
 
-<!-- ============ MARQUEE: saffron ticker ============ -->
-<div class="marquee" aria-hidden="true">
-  <div class="marquee-track">
-    <span>FIXMATEHUB — LIVE</span><span>AWAAZROUTE — LIVE</span><span>RTI BLACK HOLE</span><span>FINANCIAL COMPLAINT CLASSIFIER</span><span>PREVIEW CLOUD</span><span>E-WASTECHAIN</span><span>50+ EVENTS</span><span>FIXMATEHUB — LIVE</span><span>AWAAZROUTE — LIVE</span><span>RTI BLACK HOLE</span><span>FINANCIAL COMPLAINT CLASSIFIER</span><span>PREVIEW CLOUD</span><span>E-WASTECHAIN</span><span>50+ EVENTS</span>
-  </div>
+  <!-- Orbit boxes -->
+  <nav class="orbit-boxes" aria-label="Sections around Ankur">
+    <button type="button" class="orbit-box box-work" data-panel="work">
+      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span><span class="box-label">Work</span><span class="box-sub">7 live things</span></span>
+    </button>
+    <button type="button" class="orbit-box box-skills" data-panel="skills">
+      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8L4.5 10l5.6 1.2L12 17l1.9-5.8L19.5 10l-5.6-1.2L12 3Z"/><path d="M19 15l-.9 2.6L15.5 18.5l2.6.9L19 22l.9-2.6 2.6-.9-2.6-.9L19 15Z"/></svg></span><span class="box-label">Skills</span><span class="box-sub">What I use</span></span>
+    </button>
+    <button type="button" class="orbit-box box-education" data-panel="education">
+      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></span><span class="box-label">Education</span><span class="box-sub">VIVA · 2027</span></span>
+    </button>
+    <button type="button" class="orbit-box box-journey" data-panel="journey">
+      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/></svg></span><span class="box-label">Journey</span><span class="box-sub">Bihar → Mumbai</span></span>
+    </button>
+    <button type="button" class="orbit-box box-proof" data-panel="proof">
+      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4a2 2 0 0 0 2 4h1M17 6h3a2 2 0 0 1-2 4h-1"/></svg></span><span class="box-label">Proof</span><span class="box-sub">Numbers talk</span></span>
+    </button>
+    <button type="button" class="orbit-box box-contact" data-panel="contact">
+      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="m22 6-10 7L2 6"/></svg></span><span class="box-label">Contact</span><span class="box-sub">Talk to me</span></span>
+    </button>
+    <button type="button" class="orbit-box box-hire" data-panel="hire">
+      <span class="orbit-box-inner"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12h.01M15 12h.01M9 16h6"/></svg></span><span class="box-label">Hire Me</span><span class="box-sub">MatchMate bot</span></span>
+    </button>
+  </nav>
+
+  <p class="orbit-hint">Tap a box — I will show you that world. No long scrolling here.</p>
+  <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · v3.2 “The Orbit”</p>
 </div>
 
-<!-- ============ WORK: cream, 3D tilt cards, one accent per project ============ -->
-<section class="section" id="work">
-  <div class="wrap">
-    <p class="eyebrow reveal">Live work, not coursework</p>
-    <h2 class="reveal">Things I built that actually run.</h2>
-    <p class="section-intro reveal">Every card below is a real thing — a business, a live site, or a working model. Hover a card: it tilts in 3D toward your cursor.</p>
-    <p class="filter-status" id="filterStatus" aria-live="polite">Showing all 7 projects.</p>
-    <div class="grid" id="projectGrid">
-
-      <article class="card tilt-card accent-saffron" data-roles="fullstack backend">
-        <p class="card-tag">Co-Founder · Live business</p>
-        <h3>FixMateHub</h3>
-        <p>Home services &amp; deep cleaning in Thane &amp; Mumbai. 1000+ happy customers, 4.9 rating. I lead the frontend and admin panel for the platform.</p>
-        <p class="proof-line">1000+ customers · 4.9 rating · fixmatehub.com</p>
-        <ul class="stack"><li>React</li><li>Node</li><li>Admin Panel</li></ul>
-        <div class="card-links"><a href="https://fixmatehub.com" target="_blank" rel="noopener">Visit site</a></div>
-      </article>
-
-      <article class="card tilt-card accent-teal" data-roles="ai fullstack">
-        <p class="card-tag">GenAI · Voice-first</p>
-        <h3>AwaazRoute</h3>
-        <p>Speak a complaint in Hindi/Hinglish — TF-IDF + Logistic Regression classifies it into 6 categories, routes it to the right team, and reads the answer back. Human review below 80% confidence.</p>
-        <div class="waveform" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        <p class="proof-line">144 training samples · 14/14 fresh tests pass</p>
-        <ul class="stack"><li>Python</li><li>scikit-learn</li><li>Web Speech API</li></ul>
-        <div class="card-links"><a href="https://immishra13.github.io/AwaazRoute/" target="_blank" rel="noopener">Try it live</a><a href="https://github.com/immishra13/AwaazRoute" target="_blank" rel="noopener">GitHub</a></div>
-      </article>
-
-      <article class="card tilt-card card-dark accent-ink" data-roles="ai backend">
-        <p class="card-tag">Hackathon · MUSA Codex 2026</p>
-        <h3>RTI Black Hole</h3>
-        <p>RTI request triage that flags the requests that vanish into a black hole — duplicates, delays, and dead ends — so citizens get answers instead of silence.</p>
-        <p class="proof-line">Problem CX0107 · MUSA Codex 2026</p>
-        <ul class="stack"><li>Python</li><li>FastAPI</li><li>ML</li></ul>
-        <div class="card-links"><a href="https://github.com/immishra13/RTI-black-hole" target="_blank" rel="noopener">GitHub</a></div>
-      </article>
-
-      <article class="card tilt-card accent-gold" data-roles="ai backend">
-        <p class="card-tag">ML · Fintech</p>
-        <h3>Financial Complaint Classifier</h3>
-        <p>Classifies financial complaints automatically so support teams route them in seconds instead of reading every ticket by hand. The base model AwaazRoute was built on.</p>
-        <p class="proof-line">TF-IDF + Logistic Regression</p>
-        <ul class="stack"><li>Python</li><li>scikit-learn</li><li>NLP</li></ul>
-        <div class="card-links"><a href="https://github.com/immishra13/-Financial-Complaint-Classifier" target="_blank" rel="noopener">GitHub</a></div>
-      </article>
-
-      <article class="card tilt-card accent-pink" data-roles="fullstack backend">
-        <p class="card-tag">Dev tool</p>
-        <h3>Preview Cloud</h3>
-        <p>Instant preview environments for web projects — push a branch, get a live link. Built to stop the "works on my machine" argument.</p>
-        <ul class="stack"><li>JavaScript</li><li>Node</li><li>Cloud</li></ul>
-        <div class="card-links"><a href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div>
-      </article>
-
-      <article class="card tilt-card accent-green" data-roles="ai fullstack">
-        <p class="card-tag">Blockchain + AI</p>
-        <h3>E-WasteChain</h3>
-        <p>Blockchain-tracked e-waste collection: every device's journey from doorstep to recycler is recorded, so nothing quietly ends up in a landfill.</p>
-        <ul class="stack"><li>Python</li><li>Blockchain</li><li>Web</li></ul>
-        <div class="card-links"><a href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div>
-      </article>
-
-      <article class="card tilt-card accent-violet" data-roles="ai">
-        <p class="card-tag">Computer vision</p>
-        <h3>Sign Language + YOLO</h3>
-        <p>Real-time sign language recognition with YOLO object detection, plus a personality prediction model built with XGBoost.</p>
-        <ul class="stack"><li>YOLO</li><li>OpenCV</li><li>XGBoost</li></ul>
-        <div class="card-links"><a href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div>
-      </article>
-
-    </div>
+<!-- ================= SIDE PANEL: one panel per box ================= -->
+<aside class="panel" id="panel" aria-hidden="true">
+  <div class="panel-head">
+    <h2 id="panelTitle">Work</h2>
+    <button type="button" class="panel-close" id="panelClose" aria-label="Close panel">×</button>
   </div>
-</section>
+  <div class="panel-body" id="panelBody">
 
-<!-- ============ PROOF: black, huge count-up numbers ============ -->
-<section class="section section-dark" id="proof">
-  <div class="wrap">
-    <p class="eyebrow reveal">Proof, not promises</p>
-    <h2 class="reveal">Numbers a recruiter can check.</h2>
-    <ul class="proof-grid">
-      <li><strong><span class="count" data-target="1000" data-suffix="+">0</span></strong><span>Customers served — FixMateHub</span></li>
-      <li><strong><span class="count" data-target="4.9" data-decimals="1">0</span></strong><span>FixMateHub rating</span></li>
-      <li><strong><span class="count" data-target="50" data-suffix="+">0</span></strong><span>Events managed — weddings &amp; corporate</span></li>
-      <li><strong><span class="count" data-target="96">0</span></strong><span>NPTEL — AI Concepts &amp; Techniques</span></li>
-      <li><strong><span class="count" data-target="8.7" data-decimals="1">0</span></strong><span>Sem 6 SGPI</span></li>
-      <li><strong><span class="count" data-target="7">0</span></strong><span>Live projects on this page</span></li>
-    </ul>
-  </div>
-</section>
-
-<!-- ============ TWO WORLDS: split screen, clip-path reveal ============ -->
-<section class="section" id="worlds">
-  <div class="wrap">
-    <p class="eyebrow reveal">One person, two professions</p>
-    <h2 class="reveal">Two worlds. Same work ethic.</h2>
-    <p class="section-intro reveal">Pick a side. The panel opens with a wipe — no page reload, no jump.</p>
-    <div class="world-toggle" role="group" aria-label="Choose a world">
-      <button type="button" class="active" data-world="tech">Tech — AI / Backend</button>
-      <button type="button" data-world="events">Events — Weddings &amp; Corporate</button>
+    <div class="panel-section" data-section="work">
+      <p class="panel-intro">Real things. All live or on GitHub — check them yourself.</p>
+      <ul class="panel-list">
+        <li><strong>FixMateHub</strong> — home services &amp; deep cleaning, Thane &amp; Mumbai. 1000+ customers, 4.9 rating. I lead frontend &amp; admin panel. <a href="https://fixmatehub.com" target="_blank" rel="noopener">Visit site</a></li>
+        <li><strong>AwaazRoute</strong> — speak a Hindi/Hinglish complaint, AI classifies it into 6 categories and routes it. 144 samples, 14/14 tests pass. <a href="https://immishra13.github.io/AwaazRoute/" target="_blank" rel="noopener">Try it live</a> · <a href="https://github.com/immishra13/AwaazRoute" target="_blank" rel="noopener">GitHub</a></li>
+        <li><strong>RTI Black Hole</strong> — flags RTI requests that vanish unanswered. MUSA Codex 2026. <a href="https://github.com/immishra13/RTI-black-hole" target="_blank" rel="noopener">GitHub</a></li>
+        <li><strong>Financial Complaint Classifier</strong> — TF-IDF + Logistic Regression routes finance complaints. <a href="https://github.com/immishra13/-Financial-Complaint-Classifier" target="_blank" rel="noopener">GitHub</a></li>
+        <li><strong>Preview Cloud</strong> — instant preview links for web projects. <a href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></li>
+        <li><strong>E-WasteChain</strong> — blockchain-tracked e-waste collection. <a href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></li>
+        <li><strong>Sign Language + YOLO</strong> — real-time sign recognition + XGBoost personality prediction. <a href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></li>
+      </ul>
     </div>
-    <div class="world-stage">
-      <div class="world-panel world-tech is-active" id="panelTech">
-        <div>
-          <h3>Tech</h3>
-          <ul class="ticks">
-            <li>Co-Founder, FixMateHub — frontend &amp; admin panel lead, ~2 years</li>
-            <li>Python backend, FastAPI, GenAI apps, AI agents, automation</li>
-            <li>Smart India Hackathon 2026 — Team Rio Coders, 3D ULPIN</li>
-            <li>MUSA Codex 2026 — RTI Black Hole</li>
-          </ul>
-          <a class="btn btn-primary" href="Ankur_Mishra_Tech_Resume.pdf" download>Download Tech CV (PDF)</a>
-        </div>
-        <div class="world-stats">
-          <p><strong>7</strong><span>live projects</span></p>
-          <p><strong>2</strong><span>hackathons</span></p>
-          <p><strong>96</strong><span>NPTEL AI score</span></p>
-        </div>
+
+    <div class="panel-section" data-section="skills">
+      <p class="panel-intro">Tools I actually use — not a copied list.</p>
+      <h3>Languages</h3><p class="chips"><span>Python</span><span>JavaScript</span><span>SQL</span><span>HTML</span><span>CSS</span></p>
+      <h3>AI &amp; ML</h3><p class="chips"><span>scikit-learn</span><span>XGBoost</span><span>NLP</span><span>YOLO</span><span>OpenCV</span><span>GenAI</span></p>
+      <h3>Backend</h3><p class="chips"><span>FastAPI</span><span>Node.js</span><span>Flask</span><span>REST APIs</span></p>
+      <h3>Frontend</h3><p class="chips"><span>React</span><span>JavaScript</span><span>CSS</span><span>Chrome Extensions</span></p>
+      <h3>Tools</h3><p class="chips"><span>Git</span><span>GitHub</span><span>Docker</span><span>MySQL</span><span>MongoDB</span></p>
+      <h3>Blockchain</h3><p class="chips"><span>Solidity basics</span><span>Web3</span></p>
+      <h3>Human languages</h3><p class="chips"><span>Hindi</span><span>English</span><span>Maithili</span><span>Bhojpuri</span><span>Marathi</span></p>
+    </div>
+
+    <div class="panel-section" data-section="education">
+      <p class="panel-intro">Padhai ka safar — Bihar se Mumbai.</p>
+      <ul class="panel-list">
+        <li><strong>B.E. CSE (AI &amp; ML)</strong> — VIVA Institute of Technology, Virar (University of Mumbai), 2023–2027. Sem 6 SGPI 8.70, CGPI 7.60.</li>
+        <li><strong>NPTEL — AI Concepts &amp; Techniques</strong> — scored 96.</li>
+        <li><strong>HSC, Bihar Board</strong> — 2022, 64.40%.</li>
+        <li><strong>SSC, CBSE</strong> — 2020, 64.60%.</li>
+      </ul>
+      <p class="panel-note">Sem 7: Deep Learning, Big Data Analytics, Blockchain, NLP, MIS.</p>
+    </div>
+
+    <div class="panel-section" data-section="journey">
+      <p class="panel-intro">2020 se 2027 — har saal kuch banaya.</p>
+      <ul class="panel-list journey-list">
+        <li><strong>2020</strong> — SSC, CBSE, 64.60%. Bihar.</li>
+        <li><strong>2022</strong> — HSC, Bihar Board, 64.40%. August me Maharashtra shift.</li>
+        <li><strong>2023</strong> — CSE (AI &amp; ML) start, VIVA Institute of Technology, Virar.</li>
+        <li><strong>2024</strong> — Co-founded FixMateHub. First customers, Thane &amp; Mumbai.</li>
+        <li><strong>2025</strong> — 50+ events managed. NPTEL AI — 96.</li>
+        <li><strong>2026</strong> — Sem 6 SGPI 8.70. SIH 2026 (Team Rio Coders, 3D ULPIN). MUSA Codex (RTI Black Hole). AwaazRoute live.</li>
+        <li><strong>2027</strong> — Degree completes. Looking for the team that lets me ship.</li>
+      </ul>
+    </div>
+
+    <div class="panel-section" data-section="proof">
+      <p class="panel-intro">Numbers bolte hain. Promises nahi.</p>
+      <ul class="proof-list">
+        <li><strong>1000+</strong><span>customers served — FixMateHub</span></li>
+        <li><strong>4.9</strong><span>FixMateHub rating</span></li>
+        <li><strong>50+</strong><span>weddings &amp; corporate events managed</span></li>
+        <li><strong>96</strong><span>NPTEL — AI Concepts &amp; Techniques</span></li>
+        <li><strong>8.70</strong><span>Sem 6 SGPI</span></li>
+        <li><strong>7</strong><span>live projects on this page</span></li>
+      </ul>
+    </div>
+
+    <div class="panel-section" data-section="hire">
+      <p class="panel-intro"><strong>MatchMate</strong> — my hiring bot. Post your requirement below, and I will check myself how much my skills match it. Honest answer, no fake 100%.</p>
+      <label class="bot-label" for="reqInput">Your requirement</label>
+      <textarea id="reqInput" rows="3" placeholder="e.g. Python backend intern — FastAPI, REST APIs, MySQL, Git"></textarea>
+      <div class="bot-chips" role="group" aria-label="Example requirements">
+        <button type="button" data-req="Python backend intern — FastAPI, REST APIs, MySQL, Git">Python Backend Intern</button>
+        <button type="button" data-req="AI/ML intern — Python, machine learning, NLP, scikit-learn">AI/ML Intern</button>
+        <button type="button" data-req="Full-stack developer — React, Node.js, JavaScript, MongoDB">Full-Stack Developer</button>
+        <button type="button" data-req="Event manager — weddings, logistics, hospitality, vendor coordination">Event Manager</button>
+        <button type="button" data-req="Freelance website — React, JavaScript, HTML, CSS">Freelance Website</button>
       </div>
-      <div class="world-panel world-events" id="panelEvents">
-        <div>
-          <h3>Events</h3>
-          <ul class="ticks">
-            <li>50+ weddings &amp; corporate events — logistics, hospitality, on-ground ops</li>
-            <li>Worked with WNR, The Promising Knot, Vibrant Celebration, The Event Troops, Majestic Event, Evara, Karan Decorators, The Dream Weaviers</li>
-            <li>Runs crews under pressure, on the day, when nothing can be redone</li>
-          </ul>
-          <a class="btn btn-primary" href="Ankur_Kumar_Mishra_Event_Management_CV.docx" download>Download Event CV (DOCX)</a>
-        </div>
-        <div class="world-stats">
-          <p><strong>50+</strong><span>events delivered</span></p>
-          <p><strong>8</strong><span>event companies</span></p>
-          <p><strong>2</strong><span>fields, one person</span></p>
-        </div>
+      <button type="button" class="btn btn-primary bot-check" id="botCheck">Check my match</button>
+      <div class="bot-result" id="botResult" aria-live="polite"></div>
+      <p class="panel-note">This is a rough keyword check against my real skills — not a promise. Talk to me and I will show you the actual work.</p>
+      <div class="bot-cta">
+        <a class="btn btn-primary" href="Ankur_Mishra_Tech_Resume.pdf" download>Download Tech CV</a>
+        <a class="btn btn-ghost" href="Ankur_Kumar_Mishra_Event_Management_CV.docx" download>Download Event CV</a>
       </div>
     </div>
-    <p class="honest">Honest note: I am still a student — degree completes 2027. What is above is real work I have done, not a promise of ten years' experience.</p>
-  </div>
-</section>
 
-<!-- ============ SKILLS: 3D cube ============ -->
-<section class="section section-alt" id="skills">
-  <div class="wrap">
-    <p class="eyebrow reveal">What I work with</p>
-    <h2 class="reveal">Six faces. One toolkit.</h2>
-    <p class="section-intro reveal">Drag the cube to spin it. Each face is a skill family — the tools I actually use, not a list I copied.</p>
-    <div class="cube-scene" id="cubeScene">
-      <div class="cube" id="cube">
-        <div class="cube-face face-front"><h4>Languages</h4><p>Python · JavaScript · SQL · HTML · CSS</p></div>
-        <div class="cube-face face-back"><h4>AI &amp; ML</h4><p>scikit-learn · XGBoost · NLP · YOLO · OpenCV</p></div>
-        <div class="cube-face face-right"><h4>Backend</h4><p>FastAPI · Node.js · Flask · REST APIs</p></div>
-        <div class="cube-face face-left"><h4>Frontend</h4><p>React · JavaScript · CSS · Chrome Extensions</p></div>
-        <div class="cube-face face-top"><h4>Tools</h4><p>Git · GitHub · Docker · MySQL · MongoDB</p></div>
-        <div class="cube-face face-bottom"><h4>Blockchain</h4><p>Solidity basics · Web3 · E-WasteChain</p></div>
+    <div class="panel-section" data-section="contact">
+      <p class="panel-intro">Baaki sab chhodo — seedha baat karte hain. Tap a card, it opens that place.</p>
+      <div class="contact-grid">
+        <a class="contact-card" href="https://wa.me/918169884301" target="_blank" rel="noopener">
+          <span class="contact-icon icon-whatsapp" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4 0-.5.2-.8l.4-.5c.1-.2.1-.3 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.9 2.9 4.5 4 .6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.5-.3Z"/></svg></span>
+          <span class="contact-name">WhatsApp</span><span class="contact-sub">+91 81698 84301</span>
+        </a>
+        <a class="contact-card" href="mailto:ankurkrishnamishra@gmail.com">
+          <span class="contact-icon icon-gmail" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm8 9.4L3.6 6.9v10.3a1 1 0 0 0 1 1h14.8a1 1 0 0 0 1-1V6.9L12 13.4Z"/></svg></span>
+          <span class="contact-name">Gmail</span><span class="contact-sub">ankurkrishnamishra@gmail.com</span>
+        </a>
+        <a class="contact-card" href="https://www.linkedin.com/in/ankur-krishna-mishra-923654235" target="_blank" rel="noopener">
+          <span class="contact-icon icon-linkedin" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM.22 8.09h4.56V23H.22V8.09ZM8.34 8.09h4.37v2.04h.06c.61-1.15 2.1-2.37 4.32-2.37 4.62 0 5.47 3.04 5.47 7v8.24h-4.55v-7.3c0-1.74-.03-3.99-2.43-3.99-2.44 0-2.81 1.9-2.81 3.86V23H8.34V8.09Z"/></svg></span>
+          <span class="contact-name">LinkedIn</span><span class="contact-sub">ankur-krishna-mishra</span>
+        </a>
+        <a class="contact-card" href="https://github.com/immishra13" target="_blank" rel="noopener">
+          <span class="contact-icon icon-github" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.93c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></span>
+          <span class="contact-name">GitHub</span><span class="contact-sub">immishra13</span>
+        </a>
+        <a class="contact-card" href="https://www.instagram.com/fixmate.hub" target="_blank" rel="noopener">
+          <span class="contact-icon icon-insta" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span>
+          <span class="contact-name">Instagram</span><span class="contact-sub">@fixmate.hub</span>
+        </a>
       </div>
+      <p class="panel-note">Fastest reply: WhatsApp. Work talk: Gmail or LinkedIn.</p>
     </div>
-    <p class="note cube-note">Drag to spin · auto-rotates when you leave it alone</p>
-    <h3 class="skills-title">Also fluent in</h3>
-    <div class="skills">
-      <div><h4>Hindi · English · Maithili · Bhojpuri · Marathi</h4><p>Five languages. The Madhubani on this page is from home — Mithila, Bihar.</p></div>
-      <div><h4>Events ops</h4><p>Logistics, hospitality, vendor coordination, on-ground crew management.</p></div>
-    </div>
+
   </div>
-</section>
-
-<!-- ============ JOURNEY: horizontal scroll-snap timeline ============ -->
-<section class="section" id="journey">
-  <div class="wrap">
-    <p class="eyebrow reveal">Bihar → Mumbai</p>
-    <h2 class="reveal">The journey so far.</h2>
-    <p class="section-intro reveal">Scroll sideways — each stop is a real year.</p>
-    <div class="journey-scroll" id="journeyScroll" tabindex="0" aria-label="Timeline, scroll sideways">
-      <ol class="journey-track">
-        <li><strong>2020</strong><span>SSC, CBSE — 64.60%. Bihar.</span></li>
-        <li><strong>2022</strong><span>HSC, Bihar Board — 64.40%. Moved to Maharashtra in August.</span></li>
-        <li><strong>2023</strong><span>Started CSE (AI &amp; ML) at VIVA Institute of Technology, Virar.</span></li>
-        <li><strong>2024</strong><span>Co-founded FixMateHub. First customers in Thane &amp; Mumbai.</span></li>
-        <li><strong>2025</strong><span>50+ events managed. NPTEL AI Concepts — 96.</span></li>
-        <li><strong>2026</strong><span>Sem 6 SGPI 8.70. SIH 2026 — Team Rio Coders, 3D ULPIN. MUSA Codex — RTI Black Hole. AwaazRoute live.</span></li>
-        <li><strong>2027</strong><span>Degree completes. Looking for the team that lets me ship.</span></li>
-      </ol>
-    </div>
-    <div class="journey-progress" aria-hidden="true"><span id="journeyBar"></span></div>
-  </div>
-</section>
-
-<!-- ============ CONTACT: big type, magnetic buttons ============ -->
-<section class="section section-cta" id="contact">
-  <div class="wrap contact">
-    <p class="eyebrow reveal">Say hello</p>
-    <h2 class="reveal">Hire the guy<br>who ships.</h2>
-    <p class="section-intro reveal">Internship, junior backend / AI role, freelance build, or an event that needs running — write to me. I reply myself.</p>
-    <div class="contact-links">
-      <a class="btn btn-primary magnetic" href="mailto:ankurkrishnamishra@gmail.com">ankurkrishnamishra@gmail.com</a>
-      <a class="btn btn-ghost magnetic" href="https://www.linkedin.com/in/ankur-krishna-mishra-923654235" target="_blank" rel="noopener">LinkedIn</a>
-      <a class="btn btn-ghost magnetic" href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub</a>
-      <a class="btn btn-ghost magnetic" href="tel:+918169884301">+91 81698 84301</a>
-    </div>
-  </div>
-</section>
-
-</main>
-
-<footer>
-  <p>Built by Ankur Mishra — plain HTML, CSS &amp; JavaScript. No framework, no tracking.</p>
-  <p><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · Earlier version: <a href="https://github.com/immishra13/ankur-portfolio-v2" target="_blank" rel="noopener">portfolio v2</a></p>
-</footer>
+</aside>
+<div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
 <script src="app.js"></script>
 </body>
