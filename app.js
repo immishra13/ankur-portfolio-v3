@@ -93,6 +93,12 @@ stage.addEventListener("click", () => {
   setSpeech(TAP_LINES[Math.floor(Math.random() * TAP_LINES.length)]);
   whenAvatar((A) => {
     A.wave();
+    stateLabel.textContent = "Right now: waving hi!";
+    setTimeout(() => {
+      stateLabel.textContent = dancing
+        ? "Right now: EXCITED — dance kar raha hai"
+        : "Right now: idle — breathing, listening";
+    }, 2600);
     if (!openKey) {
       A.danceStart();
       setTimeout(() => { if (!openKey) A.danceStop(); }, 3000);

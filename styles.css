@@ -131,6 +131,13 @@ body.panel-open .avatar-stage { z-index: 21; }
   display: block; width: 280px; margin: 0 auto;
   filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.55));
 }
+/* The `hidden` attribute MUST win over the display:block above — without
+   this rule the poster is visible from the first paint (the UA's
+   [hidden]{display:none} loses to a class rule), inflating the stage to
+   ~1300px tall and pushing the 3D mount up off the top of the screen.
+   That is exactly how v4.0.2 failed its main-page check: poster in the
+   centre AND the model cropped at the top. */
+.avatar-fallback[hidden] { display: none; }
 .speech {
   display: inline-block; margin: 14px auto 0; max-width: 340px;
   background: var(--surface-2); color: var(--text);
