@@ -1,4 +1,4 @@
-# Ankur Mishra — Portfolio v3.6.1 "Home Orbit"
+# Ankur Mishra — Portfolio v3.7 "Home Orbit"
 
 **Concept: Madhubani roots, modern code — everything revolves around the builder.**
 
@@ -36,7 +36,7 @@ Tap a card, it opens that place directly.
 - `avatar-idle.mp4` — 9.7s idle loop · `avatar-dance.mp4` — 8s dance
 - `avatar.png` — poster still · `og-image.png` — share image
 - `Ankur_Mishra_Tech_Resume.pdf` · `Ankur_Kumar_Mishra_Event_Management_CV.docx`
-- `DESIGN.md` — the design contract (v3.6.1)
+- `DESIGN.md` — the design contract (v3.7)
 - `assets/viva-campus.jpg` — real VIVA campus photo · `assets/nptel-logo.png` — real transparent NPTEL logo
 
 ## Stack
@@ -54,4 +54,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v3.5.3 — background overlay lightened (0.78–0.86 → 0.52–0.68) so the workspace photo is actually visible
 - v3.6 — Ankur's own school photos + bg-removed logos as Education icons; background photo REALLY fixed (opaque .orbit base was covering it); avatar walks in, strolls, points at the tapped box and flexes on Hire Me (code movement, not new video); Journey is now an SVG route map
 - v3.6.1 — hotfix: pointing-hand SVG was never uploaded (live 404 → broken-image icon); pushed the file + fixed stale header comments
+- v3.7 — more motion graphics on the avatar: ambient sparkles, music notes while dancing, ground shadow, idle look-around sway, tap-the-avatar reaction, confetti burst on Hire Me
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)

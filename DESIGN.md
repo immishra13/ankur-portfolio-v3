@@ -1,6 +1,6 @@
 ---
 version: zeta
-name: Ankur Mishra Portfolio v3.6.1 "Home Orbit"
+name: Ankur Mishra Portfolio v3.7 "Home Orbit"
 description: Warm dark one-page orbit over a personal-area photo background. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos + bg-removed icons, per-section panel themes, MatchMate NLP (stemming + synonyms).
 colors:
   page-default: "#0d0a07"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.6.1 "Home Orbit"
+# Design Contract — Portfolio v3.7 "Home Orbit"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -155,3 +155,9 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 
 ## v3.6.1 — Hotfix: pointing hand was never uploaded (2026-11-11)
 - Visual check caught a broken-image placeholder beside the dancing avatar in every excited state. Root cause: `assets/point-hand.svg` was created locally but never included in the v3.6 push manifest (only the 5 text files were listed) — so the live page referenced a 404. Fixed by pushing the file itself, plus the two stale header comments (styles.css said v3.5, app.js said v3.3). Lesson: when a new asset is referenced, the push manifest must list it — verify every new asset URL returns 200 live, not just the text files.
+
+## v3.7 — More motion graphics on the avatar (2026-11-11)
+- Still code-only (no new video exists): gold sparkles drift up around him every ~1.1s (max 10 live), music notes float up while he dances, a ground shadow under his feet shrinks as he bobs (also hides the faint white patch under his feet in the dance video), and with no panel open he slowly glances around (idle look-around sway ±4°, ~16s cycle — the tilt loop now runs on touch devices too, not just fine pointers).
+- Tap the avatar himself: he waves again, a sparkle burst fires, a random line appears in the speech bubble, and he starts dancing.
+- Hire Me now fires a 12-piece gold/teal/pink confetti burst with the flex pose.
+- Restraint: all effects are transform/opacity only, capped counts, `prefers-reduced-motion` hides them entirely.

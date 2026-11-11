@@ -1,4 +1,4 @@
-/* Ankur Mishra — portfolio v3.6 "Home Orbit".
+/* Ankur Mishra — portfolio v3.7 "Home Orbit".
    Concept: full dark UI, Ankur in the centre, real 3D cubes floating around him.
    Avatar: canvas chroma-key — white video background removed live, avatar floats
    on the dark page. Tap a box → panel opens on THAT box's side, avatar gets
@@ -171,6 +171,53 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 }
 @media (prefers-reduced-motion: reduce) {
   .avatar-stage.pointing .point-hand, .avatar-stage.flexing .avatar-canvas { animation: none; }
+}
+/* Ground shadow under the avatar's feet — it shrinks when he bobs up, so
+   the walk reads as steps, and it hides the faint white patch under his
+   feet in the dance video. Scale is driven by JS (--sh). */
+.avatar-shadow {
+  position: absolute; left: 50%; bottom: 4px; z-index: 0;
+  width: 190px; height: 22px; transform: translateX(-50%) scaleX(var(--sh, 1));
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.18) 60%, transparent 75%);
+}
+/* Motion-graphics layer: sparkles, music notes, confetti — all spawned
+   by JS, transform/opacity only, pointer-events none. */
+.avatar-fx { position: absolute; left: 50%; top: 0; width: 340px; height: 520px; transform: translateX(-50%); pointer-events: none; z-index: 3; overflow: visible; }
+.fx-spark {
+  position: absolute; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); box-shadow: 0 0 8px 2px rgba(245, 158, 11, 0.55);
+  animation: fx-rise 3.6s ease-out forwards;
+}
+.fx-spark.teal { background: var(--teal); box-shadow: 0 0 8px 2px rgba(45, 212, 191, 0.5); }
+@keyframes fx-rise {
+  0% { opacity: 0; transform: translateY(0) scale(0.5); }
+  15% { opacity: 1; transform: translateY(-14px) scale(1); }
+  100% { opacity: 0; transform: translateY(-120px) scale(0.4); }
+}
+.fx-note {
+  position: absolute; width: 22px; height: 22px; color: var(--gold);
+  animation: fx-note-float 2.6s ease-out forwards;
+}
+.fx-note svg { width: 100%; height: 100%; display: block; }
+@keyframes fx-note-float {
+  0% { opacity: 0; transform: translateY(0) rotate(-8deg) scale(0.7); }
+  20% { opacity: 1; transform: translateY(-20px) rotate(6deg) scale(1); }
+  100% { opacity: 0; transform: translateY(-110px) rotate(-10deg) scale(0.9); }
+}
+.fx-burst {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold);
+  animation: fx-burst-fly 0.9s var(--ease-out) forwards;
+}
+.fx-burst.teal { background: var(--teal); }
+.fx-burst.pink { background: var(--pink); }
+@keyframes fx-burst-fly {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0.3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fx-spark, .fx-note, .fx-burst { animation: none; display: none; }
 }
 /* Source videos stay off-screen (never display:none — phones suspend
    display:none videos, which is how the avatar went missing on load). */

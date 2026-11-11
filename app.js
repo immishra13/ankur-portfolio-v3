@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v3.6 "Home Orbit".
+// Ankur Mishra — portfolio v3.7 "Home Orbit".
 // Full dark UI. Avatar in the centre, drawn on canvas with live chroma-key
 // (white video background removed per frame — no white box behind him).
 // Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a panel
@@ -111,6 +111,7 @@ function startDance() {
   dance.currentTime = 0;
   dance.play().catch(() => {});
   stateLabel.textContent = "Right now: EXCITED — dance kar raha hai";
+  startNotes(); // music notes float up while he dances
 }
 function stopDance() {
   if (!dancing) return;
@@ -118,6 +119,7 @@ function stopDance() {
   dance.pause();
   activeVideo = idle;
   lastTime = -1;
+  stopNotes();
   if (!reduced) idle.play().catch(() => {});
   stateLabel.textContent = "Right now: idle — breathing, listening";
 }
@@ -137,16 +139,20 @@ const tilt = $("avatarTilt");
 let tx = 0, ty = 0, cx = 0, cy = 0;
 let panelTiltY = 0; // +12 while a panel is open (turn toward it)
 
-if (finePointer && !reduced) {
-  document.querySelector(".orbit").addEventListener("pointermove", (e) => {
-    const r = stage.getBoundingClientRect();
-    const px = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
-    const py = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
-    tx = px * 14;
-    ty = py * -10;
-  });
+if (!reduced) {
+  if (finePointer) {
+    document.querySelector(".orbit").addEventListener("pointermove", (e) => {
+      const r = stage.getBoundingClientRect();
+      const px = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
+      const py = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
+      tx = px * 14;
+      ty = py * -10;
+    });
+  }
   (function tiltLoop() {
-    cx += (tx + panelTiltY - cx) * 0.1;
+    // Idle look-around: with no panel open he slowly glances around.
+    const sway = openKey ? 0 : Math.sin(performance.now() / 2600) * 4;
+    cx += (tx + panelTiltY + sway - cx) * 0.1;
     cy += (ty - cy) * 0.1;
     tilt.style.transform = `rotateX(${cy.toFixed(2)}deg) rotateY(${cx.toFixed(2)}deg)`;
     requestAnimationFrame(tiltLoop);
@@ -158,6 +164,8 @@ if (finePointer && !reduced) {
 // makes dance videos — so the STAGE moves in code (--mx/--my). The
 // video keeps breathing/dancing; the stage does the walking.
 const pointHand = $("pointHand");
+const fxLayer = $("avatarFx");
+const shadowEl = $("avatarShadow");
 let curMX = -Math.round(window.innerWidth * 0.46), curMY = 0, moveTimer = null;
 function moveStage(toX, toY, dur, bobAmp, done) {
   if (reduced) {
@@ -177,6 +185,8 @@ function moveStage(toX, toY, dur, bobAmp, done) {
     curMY = fromY + (toY - fromY) * e + bob;
     stage.style.setProperty("--mx", curMX.toFixed(1) + "px");
     stage.style.setProperty("--my", curMY.toFixed(1) + "px");
+    // Ground shadow shrinks as he lifts off the ground.
+    if (shadowEl) shadowEl.style.setProperty("--sh", Math.max(0.88, Math.min(1.05, 1 + curMY / 140)).toFixed(3));
     if (t < 1) moveTimer = requestAnimationFrame(step);
     else {
       curMY = toY;
@@ -198,6 +208,64 @@ function stroll() {
   moveStage(dx, 0, 900, 4, () => setTimeout(() => { if (!openKey) moveStage(0, 0, 900, 4); }, 1200));
 }
 setInterval(stroll, 22000);
+
+// ---------- Motion graphics: sparkles, music notes, confetti ----------
+// All DOM spans, transform/opacity only. Nothing here touches the video.
+const NOTE_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+function spawnFx(cls, x, y, extra) {
+  if (reduced || document.hidden || !fxLayer) return null;
+  const el = document.createElement("span");
+  el.className = cls;
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+  if (extra) extra(el);
+  el.addEventListener("animationend", () => el.remove());
+  fxLayer.appendChild(el);
+  return el;
+}
+function sparkle() {
+  if (fxLayer.childElementCount > 10) return;
+  spawnFx("fx-spark" + (Math.random() < 0.3 ? " teal" : ""), 20 + Math.random() * 300, 120 + Math.random() * 340);
+}
+function musicNote() {
+  if (fxLayer.childElementCount > 10) return;
+  const x = (Math.random() < 0.5 ? 30 : 280) + Math.random() * 30;
+  spawnFx("fx-note", x, 300 + Math.random() * 80, (el) => { el.innerHTML = NOTE_SVG; });
+}
+function confettiBurst() {
+  for (let i = 0; i < 12; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const d = 50 + Math.random() * 70;
+    const cls = ["fx-burst", "fx-burst teal", "fx-burst pink"][i % 3];
+    spawnFx(cls, 170, 240, (el) => {
+      el.style.setProperty("--dx", (Math.cos(a) * d).toFixed(0) + "px");
+      el.style.setProperty("--dy", (Math.sin(a) * d - 40).toFixed(0) + "px");
+    });
+  }
+}
+setInterval(() => { if (!document.hidden) sparkle(); }, 1100);
+let noteTimer = null;
+function startNotes() {
+  if (noteTimer) return;
+  noteTimer = setInterval(() => { if (dancing) musicNote(); else stopNotes(); }, 750);
+}
+function stopNotes() {
+  if (noteTimer) { clearInterval(noteTimer); noteTimer = null; }
+}
+// Tap the avatar himself: he dances, waves again and answers back.
+const TAP_LINES = [
+  "Arre — tap kar diya! Main yahin hoon.",
+  "Hi! Kuch chahiye to koi box dabao.",
+  "Main dance bhi karta hoon — Hire Me dabao!",
+  "Bihar se Mumbai — poori kahani Journey me hai.",
+];
+stage.addEventListener("click", () => {
+  const wave = document.querySelector(".wave-hand");
+  if (wave) { wave.style.animation = "none"; void wave.offsetWidth; wave.style.animation = ""; }
+  for (let i = 0; i < 6; i++) sparkle();
+  setSpeech(TAP_LINES[Math.floor(Math.random() * TAP_LINES.length)]);
+  if (!dancing) startDance();
+});
 
 // ---------- 3D cubes: drag to rotate ----------
 // Hover rotation is CSS (--rx/--ry vars). Drag sets the same vars inline;
@@ -289,6 +357,7 @@ function openPanel(key) {
     void stage.offsetWidth;
     stage.classList.add("flexing");
     stateLabel.textContent = "Right now: FLEXING — hire me energy";
+    confettiBurst(); // gold/teal/pink celebration burst
     setTimeout(() => stage.classList.remove("flexing"), 950);
   }
 }
