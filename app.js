@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v3.7 "Home Orbit".
+// Ankur Mishra — portfolio v3.7.1 "Home Orbit".
 // Full dark UI. Avatar in the centre, drawn on canvas with live chroma-key
 // (white video background removed per frame — no white box behind him).
 // Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a panel
@@ -151,7 +151,12 @@ if (!reduced) {
   }
   (function tiltLoop() {
     // Idle look-around: with no panel open he slowly glances around.
-    const sway = openKey ? 0 : Math.sin(performance.now() / 2600) * 4;
+    // NOTE: this IIFE runs synchronously on first call, so it must NOT
+    // read `openKey` (declared later — TDZ ReferenceError kills the whole
+    // script, as v3.7 proved: avatar stuck off-screen, boxes dead).
+    // panelTiltY is set in lockstep with panel open/close, so it is the
+    // safe proxy for "a panel is open".
+    const sway = panelTiltY !== 0 ? 0 : Math.sin(performance.now() / 2600) * 4;
     cx += (tx + panelTiltY + sway - cx) * 0.1;
     cy += (ty - cy) * 0.1;
     tilt.style.transform = `rotateX(${cy.toFixed(2)}deg) rotateY(${cx.toFixed(2)}deg)`;
