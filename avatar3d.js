@@ -551,3 +551,11 @@ const API = {
   pointAt(side) { pointSide = side === "left" || side === "right" ? side : null; },
   setSmile,
 };
+
+// Auto-start on pages that carry the mount (index.html + test-3d.html).
+// Module scripts run after the document parses, so the mount exists by
+// the time this runs. Without this call nothing ever initialises — the
+// page would just wait for 'avatar3d-ready' forever (that is exactly how
+// the first v4.0 visual check failed: TIMEOUT, no figure at all).
+const mountEl = document.getElementById("avatar3d");
+if (mountEl) init(mountEl);
