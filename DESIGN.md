@@ -1,7 +1,7 @@
 ---
-version: epsilon
-name: Ankur Mishra Portfolio v3.4 "Home Orbit"
-description: Warm dark one-page orbit. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos.
+version: zeta
+name: Ankur Mishra Portfolio v3.5 "Home Orbit"
+description: Warm dark one-page orbit over a personal-area photo background. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos + bg-removed icons, per-section panel themes, MatchMate NLP (stemming + synonyms).
 colors:
   page-default: "#0d0a07"
   surface-default: "#1c150e"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.4 "Home Orbit"
+# Design Contract — Portfolio v3.5 "Home Orbit"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -123,3 +123,13 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 - All facts from Ankur's master profile + Tech Resume + Event CV. No invented claims.
 - Every external link verified HTTP 200 before launch.
 - Footer links to portfolio v2 (untouched).
+
+
+## v3.5 — "Home Orbit" (2026-11-11)
+- Personal-area background: generated warm workspace photo (Madhubani art, lamp, laptop, books) as a fixed `body::before` layer, darkened with a warm gradient overlay; responsive (mobile: position center 22%).
+- Avatar slimmer: `.avatar-canvas` scaleX(0.93), kept through the dance-pop keyframes. On load a waving-hand SVG (`assets/wave-hand.svg`, Twemoji) greets beside the avatar for ~5s, then fades; speech bubble opens with "Hi! I'm Ankur — tap a box, let's talk." The idle video itself cannot be re-shot with a smile (avatar system only makes dance videos) — the greeting is the fix.
+- Education icons per the original command: VIVA entrance banner bg-removed with rembg isnet-general-use, cropped to the banner (409x115, transparent) as the top visual; NPTEL logo (already transparent); Shri Nawab High School real photo (Instagram reel thumbnail by Ankesh Singh, rotated, text cropped out); DPS Lagma gate photo (JustDial catalogue). BG removal DESTROYS building photos (verified 3x: u2netp + isnet on VIVA, isnet on Sheohar — keeps only ~5%): buildings stay as cropped photos, banners/logos stay as transparent icons. Schools: Shri Nawab High School, Sheohar (Bihar Board 2022); DPS Lagma, Sitamarhi (CBSE 2020) — Lagma is the district's senior-secondary DPS nearest Sheohar; if Ankur's branch is Pupri or another, swap the photo.
+- Work panel now 12 cards from ALL sources (CV + LinkedIn + GitHub, 24 public repos listed 2026-11-11): added MyTab, SignSight (Dual Vision repo), Personality Prediction (split from the old combined card), Event Management System, CABMANAGEMENT, FixMateHub Mate Connect; Preview Cloud now links its real repo (cloud-preview); "More on GitHub" row lists the 9 smaller repos by name+link only.
+- MatchMate NLP upgrade: light stemmer (suffix stripping, looped) + synonym groups with prefix matching, so logistic=logistics, management=manager, supply chain=logistics, wedding planner=event planning. 23/23 Node tests pass (incl. no false positives: "sign language" does NOT match NLP, "javascript function" does NOT match Weddings). NOT_HAVE still exact-phrase only.
+- Per-section panel themes (each panel its own design, not one repeated layout): eyebrow pill per section (Workshop / Toolbox / Campus / Route map / Scoreboard / MatchMate / Calling cards), workshop dashed work cards + LIVE/GitHub tags, toolbox h3 labels, scoreboard 2-up stat grid, contact accent top edges.
+- LinkedIn profile read (browser task) was still running when v3.5 shipped; its education/projects/certifications go into v3.5.1.

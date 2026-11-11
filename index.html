@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=3.4.1">
+<link rel="stylesheet" href="styles.css?v=3.5">
 </head>
 <body>
 
@@ -41,10 +41,11 @@
     <div class="avatar-glow" aria-hidden="true"></div>
     <div class="avatar-tilt" id="avatarTilt">
       <canvas id="avatarCanvas" class="avatar-canvas" aria-label="Ankur's avatar, standing and breathing"></canvas>
+      <img class="wave-hand" src="assets/wave-hand.svg" alt="" aria-hidden="true">
       <video id="videoIdle" class="avatar-video-src" src="avatar-idle.mp4" poster="avatar.png" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
       <video id="videoDance" class="avatar-video-src" src="avatar-dance.mp4" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
     </div>
-    <p class="speech" id="speechBubble" aria-live="polite">Namaste! I am Ankur. Tap any box around me.</p>
+    <p class="speech" id="speechBubble" aria-live="polite">Hi! I'm Ankur — tap a box, let's talk.</p>
     <p class="avatar-state" id="avatarState">Right now: idle — breathing, listening</p>
   </div>
 
@@ -52,7 +53,7 @@
   <nav class="orbit-boxes" aria-label="Sections around Ankur">
     <button type="button" class="orbit-box box-work" data-panel="work">
       <span class="cube-float"><span class="cube" data-cube>
-        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span><span class="box-label">Work</span><span class="box-sub">7 live things</span></span>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span><span class="box-label">Work</span><span class="box-sub">12 live things</span></span>
         <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
         <span class="cube-face cube-top" aria-hidden="true"></span>
         <span class="cube-face cube-back" aria-hidden="true"><span>Work</span></span>
@@ -122,7 +123,7 @@
     </button>
   </nav>
 
-  <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · v3.4.1 “Home Orbit”</p>
+  <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a> · v3.5 “Home Orbit”</p>
 </div>
 
 <!-- ================= SIDE PANEL: one panel per box ================= -->
@@ -133,41 +134,64 @@
   </div>
   <div class="panel-body" id="panelBody">
 
-    <div class="panel-section" data-section="work">
+    <div class="panel-section theme-work" data-section="work">
+      <p class="panel-eyebrow">Workshop — things I built</p>
       <p class="panel-intro">Real things. All live or on GitHub — check them yourself.</p>
       <div class="work-grid">
         <article class="work-card">
           <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z"/><path d="M9 22V12h6v10"/></svg></span>
-          <div><h4>FixMateHub</h4><p>Home services &amp; deep cleaning, Thane &amp; Mumbai. 1000+ customers, 4.9 rating. I lead frontend &amp; admin panel.</p><div class="work-actions"><a class="btn btn-small btn-primary" href="https://fixmatehub.com" target="_blank" rel="noopener">Visit site</a></div></div>
+          <div><h4>FixMateHub <span class="work-tag">Live</span></h4><p>Home services &amp; deep cleaning, Thane &amp; Mumbai. 1000+ customers, 4.9 rating. I lead frontend &amp; admin panel.</p><div class="work-actions"><a class="btn btn-small btn-primary" href="https://fixmatehub.com" target="_blank" rel="noopener">Visit site</a></div></div>
         </article>
         <article class="work-card">
           <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg></span>
-          <div><h4>AwaazRoute</h4><p>Speak a Hindi/Hinglish complaint, AI classifies it into 6 categories and routes it. 144 samples, 14/14 tests pass.</p><div class="work-actions"><a class="btn btn-small btn-primary" href="https://immishra13.github.io/AwaazRoute/" target="_blank" rel="noopener">Try it live</a><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/AwaazRoute" target="_blank" rel="noopener">GitHub</a></div></div>
+          <div><h4>AwaazRoute <span class="work-tag">Live</span></h4><p>Speak a Hindi/Hinglish complaint, AI classifies it into 6 categories and routes it. 144 samples, 14/14 tests pass.</p><div class="work-actions"><a class="btn btn-small btn-primary" href="https://immishra13.github.io/AwaazRoute/" target="_blank" rel="noopener">Try it live</a><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/AwaazRoute" target="_blank" rel="noopener">GitHub</a></div></div>
         </article>
         <article class="work-card">
           <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><circle cx="11.5" cy="14.5" r="2"/><path d="m13 16 2 2"/></svg></span>
-          <div><h4>RTI Black Hole</h4><p>Flags RTI requests that vanish unanswered. MUSA Codex 2026.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/RTI-black-hole" target="_blank" rel="noopener">GitHub</a></div></div>
+          <div><h4>RTI Black Hole <span class="work-tag tag-gh">GitHub</span></h4><p>Flags RTI requests that vanish unanswered. AI/NLP finds the right department, human review when unsure. MUSA Codex 2026.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/RTI-black-hole" target="_blank" rel="noopener">GitHub</a></div></div>
         </article>
         <article class="work-card">
           <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></span>
-          <div><h4>Financial Complaint Classifier</h4><p>TF-IDF + Logistic Regression routes finance complaints.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/-Financial-Complaint-Classifier" target="_blank" rel="noopener">GitHub</a></div></div>
+          <div><h4>Financial Complaint Classifier <span class="work-tag tag-gh">GitHub</span></h4><p>TF-IDF + Logistic Regression routes finance complaints.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/-Financial-Complaint-Classifier" target="_blank" rel="noopener">GitHub</a></div></div>
         </article>
         <article class="work-card">
           <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 .4-9A7 7 0 0 0 4.3 12 3.5 3.5 0 0 0 6 19h11.5Z"/></svg></span>
-          <div><h4>Preview Cloud</h4><p>Instant preview links for web projects.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div></div>
+          <div><h4>Preview Cloud <span class="work-tag tag-gh">GitHub</span></h4><p>Instant preview links for web projects.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/cloud-preview" target="_blank" rel="noopener">GitHub</a></div></div>
         </article>
         <article class="work-card">
           <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span>
-          <div><h4>E-WasteChain</h4><p>Blockchain-tracked e-waste collection.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div></div>
+          <div><h4>E-WasteChain <span class="work-tag tag-gh">GitHub</span></h4><p>Blockchain-tracked e-waste collection.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div></div>
         </article>
         <article class="work-card">
           <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></span>
-          <div><h4>Sign Language + YOLO</h4><p>Real-time sign recognition + XGBoost personality prediction.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div></div>
+          <div><h4>SignSight — Sign Language + YOLO <span class="work-tag tag-gh">GitHub</span></h4><p>Real-time AI vision: sign language recognition and YOLO object detection in one dashboard — MediaPipe, CNN, React.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/AI-Powered-Dual-Vision-Intelligence-Platform" target="_blank" rel="noopener">GitHub</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 2.4-1.2 4.2-2.6 5.6-.9.9-1.4 2-1.4 3.4h-6c0-1.4-.5-2.5-1.4-3.4C6.2 13.2 5 11.4 5 9a7 7 0 0 1 7-7Z"/><path d="M9 21h6"/></svg></span>
+          <div><h4>Personality Prediction <span class="work-tag tag-gh">GitHub</span></h4><p>Big Five / MBTI classification with XGBoost, React frontend, Firebase auth, chatbot.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13" target="_blank" rel="noopener">GitHub profile</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg></span>
+          <div><h4>MyTab <span class="work-tag tag-gh">GitHub</span></h4><p>Personalised Chrome new-tab extension — Manifest V3, glassmorphism.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/My-Tab" target="_blank" rel="noopener">GitHub</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+          <div><h4>Event Management System <span class="work-tag tag-gh">GitHub</span></h4><p>Bookings, vendors and schedules for weddings and corporate events — from my 50+ events on the ground.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/Event-Management-system" target="_blank" rel="noopener">GitHub</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17l1.5-5h9L18 17M7.5 12 9 5h6l1.5 7"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="16.5" cy="19" r="1.6"/></svg></span>
+          <div><h4>CABMANAGEMENT <span class="work-tag tag-gh">GitHub</span></h4><p>Cab booking portal for corporate office travel — Sedan, Hatchback, SUV, Luxury; real-time booking, vendor collaboration.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/CABMANAGEMENT" target="_blank" rel="noopener">GitHub</a></div></div>
+        </article>
+        <article class="work-card">
+          <span class="work-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <div><h4>FixMateHub Mate Connect <span class="work-tag tag-gh">GitHub</span></h4><p>The mate side of FixMateHub — service partners connect, take jobs and manage work.</p><div class="work-actions"><a class="btn btn-small btn-ghost" href="https://github.com/immishra13/fixmatehub-mate-connect" target="_blank" rel="noopener">GitHub</a></div></div>
         </article>
       </div>
+      <p class="panel-note">More on GitHub: <a href="https://github.com/immishra13/notes-sharing" target="_blank" rel="noopener">notes-sharing</a> · <a href="https://github.com/immishra13/task-manager" target="_blank" rel="noopener">task-manager</a> · <a href="https://github.com/immishra13/focus-room" target="_blank" rel="noopener">focus-room</a> · <a href="https://github.com/immishra13/lost-and-found" target="_blank" rel="noopener">lost-and-found</a> · <a href="https://github.com/immishra13/file-storage-system" target="_blank" rel="noopener">file-storage-system</a> · <a href="https://github.com/immishra13/skill-exchange" target="_blank" rel="noopener">skill-exchange</a> · <a href="https://github.com/immishra13/ai-athletic" target="_blank" rel="noopener">ai-athletic</a> · <a href="https://github.com/immishra13/greenloop-web" target="_blank" rel="noopener">greenloop-web</a> · <a href="https://github.com/immishra13/cab-flow-connect" target="_blank" rel="noopener">cab-flow-connect</a></p>
     </div>
 
-    <div class="panel-section" data-section="skills">
+    <div class="panel-section theme-skills" data-section="skills">
+      <p class="panel-eyebrow">Toolbox — what I actually use</p>
       <p class="panel-intro">Tools I actually use — not a copied list.</p>
       <h3>Languages</h3><p class="chips"><span><img src="https://cdn.simpleicons.org/python/3776AB" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">Python</span><span><img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">JavaScript</span><span>SQL</span><span><img src="https://cdn.simpleicons.org/html5/E34F26" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">HTML</span><span><img src="https://cdn.simpleicons.org/css/1572B6" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">CSS</span></p>
       <h3>AI &amp; ML</h3><p class="chips"><span><img src="https://cdn.simpleicons.org/scikitlearn/F7931E" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">scikit-learn</span><span>XGBoost</span><span>NLP</span><span>YOLO</span><span><img src="https://cdn.simpleicons.org/opencv/5C3EE8" alt="" width="16" height="16" loading="lazy" onerror="this.remove()">OpenCV</span><span>GenAI</span></p>
@@ -179,37 +203,39 @@
       <h3>Human languages</h3><p class="chips"><span>Hindi</span><span>English</span><span>Maithili</span><span>Bhojpuri</span><span>Marathi</span></p>
     </div>
 
-    <div class="panel-section" data-section="education">
-      <p class="panel-intro">Padhai ka safar — Bihar se Mumbai.</p>
+    <div class="panel-section theme-education" data-section="education">
+      <p class="panel-eyebrow">Campus — where I studied</p>
+      <p class="panel-intro">Padhai ka safar — Sheohar se Mumbai.</p>
       <div class="edu-grid">
         <article class="edu-card edu-feature">
-          <img class="edu-visual" src="assets/viva-campus.jpg" alt="VIVA Institute of Technology campus entrance, Virar" loading="lazy">
-          <div><h4>B.E. CSE (AI &amp; ML)</h4><p class="edu-place">VIVA Institute of Technology, Virar — University of Mumbai · 2023–2027</p><p>Sem 6 SGPI 8.70 · CGPI 7.60</p></div>
+          <img class="edu-visual-top edu-banner" src="assets/viva-banner-icon.png" alt="VIVA Institute of Technology entrance banner, background removed" loading="lazy">
+          <div class="edu-body"><h4>B.E. CSE (AI &amp; ML)</h4><p class="edu-place">VIVA Institute of Technology, Virar — University of Mumbai · 2023–2027</p><p>Sem 6 SGPI 8.70 · CGPI 7.60</p></div>
         </article>
         <article class="edu-card">
-          <span class="edu-visual edu-logo"><img src="assets/nptel-logo.png" alt="NPTEL logo" loading="lazy"></span>
-          <div><h4>NPTEL — AI Concepts &amp; Techniques</h4><p class="edu-place">Scored 96</p></div>
+          <img class="edu-visual-top edu-logo" src="assets/nptel-logo.png" alt="NPTEL logo" loading="lazy">
+          <div class="edu-body"><h4>NPTEL — AI Concepts &amp; Techniques</h4><p class="edu-place">Scored 96</p></div>
         </article>
         <article class="edu-card">
-          <span class="edu-visual edu-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></span>
-          <div><h4>HSC — Shri Nawab High School</h4><p class="edu-place">Bihar Board · 2022 · 64.40%</p></div>
+          <img class="edu-visual-top" src="assets/sheohar-school-crop.jpg" alt="Shri Nawab High School, Sheohar — yellow school building" loading="lazy">
+          <div class="edu-body"><h4>HSC — Shri Nawab High School</h4><p class="edu-place">Sheohar, Bihar · Bihar Board · 2022 · 64.40%</p></div>
         </article>
         <article class="edu-card">
-          <span class="edu-visual edu-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></span>
-          <div><h4>SSC — Sen Sec Delhi Public School</h4><p class="edu-place">CBSE · 2020 · 64.60%</p></div>
+          <img class="edu-visual-top" src="assets/dps-lagma-gate.jpg" alt="Delhi Public School, Lagma entrance gate" loading="lazy">
+          <div class="edu-body"><h4>SSC — Sen Sec Delhi Public School</h4><p class="edu-place">Lagma, Sitamarhi, Bihar · CBSE · 2020 · 64.60%</p></div>
         </article>
       </div>
       <p class="panel-note">Sem 7: Deep Learning, Big Data Analytics, Blockchain, NLP, MIS.</p>
     </div>
 
-    <div class="panel-section" data-section="journey">
+    <div class="panel-section theme-journey" data-section="journey">
+      <p class="panel-eyebrow">Route map — Bihar to Mumbai</p>
       <p class="panel-intro">2020 se 2027 — har saal kuch banaya.</p>
       <div class="journey-route">
-        <p class="journey-path"><span>Bihar</span><span class="journey-line" aria-hidden="true"></span><span>Mumbai</span></p>
+        <p class="journey-path"><span>Sheohar, Bihar</span><span class="journey-line" aria-hidden="true"></span><span>Mumbai</span></p>
         <div class="journey-progress"><span style="--p:0.86"></span><em>You are here — 2026</em></div>
         <ol class="journey-track">
-          <li><span class="track-dot" aria-hidden="true"></span><div class="track-card"><strong>2020</strong><span class="track-title">SSC, CBSE — 64.60%</span><p>Bihar.</p></div></li>
-          <li><span class="track-dot" aria-hidden="true"></span><div class="track-card"><strong>2022</strong><span class="track-title">HSC, Bihar Board — 64.40%</span><p>August me Maharashtra shift.</p></div></li>
+          <li><span class="track-dot" aria-hidden="true"></span><div class="track-card"><strong>2020</strong><span class="track-title">SSC — Sen Sec Delhi Public School, CBSE — 64.60%</span><p>Lagma, Sitamarhi, Bihar.</p></div></li>
+          <li><span class="track-dot" aria-hidden="true"></span><div class="track-card"><strong>2022</strong><span class="track-title">HSC — Shri Nawab High School, Bihar Board — 64.40%</span><p>Sheohar, Bihar. August me Maharashtra shift.</p></div></li>
           <li><span class="track-dot" aria-hidden="true"></span><div class="track-card"><strong>2023</strong><span class="track-title">CSE (AI &amp; ML) starts</span><p>VIVA Institute of Technology, Virar.</p></div></li>
           <li><span class="track-dot" aria-hidden="true"></span><div class="track-card"><strong>2024</strong><span class="track-title">Co-founded FixMateHub</span><p>First customers, Thane &amp; Mumbai.</p></div></li>
           <li><span class="track-dot" aria-hidden="true"></span><div class="track-card"><strong>2025</strong><span class="track-title">50+ events managed</span><p>NPTEL AI — 96.</p></div></li>
@@ -219,7 +245,8 @@
       </div>
     </div>
 
-    <div class="panel-section" data-section="proof">
+    <div class="panel-section theme-proof" data-section="proof">
+      <p class="panel-eyebrow">Scoreboard — numbers talk</p>
       <p class="panel-intro">Numbers bolte hain. Promises nahi.</p>
       <ul class="proof-list">
         <li><strong>1000+</strong><span>customers served — FixMateHub</span></li>
@@ -227,12 +254,14 @@
         <li><strong>50+</strong><span>weddings &amp; corporate events managed</span></li>
         <li><strong>96</strong><span>NPTEL — AI Concepts &amp; Techniques</span></li>
         <li><strong>8.70</strong><span>Sem 6 SGPI</span></li>
-        <li><strong>7</strong><span>live projects on this page</span></li>
+        <li><strong>12</strong><span>live projects on this page</span></li>
       </ul>
     </div>
 
-    <div class="panel-section" data-section="hire">
+    <div class="panel-section theme-hire" data-section="hire">
+      <p class="panel-eyebrow">MatchMate — my hiring bot</p>
       <p class="panel-intro"><strong>MatchMate</strong> — my hiring bot. Post your requirement below, and I will check myself how much my skills match it. Honest answer, no fake 100%.</p>
+      <p class="panel-note">Trained on my CV, LinkedIn and GitHub — it understands related words too: <em>logistic = logistics, management = manager, supply chain = logistics</em>.</p>
       <label class="bot-label" for="reqInput">Your requirement</label>
       <textarea id="reqInput" rows="3" placeholder="e.g. Python backend intern — FastAPI, REST APIs, MySQL, Git"></textarea>
       <div class="bot-chips" role="group" aria-label="Example requirements">
@@ -251,7 +280,8 @@
       </div>
     </div>
 
-    <div class="panel-section" data-section="contact">
+    <div class="panel-section theme-contact" data-section="contact">
+      <p class="panel-eyebrow">Calling cards — talk to me</p>
       <p class="panel-intro">Baaki sab chhodo — seedha baat karte hain. Tap a card, it opens that place.</p>
       <div class="contact-grid">
         <a class="contact-card" href="https://wa.me/918169884301" target="_blank" rel="noopener">
@@ -282,6 +312,6 @@
 </aside>
 <div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
-<script src="app.js?v=3.4.1"></script>
+<script src="app.js?v=3.5"></script>
 </body>
 </html>

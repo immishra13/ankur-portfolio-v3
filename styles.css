@@ -1,10 +1,12 @@
-/* Ankur Mishra — portfolio v3.3 "Cube Orbit".
+/* Ankur Mishra — portfolio v3.5 "Home Orbit".
    Concept: full dark UI, Ankur in the centre, real 3D cubes floating around him.
    Avatar: canvas chroma-key — white video background removed live, avatar floats
    on the dark page. Tap a box → panel opens on THAT box's side, avatar gets
    excited and turns toward it. Motion per design-motion-principles:
    creative portfolio → Jakub primary · Jhey secondary · Emil selective.
-   Custom cubic-bezier only. transform/opacity/filter only. */
+   Custom cubic-bezier only. transform/opacity/filter only.
+   v3.5: personal-area background photo, slimmer avatar + Hi wave, per-section
+   panel themes, MatchMate NLP (stemming + synonyms). */
 :root {
   --bg: #0d0a07;
   --bg-2: #161009;
@@ -38,6 +40,14 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+/* Personal-area background: his own warm workspace corner, fixed behind
+   everything, darkened so text stays readable on desktop and phone. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(rgba(13, 10, 7, 0.78), rgba(13, 10, 7, 0.86)),
+    url("assets/bg-personal.webp") center 28% / cover no-repeat;
 }
 a { color: var(--teal); text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -105,13 +115,34 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
    so the avatar floats on the dark page with no white box behind him. */
 .avatar-canvas {
   display: block; width: 280px; height: 498px;
+  /* Slimmer figure: the generated idle frame draws him a little wide. */
+  transform: scaleX(0.93);
   filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.55));
 }
 .avatar-canvas.dancing { animation: dance-pop 0.6s var(--bounce); }
+/* Hi wave: a small waving hand that greets on load, then fades away. */
+.wave-hand {
+  position: absolute; right: 6px; top: 34%; width: 44px; height: 44px;
+  z-index: 4; pointer-events: none;
+  transform-origin: 50% 85%;
+  animation: wave-hi 5s var(--ease-out) forwards;
+}
+@keyframes wave-hi {
+  0% { opacity: 0; transform: rotate(0deg) scale(0.6); }
+  8% { opacity: 1; transform: rotate(0deg) scale(1); }
+  16% { transform: rotate(18deg); }
+  26% { transform: rotate(-14deg); }
+  36% { transform: rotate(18deg); }
+  46% { transform: rotate(-10deg); }
+  56% { transform: rotate(8deg); }
+  66% { opacity: 1; transform: rotate(0deg); }
+  85% { opacity: 1; transform: rotate(0deg); }
+  100% { opacity: 0; transform: rotate(0deg) scale(0.9); }
+}
 /* Source videos stay off-screen (never display:none — phones suspend
    display:none videos, which is how the avatar went missing on load). */
 .avatar-video-src { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-@keyframes dance-pop { 0% { transform: scale(0.96); } 100% { transform: scale(1); } }
+@keyframes dance-pop { 0% { transform: scaleX(0.93) scale(0.96); } 100% { transform: scaleX(0.93) scale(1); } }
 .speech {
   display: inline-block; margin: 14px auto 0; max-width: 340px;
   background: var(--surface-2); color: var(--text);
@@ -258,6 +289,41 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 }
 .panel-intro { color: var(--muted); margin-top: 0; font-size: 1.02rem; }
 .panel-intro strong { color: var(--gold); }
+/* Per-section theme eyebrow — each panel says what kind of room it is. */
+.panel-eyebrow {
+  display: inline-block; margin: 0 0 8px; font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--panel-accent, var(--gold));
+  border: 1px solid var(--panel-accent, var(--gold)); border-radius: 999px; padding: 4px 10px;
+}
+.theme-work { --panel-accent: var(--teal); }
+.theme-skills { --panel-accent: var(--violet); }
+.theme-education { --panel-accent: var(--gold); }
+.theme-journey { --panel-accent: var(--accent); }
+.theme-proof { --panel-accent: var(--green); }
+.theme-hire { --panel-accent: var(--accent); }
+.theme-contact { --panel-accent: var(--pink); }
+/* Workshop: work cards get a blueprint dashed edge + a status tag. */
+.theme-work .work-card { border-style: dashed; border-width: 1.5px; }
+.work-tag {
+  display: inline-block; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--teal); background: rgba(45, 212, 191, 0.12);
+  border: 1px solid rgba(45, 212, 191, 0.4); border-radius: 999px; padding: 2px 8px; margin-left: 6px; vertical-align: middle;
+}
+.work-tag.tag-gh { color: var(--gold); background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.35); }
+/* Toolbox: skill group headings look like tool labels. */
+.theme-skills h3 { display: flex; align-items: center; gap: 8px; }
+.theme-skills h3::before { content: ""; width: 10px; height: 10px; background: var(--violet); border-radius: 3px; flex-shrink: 0; }
+/* Scoreboard: proof numbers in a 2-up stat grid. */
+.theme-proof .proof-list { grid-template-columns: 1fr 1fr; }
+.theme-proof .proof-list li { border-left-color: var(--green); align-items: flex-start; }
+.theme-proof .proof-list strong { font-size: 2.3rem; }
+/* Calling cards: each contact card gets its own accent top edge. */
+.theme-contact .contact-card { border-top: 3px solid var(--card-accent, var(--pink)); }
+.theme-contact .contact-card:nth-child(1) { --card-accent: #25d366; }
+.theme-contact .contact-card:nth-child(2) { --card-accent: #ea4335; }
+.theme-contact .contact-card:nth-child(3) { --card-accent: #0a66c2; }
+.theme-contact .contact-card:nth-child(4) { --card-accent: #f5efe6; }
+.theme-contact .contact-card:nth-child(5) { --card-accent: #d6336c; }
 .panel-note { color: var(--muted); font-size: 0.9rem; }
 .panel-section h3 { color: var(--gold); font-size: 1rem; margin: 1.2rem 0 0.4rem; text-transform: uppercase; letter-spacing: 0.06em; }
 .panel-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
@@ -355,26 +421,26 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   border-radius: 999px; padding: 3px 9px;
 }
 
-/* Education cards — real images as icons, not dumped in a box */
+/* Education cards — real images as icons, not dumped in a box.
+   Visual sits on TOP of the card (wide slot fits photos and the
+   bg-removed VIVA banner icon); text below. */
 .edu-grid { display: grid; gap: 12px; }
 .edu-card {
-  display: flex; gap: 14px; align-items: center;
+  display: flex; flex-direction: column; gap: 0; align-items: stretch;
   background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--radius); padding: 14px;
+  border-radius: var(--radius); padding: 0; overflow: hidden;
   transition: transform 0.18s var(--ease-snappy), border-color 0.18s var(--ease-snappy);
 }
 .edu-card:hover { transform: translateY(-2px); border-color: var(--gold); }
 .edu-card h4 { margin: 0 0 2px; color: #fff; font-size: 1.02rem; }
 .edu-card p { margin: 0; color: #cdd7e4; font-size: 0.93rem; line-height: 1.5; }
 .edu-place { color: var(--muted); font-size: 0.88rem; }
-.edu-visual {
-  flex-shrink: 0; width: 64px; height: 64px; border-radius: 14px;
-  object-fit: contain; display: flex; align-items: center; justify-content: center;
+.edu-body { padding: 12px 14px 14px; }
+.edu-visual-top {
+  width: 100%; height: 112px; object-fit: cover; display: block; background: #0a0805;
 }
-.edu-feature .edu-visual { width: 84px; height: 84px; border-radius: 16px; object-fit: cover; background: #fff; }
-.edu-logo { background: rgba(255, 255, 255, 0.94); padding: 6px; }
-.edu-logo img { width: 100%; height: 100%; object-fit: contain; }
-.edu-icon { background: rgba(232, 89, 12, 0.14); color: var(--accent); }
+.edu-visual-top.edu-banner { object-fit: contain; padding: 10px 14px; background: #14100a; }
+.edu-visual-top.edu-logo { object-fit: contain; padding: 16px; background: rgba(255, 255, 255, 0.94); }
 
 /* MatchMate bot */
 .bot-label { display: block; font-weight: 700; font-size: 0.92rem; margin: 0 0 6px; color: var(--text); }
@@ -445,6 +511,10 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   .avatar-stage { margin-top: 34px; }
   .avatar-canvas { width: 200px; height: 356px; }
   .avatar-glow { width: 240px; height: 240px; }
+  .wave-hand { width: 34px; height: 34px; right: 2px; top: 30%; }
+  body::before { background-position: center 22%; }
+  .theme-proof .proof-list { grid-template-columns: 1fr 1fr; }
+  .edu-visual-top { height: 96px; }
   .speech { font-size: 0.92rem; max-width: 300px; }
   .orbit-boxes { position: absolute; inset: 0; }
   .orbit-box { width: 104px; }

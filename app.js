@@ -257,6 +257,72 @@ backdrop.addEventListener("click", closePanel);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePanel(); });
 
 // ---------- MatchMate bot ----------
+// NLP: light stemming + synonym groups, so related words match too —
+// "logistic" finds "logistics", "management" finds "manager", "supply chain"
+// finds "logistics", "wedding planner" finds event planning.
+// Trained on the CV, LinkedIn and GitHub skills.
+function stem(w) {
+  w = (w || "").toLowerCase();
+  if (w.length <= 3) return w;
+  const rules = [
+    [/ational$/, "ate"], [/iveness$/, "ive"], [/fulness$/, "ful"],
+    [/ization$/, "ize"], [/isation$/, "ise"],
+    [/ing$/, ""], [/edly$/, ""], [/ies$/, "y"], [/ied$/, "y"],
+    [/tion$/, "t"], [/sion$/, "s"], [/ics$/, "ic"], [/ism$/, ""],
+    [/ment$/, ""], [/ness$/, ""], [/ity$/, ""], [/ance$/, ""], [/ence$/, ""],
+    [/able$/, ""], [/ible$/, ""], [/al$/, ""], [/er$/, ""], [/or$/, ""], [/ist$/, ""],
+    [/ly$/, ""], [/ed$/, ""], [/es$/, ""], [/s$/, ""], [/e$/, ""],
+  ];
+  let prev = "";
+  while (w !== prev && w.length > 3) {
+    prev = w;
+    for (const [re, rep] of rules) {
+      if (re.test(w)) { w = w.replace(re, rep); break; }
+    }
+  }
+  return w;
+}
+// Synonym groups: words that mean the same thing for hiring.
+const SYN_GROUPS = [
+  ["manag", "admin", "coordin", "plan"],        // management ~ admin ~ coordination ~ planning
+  ["logist", "supply", "transport", "operat"],  // logistics ~ supply chain ~ transport ~ operations
+  ["event", "wed", "confer"],                          // event ~ wedding ~ conference
+  ["analy", "data"],                             // analytics ~ analyst ~ data
+  ["fin", "budget"],                             // finance ~ financial ~ budgeting
+  ["client", "custom"],                          // client ~ customer
+  ["ai", "artifici", "intellig"],                // ai ~ artificial intelligence
+  ["ml", "machin"],                              // ml ~ machine learning
+  ["cab", "taxi", "travel"],                     // cab ~ taxi ~ travel
+  ["sign", "gesture"],                           // sign language ~ gesture
+];
+function equivStems(s) {
+  for (const g of SYN_GROUPS) {
+    for (const m of g) {
+      if (s === m || (s.length >= 4 && m.length >= 4 && (s.startsWith(m) || m.startsWith(s)))) return g;
+    }
+  }
+  return [s];
+}
+function tokenStems(text) {
+  const toks = (text || "").toLowerCase().replace(/[^a-z0-9+#]/g, " ").split(/\s+/).filter(Boolean);
+  const out = new Set();
+  for (const t of toks) {
+    const st = stem(t);
+    out.add(st);
+    for (const e of equivStems(st)) out.add(e);
+  }
+  return out;
+}
+function keyMatches(inputStems, key) {
+  const ks = key.toLowerCase().replace(/[^a-z0-9+#]/g, " ").split(/\s+/).filter(Boolean).map(stem);
+  return ks.every((k) => inputStems.has(k) || equivStems(k).some((e) => inputStems.has(e)));
+}
+function skillMatches(input, skill) {
+  if (skill.keys.some((k) => hasKeyword(input, k))) return true; // exact phrase first
+  const stems = tokenStems(input);
+  return skill.keys.some((k) => keyMatches(stems, k));           // stem + synonym fallback
+}
+
 const SKILLS = [
   { label: "Python", keys: ["python"], proof: ["FixMateHub", "AwaazRoute"] },
   { label: "FastAPI", keys: ["fastapi", "fast api"], proof: ["RTI Black Hole", "FixMateHub"] },
@@ -271,18 +337,21 @@ const SKILLS = [
   { label: "Docker", keys: ["docker"], proof: [] },
   { label: "Git / GitHub", keys: ["git", "github"], proof: ["All repos on github.com/immishra13"] },
   { label: "Machine Learning", keys: ["machine learning", "machine-learning", "ml"], proof: ["AwaazRoute", "Financial Complaint Classifier"] },
-  { label: "NLP", keys: ["nlp", "natural language"], proof: ["AwaazRoute", "Financial Complaint Classifier"] },
+  { label: "NLP", keys: ["nlp", "natural language", "natural language processing"], proof: ["AwaazRoute", "Financial Complaint Classifier", "RTI Black Hole"] },
   { label: "scikit-learn", keys: ["scikit-learn", "scikit learn", "sklearn", "scikit"], proof: ["AwaazRoute", "Financial Complaint Classifier"] },
   { label: "XGBoost", keys: ["xgboost"], proof: ["Personality Prediction model"] },
-  { label: "YOLO / Computer Vision", keys: ["yolo", "computer vision", "opencv"], proof: ["Sign Language + YOLO"] },
-  { label: "GenAI / AI Agents", keys: ["genai", "generative ai", "ai agent", "ai agents", "llm"], proof: ["AwaazRoute"] },
+  { label: "YOLO / Computer Vision", keys: ["yolo", "computer vision", "opencv"], proof: ["SignSight — Sign Language + YOLO"] },
+  { label: "Sign Language", keys: ["sign language", "gesture"], proof: ["SignSight — Sign Language + YOLO"] },
+  { label: "GenAI / AI Agents", keys: ["genai", "generative ai", "ai agent", "ai agents", "llm", "artificial intelligence"], proof: ["AwaazRoute"] },
   { label: "Blockchain / Web3", keys: ["blockchain", "web3", "solidity"], proof: ["E-WasteChain"] },
   { label: "Full-stack", keys: ["full stack", "full-stack", "fullstack"], proof: ["FixMateHub"] },
   { label: "Frontend", keys: ["frontend", "front-end", "front end"], proof: ["FixMateHub"] },
   { label: "Backend", keys: ["backend", "back-end", "back end"], proof: ["FixMateHub", "RTI Black Hole"] },
   { label: "Automation", keys: ["automation", "automate"], proof: ["AwaazRoute"] },
   { label: "Chrome Extensions", keys: ["chrome extension", "extension"], proof: ["MyTab extension"] },
-  { label: "Events & Weddings", keys: ["event", "events", "wedding", "weddings", "logistics", "hospitality", "vendor"], proof: ["50+ weddings & corporate events"] },
+  { label: "Event Management", keys: ["event management", "event manager", "event planning", "management", "manager", "managing", "coordination", "coordinator", "operations", "logistics", "logistic", "supply chain", "vendor management", "client handling", "budgeting", "planning"], proof: ["50+ weddings & corporate events", "Event Management System"] },
+  { label: "Weddings & Hospitality", keys: ["wedding", "weddings", "hospitality", "corporate events", "event", "events", "venue", "stage management"], proof: ["50+ weddings & corporate events"] },
+  { label: "Cab Booking / Travel Ops", keys: ["cab", "taxi", "travel", "booking portal", "corporate travel", "fleet"], proof: ["CABMANAGEMENT"] },
   { label: "Data Analytics", keys: ["data analytics", "big data", "analytics"], proof: ["Sem 7: Big Data Analytics"] },
 ];
 const NOT_HAVE = [
@@ -304,7 +373,7 @@ function checkMatch() {
     result.innerHTML = `<p class="bot-empty">Pehle apni requirement likho — ya neeche ek example dabao.</p>`;
     return;
   }
-  const matched = SKILLS.filter((s) => s.keys.some((k) => hasKeyword(input, k)));
+  const matched = SKILLS.filter((s) => skillMatches(input, s));
   const missing = NOT_HAVE.filter((n) => hasKeyword(input, n));
   const total = matched.length + missing.length;
   if (total === 0) {
