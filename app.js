@@ -1,53 +1,143 @@
-// Ankur Mishra — portfolio v4.2.0.
-// Full dark UI. A REAL 3D model avatar (Three.js, avatar3d.js) in the
-// centre — he is the NARRATOR and nothing else (Ankur's call, 2026-11-11):
-// he stands ready, and when you open a box he turns toward it, points at
-// it with his own arm and narrates it in the speech bubble. No walk-in,
-// no wave, no stroll, no tap reaction, no dance, no flex — the model does
-// not perform, he narrates. No video, no side graphics.
+// Ankur Mishra — portfolio v5.0.0.
+// Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
+// loops normally; the dance videos play when a box opens — a different
+// dance each time, time to time — and the speech bubble narrates the
+// section). The videos are shot on white, so a live canvas keys the white
+// out and draws him on the dark page. NO 3D model (removed 2026-11-11,
+// Ankur's call), no side graphics.
 // Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a
 // panel on THAT box's side.
 // MatchMate bot: recruiter posts a requirement, bot checks the match honestly.
 // Motion: transform / opacity only. prefers-reduced-motion respected.
 
 const $ = (id) => document.getElementById(id);
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const stage = $("avatarStage");
 const bubble = $("speechBubble");
 const stateLabel = $("avatarState");
 
 function setSpeech(text) { bubble.textContent = text; }
 
-// ---------- 3D model avatar (avatar3d.js) ----------
-// app.js is a classic script, avatar3d.js is a module — it sets
-// window.Avatar3D and fires 'avatar3d-ready' when the first frame has
-// rendered. Everything below waits for that; if it never arrives (CDN or
-// WebGL blocked) the poster fallback shows instead — the page never sits
-// empty with no avatar at all.
-function whenAvatar(fn) {
-  if (window.Avatar3D) { fn(window.Avatar3D); return; }
-  window.addEventListener("avatar3d-ready", () => fn(window.Avatar3D), { once: true });
-}
-let fallbackShown = false;
-function showFallback() {
-  if (fallbackShown) return;
-  fallbackShown = true;
+// ---------- Video avatar (idle + dance videos) ----------
+// The videos are shot on a WHITE background, so the live canvas keys the
+// white out (chroma-key) and draws the avatar on the dark page — the same
+// trick v3.7 used. The canvas holds the last keyed frame while a new
+// video loads, so swapping idle <-> dance never flashes white.
+// Behaviour: idle loops normally; when a box opens he dances (a different
+// dance each time) and the speech bubble narrates the section; tap him
+// and he dances briefly; Hire Me is a dance too (celebration — the video
+// cannot flex). Close the panel and he is back to idle.
+const IDLE_SRC = "avatar-idle.mp4";
+// All 5 dances are in the repo (dance 1 was already there; 2, 4, 5, 6
+// uploaded 2026-11-11 via the GitHub web UI — binary, push-files cannot
+// carry them). A random one plays each time a box opens.
+const DANCES = ["avatar-dance.mp4", "avatar-dance2.mp4", "avatar-dance4.mp4", "avatar-dance5.mp4", "avatar-dance6.mp4"];
+const video = $("avatarVideo");
+const canvas = $("avatarCanvas");
+const vctx = canvas.getContext("2d");
+const KW = 360, KH = 640; // keying resolution — small enough to be fast
+canvas.width = KW; canvas.height = KH;
+let lastDance = -1;
+let keying = false;
+
+function showFallback(msg) {
   const fb = $("avatarFallback");
   if (fb) fb.hidden = false;
-  stateLabel.textContent = "Right now: 3D model could not load — showing photo";
+  canvas.hidden = true;
+  stopKeying();
+  if (msg) stateLabel.textContent = msg;
 }
-window.addEventListener("avatar3d-failed", showFallback);
-// If the fallback showed on a slow load and the model arrives later,
-// hide the poster again — never show both the photo and the live model.
-window.addEventListener("avatar3d-ready", () => {
-  const fb = $("avatarFallback");
-  if (fb) fb.hidden = true;
+
+// Chroma-key: distance from white < 75 -> transparent, 75-95 soft ramp.
+// Despill: pull the white spill off semi-transparent edge pixels so he
+// has no white halo.
+function keyFrame() {
+  if (!keying || video.readyState < 2) return;
+  const vw = video.videoWidth, vh = video.videoHeight;
+  if (!vw || !vh) return;
+  // contain-fit the video into the 360x640 canvas
+  const s = Math.min(KW / vw, KH / vh);
+  const dw = vw * s, dh = vh * s;
+  const dx = (KW - dw) / 2, dy = (KH - dh) / 2;
+  vctx.clearRect(0, 0, KW, KH);
+  vctx.drawImage(video, dx, dy, dw, dh);
+  const img = vctx.getImageData(0, 0, KW, KH);
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], g = d[i + 1], b = d[i + 2];
+    const dist = Math.sqrt((255 - r) * (255 - r) + (255 - g) * (255 - g) + (255 - b) * (255 - b));
+    if (dist < 75) {
+      d[i + 3] = 0;
+    } else if (dist < 95) {
+      d[i + 3] = Math.round(255 * (dist - 75) / 20);
+    }
+    if (d[i + 3] > 0 && d[i + 3] < 255) {
+      const m = Math.min(r, g, b);
+      d[i] = Math.max(0, r - (255 - m) * 0.4);
+      d[i + 1] = Math.max(0, g - (255 - m) * 0.4);
+      d[i + 2] = Math.max(0, b - (255 - m) * 0.4);
+    }
+  }
+  vctx.putImageData(img, 0, 0);
+}
+
+function startKeying() {
+  if (keying) return;
+  keying = true;
+  const loop = () => {
+    if (!keying) return;
+    keyFrame();
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+function stopKeying() { keying = false; }
+
+function playSrc(src, loop) {
+  video.loop = !!loop;
+  if (video.getAttribute("src") !== src) video.setAttribute("src", src);
+  video.load();
+  const p = video.play();
+  if (p) p.catch(() => showFallback("Right now: video could not play — showing photo"));
+}
+
+function playIdle() {
+  playSrc(IDLE_SRC, true);
+  stateLabel.textContent = "Right now: idle — listening";
+}
+function playDance(label) {
+  // A different dance from the last one — time to time, a new dance.
+  let idx;
+  do { idx = Math.floor(Math.random() * DANCES.length); } while (DANCES.length > 1 && idx === lastDance);
+  lastDance = idx;
+  playSrc(DANCES[idx], true); // loop while the panel is open
+  stateLabel.textContent = label || "Right now: dancing";
+}
+
+// Start: idle video + keying. Reduced motion: no video, just the photo.
+if (reduced) {
+  showFallback("Right now: photo — motion reduced");
+} else {
+  video.addEventListener("error", () => showFallback("Right now: video could not load — showing photo"));
+  startKeying();
+  playIdle();
+}
+
+// Tap the avatar himself: he dances briefly and answers back.
+const TAP_LINES = [
+  "Hey — you tapped me! I am right here.",
+  "Hi! Tap a box if you need anything.",
+  "My full story is in Journey.",
+  "Tap Hire Me — let's see if we match.",
+];
+stage.addEventListener("click", () => {
+  if (reduced) return;
+  setSpeech(TAP_LINES[Math.floor(Math.random() * TAP_LINES.length)]);
+  if (!openKey) {
+    playDance("Right now: dancing");
+    setTimeout(() => { if (!openKey) playIdle(); }, 3000);
+  }
 });
-setTimeout(() => { if (!window.Avatar3D) showFallback(); }, 10000);
-
-// The model is the NARRATOR and nothing else: he stands at centre,
-// breathing, and narrates when a box opens. No walk-in, no wave on load,
-// no stroll, no tap reaction, no dance, no flex — Ankur's call.
-
-
 // ---------- 3D cubes: drag to rotate ----------
 // Hover rotation is CSS (--rx/--ry vars). Drag sets the same vars inline;
 // on release the inline vars are cleared so the CSS resting pose returns.
@@ -123,17 +213,11 @@ function openPanel(key) {
   panel.setAttribute("aria-hidden", "false");
   document.body.classList.add("panel-open");
   panel.classList.toggle("panel-left", LEFT_PANELS.has(key));
-  const isLeft = LEFT_PANELS.has(key);
-  // NARRATOR: he turns toward the panel, points at it with his own arm,
-  // and steps aside so he stays visible next to the sheet instead of
-  // under it — then he narrates the section in the speech bubble.
-  // No dance, no flex: narrating is his only job.
-  whenAvatar((A) => {
-    A.pointAt(isLeft ? "left" : "right");
-    A.walkTo(isLeft ? 0.35 : -0.35, 600);
-  });
+  // He dances (a different dance each time) and the speech bubble
+  // narrates the section. The stage lifts above the panel backdrop
+  // (CSS: body.panel-open .avatar-stage z-index 21), so he stays visible.
+  if (!reduced) playDance("Right now: dancing — " + (key === "hire" ? "Hire Me" : TITLES[key]));
   setSpeech(SPEECH[key]);
-  stateLabel.textContent = "Right now: narrating — " + (key === "hire" ? "Hire Me" : TITLES[key]);
 }
 
 function closePanel() {
@@ -144,12 +228,8 @@ function closePanel() {
   panel.setAttribute("aria-hidden", "true");
   document.body.classList.remove("panel-open");
   document.querySelectorAll(".orbit-box").forEach((b) => b.classList.remove("is-active"));
-  whenAvatar((A) => {
-    A.pointAt(null);
-    A.walkTo(0, 600); // walk back to centre
-  });
+  if (!reduced) playIdle(); // back to the idle video
   setSpeech("I am back. Try another box — I am right here.");
-  stateLabel.textContent = "Right now: ready — tap a box";
 }
 
 document.querySelectorAll(".orbit-box").forEach((b) => {

@@ -69,4 +69,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v4.1.1 — face scaled up to fill the head (was a small portrait on a big bald head), paag straightened; face image embedded as a base64 data URI in avatar3d.js (push-files cannot carry a binary PNG)
 - v4.1.2 — face widened to fill the head horizontally too (v4.1.1 still left a wide blank tan band on each side)
 - v4.2.0 — narrator only: walk-in, wave, stroll, tap reaction, dance and flex removed — the model only turns, points and narrates when a box opens
+- v5.0.0 — video avatar back, 3D model removed: idle video loops, dance videos (rotating) play when a box opens, live canvas chroma-key removes the white background
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)

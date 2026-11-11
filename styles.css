@@ -102,15 +102,17 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 .intro-sub { margin: 2px 0 0; font-size: 0.92rem; color: var(--muted); }
 .intro-hint { margin: 6px 0 0; font-size: 0.88rem; font-weight: 600; color: var(--teal); }
 
-/* Avatar, centre — a REAL 3D model (Three.js, avatar3d.js). The model
-   itself waves, walks, points and dances; no video, no side graphics. */
+/* Avatar, centre — Ankur's own avatar VIDEOS (idle + dances). The video
+   is the source; the canvas below is what you see — a live chroma-key
+   removes the white background so he stands on the dark page. No 3D
+   model, no side graphics. */
 .avatar-stage {
   position: absolute; left: 50%; top: 50%;
   transform: translate(-50%, -50%);
   text-align: center; z-index: 2;
   margin-top: 8px;
 }
-/* When a panel is open, the backdrop (z-index 20) would dim the model.
+/* When a panel is open, the backdrop (z-index 20) would dim the avatar.
    Lift the stage above it (panel itself is 30). */
 body.panel-open .avatar-stage { z-index: 21; }
 
@@ -120,13 +122,15 @@ body.panel-open .avatar-stage { z-index: 21; }
   background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(245, 158, 11, 0.08) 55%, rgba(245, 158, 11, 0) 70%);
   pointer-events: none;
 }
-/* The 3D mount: the WebGL canvas fills it. The model walks inside it. */
-.avatar-3d {
-  display: block; width: 380px; height: 520px; margin: 0 auto;
+/* The keyed canvas: 9:16 like the videos, so the avatar is never
+   stretched. Desktop 320px wide (569px tall); phone 155px (275px tall,
+   the same height as the old 3D mount, so the phone layout is unchanged). */
+.avatar-canvas {
+  display: block; width: 320px; aspect-ratio: 9 / 16; margin: 0 auto;
   cursor: pointer;
 }
-.avatar-3d canvas { width: 100% !important; height: 100% !important; display: block; }
-/* Poster fallback: only shown if the 3D model cannot load (CDN/WebGL). */
+.avatar-canvas[hidden] { display: none; }
+/* Poster fallback: only shown if the video cannot play. */
 .avatar-fallback {
   display: block; width: 280px; margin: 0 auto;
   filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.55));
@@ -527,7 +531,7 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   .intro-sub { font-size: 0.85rem; }
   .intro-hint { font-size: 0.85rem; }
   .avatar-stage { margin-top: -30px; }
-  .avatar-3d { width: 170px; height: 275px; }
+  .avatar-canvas { width: 155px; }
   .avatar-glow { width: 180px; height: 180px; }
   .avatar-state { font-size: 0.78rem; }
   body::before { background-position: center 22%; }
@@ -556,7 +560,7 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 }
 /* Short screens: shrink the avatar so nothing collides with the bottom boxes */
 @media (max-height: 840px) and (min-width: 961px) {
-  .avatar-3d { width: 320px; height: 470px; }
+  .avatar-canvas { width: 265px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
