@@ -1,14 +1,14 @@
 ---
-version: delta
-name: Ankur Mishra Portfolio v3.3 "Cube Orbit"
-description: Dark one-page orbit. Canvas keyed avatar (no white box), real 3D cubes around him, panels open on the box's side, MatchMate hiring bot.
+version: epsilon
+name: Ankur Mishra Portfolio v3.4 "Home Orbit"
+description: Warm dark one-page orbit. Contain-fit avatar poster, real 3D cubes in a phone ring too, journey tracker, education cards with real photos.
 colors:
-  page-default: "#070B14"
-  surface-default: "#111A2E"
-  surface-subtle: "#16233A"
-  fill-inverse: "#0E1524"
-  content-primary: "#EEF2F8"
-  content-muted: "#9AA8BD"
+  page-default: "#0d0a07"
+  surface-default: "#1c150e"
+  surface-subtle: "#261c11"
+  fill-inverse: "#161009"
+  content-primary: "#f5efe6"
+  content-muted: "#b3a48f"
   accent-primary: "#E8590C"
   accent-secondary: "#2DD4BF"
   accent-tertiary: "#F59E0B"
@@ -17,7 +17,7 @@ colors:
   accent-violet: "#9775FA"
 ---
 
-# Design Contract — Portfolio v3.3 "Cube Orbit"
+# Design Contract — Portfolio v3.4 "Home Orbit"
 
 ## Concept (Ankur's own words, 2026-11-11)
 Full dark UI so everything written on it pops. Ankur in the centre. 3D boxes floating
@@ -42,33 +42,62 @@ per frame, so the avatar floats directly on the dark page (no white box):
   edge, despill on fringe). Transparent VP9/WebM alpha was tried first and failed
   (encoder fed yuva420p still wrote Profile 0, no alpha) — canvas keying is the
   shipped route. Verified on real frames: idle + dance key cleanly, face/kurta/paag
-  intact, no speckles. Poster = transparent avatar.png.
+  intact, no speckles.
+- POSTER BUG (found 2026-11-11, v3.4 fix): the poster `avatar.png` is a tall
+  610×1530 still. Cover-fitting it on the 360×640 canvas cropped 131px off the
+  top and bottom — the head was cut off on first load, and only appeared after
+  opening a box (which switched to the fitting dance video). Fix: the poster is
+  now drawn CONTAINED (whole figure, head included) until the first keyed video
+  frame takes over. Source videos are kept off-screen with 1px opacity-0
+  positioning, never `display:none` — phones suspend display:none videos.
+  A `playing` listener keys one frame immediately on every video switch, so the
+  canvas never shows a stale frame from the other video.
 - Pointing: the avatar system only generates dance videos, so there is no separate
   pointing video — the "follow" is the stage tilting in 3D toward the open panel
   (rotateY ±12deg, rAF-lerped) plus the dance.
 - Reduced-motion: no autoplay, poster still, no tilt, no float.
 
 ## Layout
-Desktop: 100dvh stage. 3D extruded name top-centre ("ANKUR MISHRA", layered
-saffron text-shadow, perspective tilt) + one-line intro + hint line under it
-(the old floor hint overlapped the Hire Me box, so it moved up here).
-Avatar centred (canvas 280×498, drop-shadow, no card). Seven REAL 3D cubes in a
-ring (Work left-top, Skills right-top, Education left-mid, Journey right-mid,
-Proof left-bottom, Contact right-bottom, Hire Me bottom-centre, saffron highlight).
-Each cube is a W×H×D cuboid: front face (icon + label), right face (accent,
-"Open →"), top face (accent edge), back face (label). Resting pose
-rotateX(-14deg) rotateY(-20deg); hover turns it further; drag (pointer) rotates
-freely and snaps back; a drag never opens the panel. Panel: fixed sheet, 560px
-wide, slides in from the SAME side as the box that was tapped (left boxes →
-left sheet, avatar tilts the other way); mobile: bottom sheet. Panel content
-scrolls internally — the page itself does not scroll. While a panel is open the
-orbit dims to 0.45 with NO blur (blur made the boxes look smeared).
+Warm dark ("home") theme — warm charcoal base (#0d0a07) with amber/terracotta
+glows, clean, never cluttered. Desktop: 100dvh stage. Name block top-centre:
+small gold "Hi, I am" line, then the big 3D extruded "ANKUR MISHRA", then the
+tagline + one-line intro + hint. Avatar centred (canvas 280×498, drop-shadow,
+no card). Seven REAL 3D cubes in a ring (Work left-top, Skills right-top,
+Education left-mid, Journey right-mid, Proof left-bottom, Contact right-bottom,
+Hire Me bottom-centre, saffron highlight). Each cube is a W×H×D cuboid: front
+face (icon + label), right face (accent, "Open →"), top face (accent edge), back
+face (label). Resting pose rotateX(-14deg) rotateY(-20deg); hover turns it
+further; drag (pointer) rotates freely and snaps back; a drag never opens the
+panel. Panel: fixed sheet, 560px wide, slides in from the SAME side as the box
+that was tapped (left boxes → left sheet, avatar tilts the other way); mobile:
+bottom sheet. Panel content scrolls internally — the page itself does not
+scroll. While a panel is open the orbit dims to 0.45 with NO blur (blur made
+the boxes look smeared).
+Phone (≤960px): the SAME ring, smaller — avatar canvas 200×356, cubes 104×80,
+boxes at 25% / 46% / 63% heights around him, Hire Me bottom-centre. Cubes stay
+3D and draggable on touch (`touch-action: none` on cubes). No grid below the
+avatar — that was the v3.3 phone bug.
 
 ## Panels
 - Work: real cards — icon + title + one-liner + proper buttons (Visit site /
   Try it live / GitHub), slight 3D lift on hover. No more plain text links.
 - Skills: official brand icons (Simple Icons CDN, `onerror` removes a missing
-  one) + 3D tilt chips (hover rotateX/rotateY, perspective parent).
+  one) + 3D tilt chips (hover rotateX/rotateY, perspective parent). Includes an
+  Events &amp; Management group (Event Planning, Weddings, Corporate Events,
+  Logistics, Hospitality, Vendor Management, Client Handling, Budgeting, Team
+  Leadership, Stage Management) from his event work.
+- Journey: a route-map tracker, not a list — Bihar → Mumbai header, progress
+  bar (86%, "You are here — 2026"), vertical line with a node per year, the
+  2026 card tagged YOU ARE HERE, 2027 tagged DESTINATION.
+- Education: real-photo cards — VIVA card uses a real campus photo
+  (`assets/viva-campus.jpg`, entrance banner + glass building, cropped from a
+  real VIVA photo); NPTEL card uses the real transparent NPTEL logo
+  (`assets/nptel-logo.png`); HSC/SSC use clean cap-icon cards (his school
+  name is not on record, so no school photo is faked — add it when he gives
+  the name). Background removal was tried for the VIVA photo (rembg u2netp kept
+  only the banner; full u2net OOM-killed the VM; flood fill cannot separate the
+  sky from the sky-reflecting glass) — the cropped real photo is the shipped
+  result, and it is honest.
 
 ## MatchMate bot (Hire Me)
 Input + 5 example chips → keyword match against a real skill DB (26 skills with

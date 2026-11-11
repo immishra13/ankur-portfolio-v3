@@ -33,9 +33,22 @@ let activeVideo = idle;
 let hasFrame = false;
 
 // Poster (transparent PNG) until the first keyed frame is ready.
+// The poster is a tall 610x1530 still — cover-fitting it cropped 131px off
+// the top and bottom, which cut the head off on first load (the "face gayab"
+// bug). So the poster is drawn CONTAINED: whole figure, head included,
+// until the video's first keyed frame takes over.
 const posterImg = new Image();
 posterImg.src = "avatar.png";
-posterImg.onload = () => { if (!hasFrame) drawCover(posterImg); };
+posterImg.onload = () => { if (!hasFrame) drawContain(posterImg); };
+
+function drawContain(src) {
+  const sw = src.naturalWidth || 0;
+  const sh = src.naturalHeight || 0;
+  if (!sw || !sh) return;
+  const s = Math.min(CW / sw, CH / sh);
+  ctx.clearRect(0, 0, CW, CH);
+  ctx.drawImage(src, (CW - sw * s) / 2, (CH - sh * s) / 2, sw * s, sh * s);
+}
 
 function drawCover(src) {
   const sw = src.videoWidth || src.naturalWidth || 0;
@@ -91,6 +104,7 @@ function startDance() {
   dancing = true;
   idle.pause();
   activeVideo = dance;
+  lastTime = -1;
   canvas.classList.remove("dancing");
   void canvas.offsetWidth;
   canvas.classList.add("dancing");
@@ -103,11 +117,19 @@ function stopDance() {
   dancing = false;
   dance.pause();
   activeVideo = idle;
+  lastTime = -1;
   if (!reduced) idle.play().catch(() => {});
   stateLabel.textContent = "Right now: idle — breathing, listening";
 }
 dance.addEventListener("ended", stopDance);
 if (reduced) { idle.removeAttribute("autoplay"); idle.pause(); }
+
+// Kick the idle video explicitly (autoplay alone is unreliable on phones),
+// and key one frame immediately when a video actually starts playing, so
+// the canvas never shows a stale frame from the other video.
+if (!reduced) idle.play().catch(() => {});
+idle.addEventListener("playing", () => { if (activeVideo === idle) { lastTime = -1; keyFrame(); } });
+dance.addEventListener("playing", () => { if (activeVideo === dance) { lastTime = -1; keyFrame(); } });
 
 // ---------- Avatar tilt: follows cursor, turns toward the open panel ----------
 const stage = $("avatarStage");
@@ -142,7 +164,6 @@ document.querySelectorAll(".cube").forEach((cube) => {
     cube.style.setProperty("--ry", ry.toFixed(1) + "deg");
   };
   cube.addEventListener("pointerdown", (e) => {
-    if (window.innerWidth <= 960) return; // mobile: cubes are flat cards
     dragging = true; moved = false; startX = e.clientX; startY = e.clientY;
     cube.classList.add("dragging");
     try { cube.setPointerCapture(e.pointerId); } catch (_) {}

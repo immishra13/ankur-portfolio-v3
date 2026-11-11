@@ -6,13 +6,13 @@
    creative portfolio → Jakub primary · Jhey secondary · Emil selective.
    Custom cubic-bezier only. transform/opacity/filter only. */
 :root {
-  --bg: #070b14;
-  --bg-2: #0e1524;
-  --surface: #111a2e;
-  --surface-2: #16233a;
-  --line: rgba(255, 255, 255, 0.12);
-  --text: #eef2f8;
-  --muted: #9aa8bd;
+  --bg: #0d0a07;
+  --bg-2: #161009;
+  --surface: #1c150e;
+  --surface-2: #261c11;
+  --line: rgba(255, 232, 196, 0.13);
+  --text: #f5efe6;
+  --muted: #b3a48f;
   --accent: #e8590c;
   --accent-dark: #c94a08;
   --teal: #2dd4bf;
@@ -64,14 +64,16 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   height: 100dvh; min-height: 680px;
   overflow: hidden;
   background:
-    radial-gradient(700px 500px at 50% 42%, rgba(245, 158, 11, 0.14), transparent 65%),
-    radial-gradient(900px 600px at 85% 10%, rgba(45, 212, 191, 0.08), transparent 60%),
-    radial-gradient(800px 600px at 10% 90%, rgba(232, 89, 12, 0.1), transparent 60%),
+    radial-gradient(700px 500px at 50% 42%, rgba(245, 158, 11, 0.17), transparent 65%),
+    radial-gradient(900px 600px at 85% 10%, rgba(214, 128, 60, 0.12), transparent 60%),
+    radial-gradient(800px 600px at 10% 90%, rgba(232, 89, 12, 0.13), transparent 60%),
     var(--bg);
 }
 
 /* 3D name */
-.name-block { position: absolute; top: 22px; left: 0; right: 0; text-align: center; z-index: 3; pointer-events: none; }
+.name-block { position: absolute; top: 22px; left: 0; right: 0; text-align: center; z-index: 3; pointer-events: none; animation: name-in 0.6s var(--ease-out) both; }
+@keyframes name-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.intro-hi { margin: 0 0 2px; font-size: 1.05rem; font-weight: 700; color: var(--gold); letter-spacing: 0.05em; }
 .name-3d {
   margin: 0; font-family: "Fraunces", "Inter", serif; font-weight: 900;
   font-size: clamp(2.4rem, 6vw, 4rem); letter-spacing: 0.03em; color: #fff;
@@ -106,7 +108,9 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
   filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.55));
 }
 .avatar-canvas.dancing { animation: dance-pop 0.6s var(--bounce); }
-.avatar-video-src { display: none; }
+/* Source videos stay off-screen (never display:none — phones suspend
+   display:none videos, which is how the avatar went missing on load). */
+.avatar-video-src { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 @keyframes dance-pop { 0% { transform: scale(0.96); } 100% { transform: scale(1); } }
 .speech {
   display: inline-block; margin: 14px auto 0; max-width: 340px;
@@ -142,7 +146,7 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 }
 .cube-front {
   width: var(--w); height: var(--h); padding: 14px 10px;
-  background: rgba(17, 26, 46, 0.88);
+  background: rgba(28, 21, 14, 0.88);
   border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(6px);
@@ -160,7 +164,7 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 }
 .cube-left {
   width: var(--d); height: var(--h); left: calc((var(--w) - var(--d)) / 2);
-  background: #0a0f1c;
+  background: #120d08;
   transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
 }
 .cube-top {
@@ -170,7 +174,7 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 }
 .cube-bottom {
   width: var(--w); height: var(--d); top: calc((var(--h) - var(--d)) / 2);
-  background: #0a0f1c;
+  background: #120d08;
   transform: rotateX(-90deg) translateZ(calc(var(--h) / 2));
 }
 .cube-back {
@@ -219,7 +223,7 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 .panel-backdrop.open { opacity: 1; pointer-events: auto; }
 .panel {
   position: fixed; top: 0; right: 0; height: 100dvh; width: min(560px, 94vw);
-  background: rgba(14, 21, 36, 0.97); border-left: 1px solid var(--line);
+  background: rgba(22, 16, 9, 0.97); border-left: 1px solid var(--line);
   box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
   transform: translateX(102%);
   transition: transform 0.45s var(--ease-out);
@@ -302,6 +306,76 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 .proof-list strong { font-family: "Fraunces", serif; font-size: 1.9rem; color: var(--gold); line-height: 1.1; }
 .proof-list span:last-child { color: var(--muted); font-size: 0.92rem; }
 
+/* Journey tracker — a route map, not a plain list */
+.journey-path {
+  display: flex; align-items: center; gap: 10px; margin: 4px 0 14px;
+  font-weight: 800; font-size: 1.05rem; color: #fff;
+}
+.journey-line {
+  flex: 1; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--accent), var(--teal));
+}
+.journey-progress {
+  position: relative; height: 8px; background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px; overflow: visible; margin: 0 0 20px;
+}
+.journey-progress span {
+  display: block; height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--teal), var(--gold));
+  transform: scaleX(var(--p, 0.86)); transform-origin: left;
+}
+.journey-progress em {
+  position: absolute; right: 0; top: -22px; font-style: normal;
+  font-size: 0.78rem; font-weight: 700; color: var(--gold);
+}
+.journey-track { list-style: none; margin: 0; padding: 0; position: relative; }
+.journey-track::before {
+  content: ""; position: absolute; left: 10px; top: 10px; bottom: 10px; width: 2px;
+  background: linear-gradient(var(--gold), var(--accent), var(--teal)); opacity: 0.55;
+}
+.journey-track li { position: relative; padding: 0 0 14px 36px; }
+.journey-track li:last-child { padding-bottom: 0; }
+.track-dot {
+  position: absolute; left: 1px; top: 5px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--bg); border: 3px solid var(--gold); box-sizing: border-box;
+}
+.track-dot.track-now { background: var(--gold); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25); }
+.track-dot.track-dest { background: var(--teal); border-color: var(--teal); }
+.track-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+}
+.track-card strong { font-family: "Fraunces", serif; font-size: 1.25rem; color: var(--gold); display: block; line-height: 1.1; }
+.track-title { display: block; font-weight: 700; color: #fff; margin-top: 2px; }
+.track-card p { margin: 3px 0 0; color: #cdd7e4; font-size: 0.95rem; }
+.track-card-now { border-color: var(--gold); }
+.track-tag {
+  display: inline-block; margin-top: 8px; font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.08em; color: #fff; background: var(--accent);
+  border-radius: 999px; padding: 3px 9px;
+}
+
+/* Education cards — real images as icons, not dumped in a box */
+.edu-grid { display: grid; gap: 12px; }
+.edu-card {
+  display: flex; gap: 14px; align-items: center;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 14px;
+  transition: transform 0.18s var(--ease-snappy), border-color 0.18s var(--ease-snappy);
+}
+.edu-card:hover { transform: translateY(-2px); border-color: var(--gold); }
+.edu-card h4 { margin: 0 0 2px; color: #fff; font-size: 1.02rem; }
+.edu-card p { margin: 0; color: #cdd7e4; font-size: 0.93rem; line-height: 1.5; }
+.edu-place { color: var(--muted); font-size: 0.88rem; }
+.edu-visual {
+  flex-shrink: 0; width: 64px; height: 64px; border-radius: 14px;
+  object-fit: contain; display: flex; align-items: center; justify-content: center;
+}
+.edu-feature .edu-visual { width: 84px; height: 84px; border-radius: 16px; object-fit: cover; background: #fff; }
+.edu-logo { background: rgba(255, 255, 255, 0.94); padding: 6px; }
+.edu-logo img { width: 100%; height: 100%; object-fit: contain; }
+.edu-icon { background: rgba(232, 89, 12, 0.14); color: var(--accent); }
+
 /* MatchMate bot */
 .bot-label { display: block; font-weight: 700; font-size: 0.92rem; margin: 0 0 6px; color: var(--text); }
 #reqInput {
@@ -359,20 +433,35 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 
 /* ============ Phones / small screens ============ */
 @media (max-width: 960px) {
-  .orbit { height: auto; min-height: 0; overflow: visible; padding: 20px 16px 28px; }
-  .name-block { position: static; pointer-events: auto; }
-  .name-3d { font-size: 2.2rem; }
-  .avatar-stage { position: relative; left: auto; top: auto; transform: none; margin: 26px auto 0; }
-  .avatar-canvas { width: 240px; height: 427px; }
-  .avatar-glow { width: 280px; height: 280px; }
-  .orbit-boxes { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
-  .orbit-box { position: static; width: auto; min-height: 0; transform: none !important; perspective: none; }
-  .box-hire { grid-column: 1 / -1; width: auto; }
-  .cube-float { animation: none; }
-  .cube { transform: none !important; width: 100% !important; height: auto; min-height: 96px; }
-  .cube-face:not(.cube-front) { display: none; }
-  .cube-front { position: static; width: 100%; min-height: 96px; transform: none; }
-  .orbit-source { position: static; text-align: center; margin-top: 16px; pointer-events: auto; }
+  /* Phone: same orbit idea, smaller — the boxes stay AROUND the avatar,
+     they do not drop into a grid below him. */
+  .orbit { height: 100dvh; min-height: 720px; overflow: hidden; padding: 0; }
+  .name-block { top: 14px; }
+  .intro-hi { font-size: 0.95rem; }
+  .name-3d { font-size: 2.1rem; }
+  .intro-line { font-size: 1rem; }
+  .intro-sub { font-size: 0.85rem; }
+  .intro-hint { font-size: 0.85rem; }
+  .avatar-stage { margin-top: 34px; }
+  .avatar-canvas { width: 200px; height: 356px; }
+  .avatar-glow { width: 240px; height: 240px; }
+  .speech { font-size: 0.92rem; max-width: 300px; }
+  .orbit-boxes { position: absolute; inset: 0; }
+  .orbit-box { width: 104px; }
+  .cube { --w: 104px; --h: 80px; --d: 28px; touch-action: none; }
+  .cube-front { padding: 10px 6px; }
+  .box-icon svg { width: 20px; height: 22px; }
+  .box-label { font-size: 0.92rem; }
+  .box-sub { font-size: 0.68rem; }
+  .box-work { left: 2%; top: 25%; }
+  .box-skills { right: 2%; top: 25%; }
+  .box-education { left: 2%; top: 46%; }
+  .box-journey { right: 2%; top: 46%; }
+  .box-proof { left: 6%; top: 63%; }
+  .box-contact { right: 6%; top: 63%; }
+  .box-hire { bottom: 2%; width: 150px; }
+  .box-hire .cube { --w: 150px; --h: 80px; }
+  .orbit-source { left: 10px; bottom: 8px; }
   .panel, .panel.panel-left { width: 100vw; height: 86dvh; top: auto; bottom: 0; left: 0; right: 0; border-left: none; border-right: none; border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; transform: translateY(102%); box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5); }
   .panel.open, .panel.panel-left.open { transform: translateY(0); }
   body.panel-open .orbit-boxes { opacity: 1; }
