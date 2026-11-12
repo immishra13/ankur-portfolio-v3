@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.1.0.
+// Ankur Mishra — portfolio v5.1.1.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -96,13 +96,36 @@ function startKeying() {
 }
 function stopKeying() { keying = false; }
 
+// v5.1.1 fix — the video died after the first dance (UI test 2026-11-12):
+// when a new src loads, the browser ABORTS the pending play() promise
+// (AbortError). The old code treated that abort as a video failure and
+// showed the static photo forever. AbortError is EXPECTED during a src
+// switch — it is not a failure. Only a real failure (and only from the
+// latest switch) may show the fallback. And if the video later starts
+// playing, the canvas comes back — the fallback is never permanent.
+let playSeq = 0;
 function playSrc(src, loop) {
+  const seq = ++playSeq;
   video.loop = !!loop;
-  if (video.getAttribute("src") !== src) video.setAttribute("src", src);
-  video.load();
+  if (video.getAttribute("src") !== src) {
+    video.setAttribute("src", src);
+    video.load(); // only reload when the src actually changed
+  }
   const p = video.play();
-  if (p) p.catch(() => showFallback("Right now: video could not play — showing photo"));
+  if (p) p.catch((err) => {
+    if (err && err.name === "AbortError") return; // superseded by a newer switch — fine
+    if (seq !== playSeq) return; // an older switch — ignore it
+    showFallback("Right now: showing photo");
+  });
 }
+// Recovery: if the video starts playing after a fallback was shown
+// (a slow load, a retry), bring the canvas back.
+video.addEventListener("playing", () => {
+  const fb = $("avatarFallback");
+  if (fb) fb.hidden = true;
+  canvas.hidden = false;
+  startKeying();
+});
 
 function playIdle() {
   playSrc(IDLE_SRC, true);
@@ -121,7 +144,7 @@ function playDance(label) {
 if (reduced) {
   showFallback("Right now: photo — motion reduced");
 } else {
-  video.addEventListener("error", () => showFallback("Right now: video could not load — showing photo"));
+  video.addEventListener("error", () => showFallback("Right now: showing photo"));
   startKeying();
   playIdle();
 }
@@ -217,7 +240,12 @@ function openPanel(key) {
   backdrop.classList.add("open");
   panel.setAttribute("aria-hidden", "false");
   document.body.classList.add("panel-open");
-  panel.classList.toggle("panel-left", LEFT_PANELS.has(key));
+  const isLeft = LEFT_PANELS.has(key);
+  panel.classList.toggle("panel-left", isLeft);
+  // Side marker for the medium-width CSS: on small laptops the panel
+  // covers the avatar, so the stage shifts to the other side (v5.1.1).
+  document.body.classList.toggle("panel-side-left", isLeft);
+  document.body.classList.toggle("panel-side-right", !isLeft);
   // He dances (a different dance each time) and the speech bubble
   // narrates the section. The stage lifts above the panel backdrop
   // (CSS: body.panel-open .avatar-stage z-index 21), so he stays visible.
@@ -232,6 +260,7 @@ function closePanel() {
   backdrop.classList.remove("open");
   panel.setAttribute("aria-hidden", "true");
   document.body.classList.remove("panel-open");
+  document.body.classList.remove("panel-side-left", "panel-side-right");
   document.querySelectorAll(".orbit-box").forEach((b) => b.classList.remove("is-active"));
   if (!reduced) playIdle(); // back to the idle video
   setSpeech("I am back. Try another box — I am right here.");

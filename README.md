@@ -71,4 +71,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v4.2.0 — narrator only: walk-in, wave, stroll, tap reaction, dance and flex removed — the model only turns, points and narrates when a box opens
 - v5.0.0 — video avatar back, 3D model removed: idle video loops, dance videos (rotating) play when a box opens, live canvas chroma-key removes the white background
 - v5.1.0 — Certificates box: 8th cube, certificates moved out of Education into their own panel (6 cards incl. Nasha Mukt Yuva, new to the portfolio); new certificates go there from now on
+- v5.1.1 — video avatar fix: AbortError no longer kills the video after a dance (play() abort is a superseded switch, not a failure); canvas recovers on "playing"; medium-width (961–1280px) layout fixed — smaller avatar/name, narrower panel, stage shifts away from the open panel
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)

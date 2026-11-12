@@ -150,7 +150,7 @@ body.panel-open .avatar-stage { z-index: 21; }
   padding: 10px 14px; font-weight: 600; font-size: 0.95rem; line-height: 1.45;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
-.avatar-state { color: var(--gold); font-size: 0.88rem; font-weight: 600; margin: 8px 0 0; }
+.avatar-state { color: var(--gold); font-size: 0.88rem; font-weight: 600; margin: 8px auto 0; max-width: 320px; }
 
 /* Orbit boxes — real 3D cubes (cuboid W x H x D).
    Resting pose shows front + right + top faces. Hover turns the cube,
@@ -568,6 +568,21 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   .panel, .panel.panel-left { width: 100vw; height: 86dvh; top: auto; bottom: 0; left: 0; right: 0; border-left: none; border-right: none; border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; transform: translateY(102%); box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5); }
   .panel.open, .panel.panel-left.open { transform: translateY(0); }
   body.panel-open .orbit-boxes { opacity: 1; }
+}
+/* Medium widths (small laptops / tablets, 961–1280px) — v5.1.1 fix:
+   the wide-desktop layout crowds the avatar here: the name block
+   crossed his paag, and the 560px panel covered more than half of him.
+   So: smaller avatar + smaller name, a narrower panel, the stage pushed
+   a little lower, and when a panel is open the stage shifts AWAY from
+   it (app.js marks the body panel-side-left / panel-side-right). */
+@media (max-width: 1280px) and (min-width: 961px) {
+  .avatar-canvas { width: 240px; }
+  .avatar-stage { margin-top: 30px; }
+  .name-3d { font-size: 2.4rem; }
+  .intro-line { font-size: 1rem; }
+  .panel { width: min(420px, 88vw); }
+  body.panel-open.panel-side-left .avatar-stage { transform: translate(-50%, -50%) translateX(90px); }
+  body.panel-open.panel-side-right .avatar-stage { transform: translate(-50%, -50%) translateX(-90px); }
 }
 /* Short screens: shrink the avatar so nothing collides with the bottom boxes */
 @media (max-height: 840px) and (min-width: 961px) {
