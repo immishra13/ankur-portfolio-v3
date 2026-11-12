@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4.1.0">
+<link rel="stylesheet" href="styles.css?v=5.1.0">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
@@ -79,6 +79,16 @@
         <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
         <span class="cube-face cube-top" aria-hidden="true"></span>
         <span class="cube-face cube-back" aria-hidden="true"><span>Education</span></span>
+        <span class="cube-face cube-left" aria-hidden="true"></span>
+        <span class="cube-face cube-bottom" aria-hidden="true"></span>
+      </span></span>
+    </button>
+    <button type="button" class="orbit-box box-certificates" data-panel="certificates">
+      <span class="cube-float"><span class="cube" data-cube>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span><span class="box-label">Certificates</span><span class="box-sub">6 earned</span></span>
+        <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
+        <span class="cube-face cube-top" aria-hidden="true"></span>
+        <span class="cube-face cube-back" aria-hidden="true"><span>Certificates</span></span>
         <span class="cube-face cube-left" aria-hidden="true"></span>
         <span class="cube-face cube-bottom" aria-hidden="true"></span>
       </span></span>
@@ -216,14 +226,6 @@
           <div class="edu-body"><h4>B.E. CSE (AI &amp; ML)</h4><p class="edu-place">VIVA Institute of Technology, Virar — University of Mumbai · 2023–2027</p><p>Sem 6 SGPI 8.70 · CGPI 7.60</p></div>
         </article>
         <article class="edu-card">
-          <img class="edu-visual edu-logo-light" src="assets/nptel-logo.png" alt="NPTEL logo" loading="lazy">
-          <div class="edu-body"><h4>NPTEL — AI Concepts &amp; Techniques</h4><p class="edu-place">Scored 96</p></div>
-        </article>
-        <article class="edu-card">
-          <img class="edu-visual edu-logo-dark" src="https://cdn.simpleicons.org/kaggle/20BEFF" alt="Kaggle logo" loading="lazy" onerror="this.remove()">
-          <div class="edu-body"><h4>Intro to Machine Learning</h4><p class="edu-place">Kaggle Learn · Certificate of Completion · Issued Nov 2026</p></div>
-        </article>
-        <article class="edu-card">
           <img class="edu-visual" src="assets/shri-nawab-school.jpg" alt="Shri Nawab High School, Sheohar — cream school building" loading="lazy">
           <div class="edu-body"><h4>HSC — Shri Nawab High School</h4><p class="edu-place">Sheohar, Bihar · Bihar Board · 2022 · 64.40%</p></div>
         </article>
@@ -231,9 +233,25 @@
           <img class="edu-visual" src="assets/dps-school.jpg" alt="Delhi Public School — red and yellow school building" loading="lazy">
           <div class="edu-body"><h4>SSC — Sen Sec Delhi Public School</h4><p class="edu-place">Lagma, Sitamarhi, Bihar · CBSE · 2020 · 64.60%</p></div>
         </article>
+      </div>
+      <p class="panel-note">Sem 7: Deep Learning, Big Data Analytics, Blockchain, NLP, MIS.</p>
+    </div>
+
+    <div class="panel-section theme-certificates" data-section="certificates">
+      <p class="panel-eyebrow">Certificates — proof of learning</p>
+      <p class="panel-intro">Every certificate I earned — courses, quizzes and programs.</p>
+      <div class="edu-grid">
         <article class="edu-card">
-          <img class="edu-visual edu-logo-light" src="assets/kushal-yuva-logo.png" alt="Kushal Yuva Program logo" loading="lazy">
-          <div class="edu-body"><h4>Kushal Yuva Program</h4><p class="edu-place">BS-CIT · BS-CLS · BS-CSS — IT, language &amp; soft skills · Nov 2021–Mar 2022 · Grade A+</p></div>
+          <img class="edu-visual edu-logo-dark" src="https://cdn.simpleicons.org/kaggle/20BEFF" alt="Kaggle logo" loading="lazy" onerror="this.remove()">
+          <div class="edu-body"><h4>Intro to Machine Learning</h4><p class="edu-place">Kaggle Learn · Certificate of Completion · Issued Nov 2026</p><p><a class="edu-link" href="https://www.kaggle.com/learn/certification/ankurkrishnamishra/intro-to-machine-learning" target="_blank" rel="noopener">View credential →</a></p></div>
+        </article>
+        <article class="edu-card">
+          <svg class="edu-visual edu-visual-medal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+          <div class="edu-body"><h4>Nasha Mukt Yuva Quiz</h4><p class="edu-place">MYBharat · Ministry of Social Justice &amp; Empowerment · Certificate of Participation · Nov 2026</p></div>
+        </article>
+        <article class="edu-card">
+          <img class="edu-visual edu-logo-light" src="assets/nptel-logo.png" alt="NPTEL logo" loading="lazy">
+          <div class="edu-body"><h4>NPTEL — AI Concepts &amp; Techniques</h4><p class="edu-place">Scored 96</p></div>
         </article>
         <article class="edu-card">
           <img class="edu-visual edu-logo-dark" src="https://cdn.simpleicons.org/mongodb/47A248" alt="MongoDB logo" loading="lazy" onerror="this.remove()">
@@ -243,8 +261,12 @@
           <img class="edu-visual edu-logo-dark" src="https://cdn.simpleicons.org/google/4285F4" alt="Google logo" loading="lazy" onerror="this.remove()">
           <div class="edu-body"><h4>Foundations of Cybersecurity</h4><p class="edu-place">Google Cybersecurity Certificate · Coursera</p></div>
         </article>
+        <article class="edu-card">
+          <img class="edu-visual edu-logo-light" src="assets/kushal-yuva-logo.png" alt="Kushal Yuva Program logo" loading="lazy">
+          <div class="edu-body"><h4>Kushal Yuva Program</h4><p class="edu-place">BS-CIT · BS-CLS · BS-CSS — IT, language &amp; soft skills · Nov 2021–Mar 2022 · Grade A+</p></div>
+        </article>
       </div>
-      <p class="panel-note">Sem 7: Deep Learning, Big Data Analytics, Blockchain, NLP, MIS.</p>
+      <p class="panel-note">New certificates go here from now on — this panel, not Education.</p>
     </div>
 
     <div class="panel-section theme-journey" data-section="journey">
@@ -356,6 +378,6 @@
 </aside>
 <div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
-<script src="app.js?v=5.0.0"></script>
+<script src="app.js?v=5.1.0"></script>
 </body>
 </html>

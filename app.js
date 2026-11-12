@@ -1,12 +1,15 @@
-// Ankur Mishra — portfolio v5.0.0.
+// Ankur Mishra — portfolio v5.1.0.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
 // section). The videos are shot on white, so a live canvas keys the white
 // out and draws him on the dark page. NO 3D model (removed 2026-11-11,
 // Ankur's call), no side graphics.
-// Real 3D cubes orbit around him: hover turns, drag rotates, tap opens a
-// panel on THAT box's side.
+// 8 boxes now: Work, Skills, Education, Certificates (new, v5.1.0 —
+// certificates moved out of Education so the two stop mixing; new
+// certificates go to the Certificates panel from now on), Journey, Proof,
+// Hire Me, Contact. Real 3D cubes orbit around him: hover turns, drag
+// rotates, tap opens a panel on THAT box's side.
 // MatchMate bot: recruiter posts a requirement, bot checks the match honestly.
 // Motion: transform / opacity only. prefers-reduced-motion respected.
 
@@ -177,18 +180,20 @@ document.querySelectorAll(".cube").forEach((cube) => {
 });
 
 // ---------- Panels ----------
-// The panel opens on the same side as the box that was tapped, and the
-// MODEL turns toward it and points at it with his own arm.
-// Left boxes: Work, Education, Proof.
-const LEFT_PANELS = new Set(["work", "education", "proof"]);
+// The panel opens on the same side as the box that was tapped. The video
+// avatar dances and the speech bubble narrates the section.
+// Left boxes: Work, Education, Certificates, Proof.
+const LEFT_PANELS = new Set(["work", "education", "certificates", "proof"]);
 const TITLES = {
   work: "Work", skills: "Skills", education: "Education",
+  certificates: "Certificates",
   journey: "Journey", proof: "Proof", hire: "Hire Me — MatchMate", contact: "Contact",
 };
 const SPEECH = {
   work: "Here is my work — all live, check it yourself.",
   skills: "These are the tools I actually use — not a copied list.",
   education: "My education journey — from school to VIVA.",
+  certificates: "My certificates — every course and quiz I finished, with proof.",
   journey: "2020 to 2027 — I built something every year.",
   proof: "Numbers speak. Promises don't.",
   hire: "Write your requirement — I will check how much I match.",

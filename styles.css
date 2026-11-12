@@ -23,6 +23,7 @@
   --pink: #d6336c;
   --green: #2f9e44;
   --violet: #9775fa;
+  --cert: #38bdf8;
   --radius: 18px;
   --radius-sm: 12px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -219,6 +220,7 @@ body.panel-open .avatar-stage { z-index: 21; }
 .box-work { --box-accent: var(--accent); left: 3%; top: 24%; }
 .box-skills { --box-accent: var(--teal); right: 3%; top: 24%; }
 .box-education { --box-accent: var(--gold); left: 3%; top: 56%; }
+.box-certificates { --box-accent: var(--cert); left: 3%; top: 40%; }
 .box-journey { --box-accent: var(--violet); right: 3%; top: 56%; }
 .box-proof { --box-accent: var(--green); left: 13%; bottom: 5%; }
 .box-contact { --box-accent: var(--pink); right: 13%; bottom: 5%; }
@@ -229,6 +231,7 @@ body.panel-open .avatar-stage { z-index: 21; }
 .box-hire .box-sub { color: rgba(255, 255, 255, 0.85); }
 .box-skills .cube-float { animation-delay: -1s; }
 .box-education .cube-float { animation-delay: -2s; }
+.box-certificates .cube-float { animation-delay: -3.5s; }
 .box-journey .cube-float { animation-delay: -3s; }
 .box-proof .cube-float { animation-delay: -1.5s; }
 .box-contact .cube-float { animation-delay: -2.5s; }
@@ -297,6 +300,7 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 .theme-work { --panel-accent: var(--teal); }
 .theme-skills { --panel-accent: var(--violet); }
 .theme-education { --panel-accent: var(--gold); }
+.theme-certificates { --panel-accent: var(--cert); }
 .theme-journey { --panel-accent: var(--accent); }
 .theme-proof { --panel-accent: var(--green); }
 .theme-hire { --panel-accent: var(--accent); }
@@ -459,6 +463,10 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 .edu-visual-viva { object-position: center 12%; }
 .edu-visual.edu-logo-light { object-fit: contain; padding: 5px; background: #f7f1e6; }
 .edu-visual.edu-logo-dark { object-fit: contain; padding: 12px; background: #14100a; }
+.edu-visual-medal { color: var(--gold); padding: 14px; }
+/* Credential link inside a certificate card (Kaggle has a public URL). */
+.edu-link { color: var(--gold); font-weight: 600; font-size: 0.88rem; text-decoration: none; }
+.edu-link:hover { text-decoration: underline; }
 
 /* MatchMate bot */
 .bot-label { display: block; font-weight: 700; font-size: 0.92rem; margin: 0 0 6px; color: var(--text); }
@@ -523,7 +531,9 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   /* Phone fix (v4.1.0): the name text touched the screen edges, and the
      stage sat too LOW — its speech bubble + state label overlapped the
      Proof/Contact boxes. Smaller mount, stage lifted UP (negative
-     margin), compact bubble, Proof/Contact moved down to 71%. */
+     margin), compact bubble, Proof/Contact moved down to 71%.
+     v5.1.0: 8 boxes now — rows re-spaced to 24/40/56/72% so the new
+     Certificates box fits on the left without crowding Education or Proof. */
   .name-block { top: 14px; padding: 0 16px; box-sizing: border-box; }
   .intro-hi { font-size: 0.95rem; }
   .name-3d { font-size: 2.1rem; }
@@ -545,12 +555,13 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   .box-icon svg { width: 20px; height: 22px; }
   .box-label { font-size: 0.92rem; }
   .box-sub { font-size: 0.68rem; }
-  .box-work { left: 2%; top: 25%; }
-  .box-skills { right: 2%; top: 25%; }
-  .box-education { left: 2%; top: 46%; }
-  .box-journey { right: 2%; top: 46%; }
-  .box-proof { left: 6%; top: 71%; }
-  .box-contact { right: 6%; top: 71%; }
+  .box-work { left: 2%; top: 24%; }
+  .box-skills { right: 2%; top: 24%; }
+  .box-education { left: 2%; top: 40%; }
+  .box-journey { right: 2%; top: 40%; }
+  .box-certificates { left: 2%; top: 56%; }
+  .box-proof { left: 6%; top: 72%; }
+  .box-contact { right: 6%; top: 72%; }
   .box-hire { bottom: 2%; width: 150px; }
   .box-hire .cube { --w: 150px; --h: 80px; }
   .orbit-source { left: 10px; bottom: 8px; }

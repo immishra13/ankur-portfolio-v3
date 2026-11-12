@@ -156,6 +156,12 @@ Creative portfolio → Jakub primary · Jhey secondary · Emil selective.
 ## v3.6.1 — Hotfix: pointing hand was never uploaded (2026-11-11)
 - Visual check caught a broken-image placeholder beside the dancing avatar in every excited state. Root cause: `assets/point-hand.svg` was created locally but never included in the v3.6 push manifest (only the 5 text files were listed) — so the live page referenced a 404. Fixed by pushing the file itself, plus the two stale header comments (styles.css said v3.5, app.js said v3.3). Lesson: when a new asset is referenced, the push manifest must list it — verify every new asset URL returns 200 live, not just the text files.
 
+## v5.1.0 — Certificates box (2026-11-12)
+- Ankur's call (2026-11-12 14:49 IST): Education and certificates were mixing — add an 8th cube box "Certificates" and put certificates there from now on.
+- New box (sky-blue accent --cert #38bdf8, medal SVG icon, sub "6 earned"): desktop left 3% top 40% (between Work 24% and Education 56%); phone rows re-spaced to 24/40/56/72% so it fits on the left without crowding Education or Proof.
+- New Certificates panel (theme-certificates): 6 cards — Kaggle Intro to ML (Nov 2026, with "View credential" link to the Kaggle cert URL), Nasha Mukt Yuva Quiz (MYBharat, Nov 2026, medal SVG — this certificate was on LinkedIn but NOT on the portfolio before; now added), NPTEL AI Concepts & Techniques (96), MongoDB (Jun 2025), Google Foundations of Cybersecurity (Coursera), Kushal Yuva Program (A+). Panel note: "New certificates go here from now on — this panel, not Education."
+- Education panel now has only the 3 schools (VIVA feature, Shri Nawab, DPS). app.js: LEFT_PANELS + "certificates", TITLES + "Certificates", SPEECH + "My certificates — every course and quiz I finished, with proof." (Also fixed a stale v4 comment in app.js that still said the MODEL points at the panel.)
+
 ## v5.0.0 — Video avatar back, 3D model removed (2026-11-11)
 - Ankur's call (2026-11-11 20:41 IST, repeated — he had asked this at 20:20 IST, then briefly changed to narrator-only at 20:22 IST, then confirmed the removal): REMOVE the 3D model and REPLACE it with his avatar's dance videos, used time to time. No more back-and-forth — this is final.
 - index.html: the avatar3d mount + script tag are GONE; the stage now has `<video id="avatarVideo" src="avatar-idle.mp4" muted loop playsinline hidden>` + `<canvas id="avatarCanvas" class="avatar-canvas" width="360" height="640">` + the avatar.png poster fallback (shown only if the video cannot play).
