@@ -73,4 +73,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v5.1.0 — Certificates box: 8th cube, certificates moved out of Education into their own panel (6 cards incl. Nasha Mukt Yuva, new to the portfolio); new certificates go there from now on
 - v5.1.1 — video avatar fix: AbortError no longer kills the video after a dance (play() abort is a superseded switch, not a failure); canvas recovers on "playing"; medium-width (961–1280px) layout fixed — smaller avatar/name, narrower panel, stage shifts away from the open panel
 - v5.1.2 — first dance instant (dance1 preloaded, first open always plays it); FixMateHub card updated to 2000+ customers (was 1000+, outdated)
+- v5.1.3 — preload REMOVED: it made the first dance start fast but freeze on a standing pose by +2s; back to v5.1.1 playback (random dances, 1–3s start-up lag is acceptable)
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)
