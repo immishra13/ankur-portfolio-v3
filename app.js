@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.1.1.
+// Ankur Mishra — portfolio v5.1.2.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -133,8 +133,15 @@ function playIdle() {
 }
 function playDance(label) {
   // A different dance from the last one — time to time, a new dance.
+  // v5.1.2: the FIRST dance is always dance1, because it is preloaded
+  // in the page head — so the first box-open dances instantly instead
+  // of waiting 1–3s for the video to buffer. After that, random.
   let idx;
-  do { idx = Math.floor(Math.random() * DANCES.length); } while (DANCES.length > 1 && idx === lastDance);
+  if (lastDance === -1) {
+    idx = 0;
+  } else {
+    do { idx = Math.floor(Math.random() * DANCES.length); } while (DANCES.length > 1 && idx === lastDance);
+  }
   lastDance = idx;
   playSrc(DANCES[idx], true); // loop while the panel is open
   stateLabel.textContent = label || "Right now: dancing";
