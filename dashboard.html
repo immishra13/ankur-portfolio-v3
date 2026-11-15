@@ -46,19 +46,17 @@
   <div class="card">
     <h2>💬 Visitor feedback (<span id="fbCount">0</span>)</h2>
     <div id="fbList"><p class="empty">Loading…</p></div>
-    <p class="empty">Feedback is now sent straight from the portfolio to Ankur's email — no GitHub, no account. Older feedback posted as GitHub Issues still shows below. <a href="https://github.com/immishra13/ankur-portfolio-v3/issues?q=is%3Aissue+Feedback+from" target="_blank" rel="noopener" class="fb-link">View all on GitHub →</a></p>
+    <p class="empty">Feedback written on the portfolio is saved here as text — no email, no redirect. New feedback appears below as soon as someone sends it. <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQmuAyZ0OxeuDua-bHJchK6x3H2Uj0VnmUm5ozGVX_Bs-7VQI3fwr3ukr82YgaO9GStGNo3IUNheLtG/pubhtml" target="_blank" rel="noopener" class="fb-link">View all in the Sheet →</a></p>
   </div>
 </div>
 
 <script>
-// Since v5.3.0, new feedback is sent straight from the portfolio to
-// Ankur's email (FormSubmit) — it no longer goes through GitHub, so
-// it does not appear here. This list only shows older feedback that
-// was posted as GitHub Issues. The public GitHub API needs no auth
-// to read them. We filter client-side by the "Feedback from ..."
-// title the old feedback box set. Escape all visitor-written text
+// Feedback is saved as text in a Google Form ("Feedback & Suggestions").
+// The Form's responses live in a published Google Sheet; this page reads
+// that Sheet as CSV (public, no auth) and lists the feedback, newest first.
+// Columns: Timestamp, Name, Message. Escape all visitor-written text
 // before rendering (XSS safety).
-const ISSUES_URL = "https://api.github.com/repos/immishra13/ankur-portfolio-v3/issues?state=open&per_page=50";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQmuAyZ0OxeuDua-bHJchK6x3H2Uj0VnmUm5ozGVX_Bs-7VQI3fwr3ukr82YgaO9GStGNo3IUNheLtG/pub?output=csv";
 
 function esc(s) {
   return String(s == null ? "" : s)
@@ -66,38 +64,65 @@ function esc(s) {
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
+// Minimal CSV parser: handles quoted fields, embedded commas/newlines,
+// and doubled quotes ("").
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = "", inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else { inQuotes = false; }
+      } else { field += c; }
+    } else if (c === '"') {
+      inQuotes = true;
+    } else if (c === ",") {
+      row.push(field); field = "";
+    } else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(field); field = "";
+      if (row.length > 1 || row[0] !== "") rows.push(row);
+      row = [];
+    } else { field += c; }
+  }
+  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
 async function load() {
   const list = document.getElementById("fbList");
   const meta = document.getElementById("updatedAt");
   meta.textContent = "Last updated: " + new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) + " IST";
   try {
-    const res = await fetch(ISSUES_URL, { headers: { "Accept": "application/vnd.github+json" } });
+    const res = await fetch(SHEET_CSV_URL);
     if (!res.ok) throw new Error("HTTP " + res.status);
-    const issues = await res.json();
-    const all = Array.isArray(issues) ? issues : [];
-    // Only feedback issues (title set by the portfolio feedback box).
-    // Exclude pull requests (they appear in the issues list too).
-    const fb = all.filter((it) => !it.pull_request && (it.title || "").toLowerCase().startsWith("feedback from"));
-    document.getElementById("fbCount").textContent = fb.length;
-    if (!fb.length) {
+    const text = await res.text();
+    const rows = parseCSV(text);
+    // First row is the header (Timestamp,Name,Message); rest are feedback.
+    const data = rows.slice(1).filter((r) => (r[2] || "").trim() !== "");
+    document.getElementById("fbCount").textContent = data.length;
+    if (!data.length) {
       list.innerHTML = '<p class="empty">No feedback yet — when someone sends feedback from the portfolio, it will appear here.</p>';
       return;
     }
-    // Newest first (API returns newest first already).
-    const rows = fb.map(function (it) {
-      const title = esc(it.title || "Feedback");
-      // Body starts with the visitor's message; strip the auto footer line.
-      let msg = String(it.body || "").replace(/\n\n— Sent from the portfolio feedback box.*$/s, "").trim();
-      const name = title.replace(/^Feedback from\s+/i, "");
-      const when = it.created_at ? new Date(it.created_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) : "";
-      const link = esc(it.html_url || "");
+    // Newest first (Sheet appends newest last, so reverse).
+    const rowsHtml = data.slice().reverse().map(function (r) {
+      const when = r[0] || "";
+      const name = r[1] || "Anonymous";
+      const msg = r[2] || "";
+      let whenStr = "";
+      if (when) {
+        const d = new Date(when);
+        if (!isNaN(d)) whenStr = d.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+        else whenStr = when;
+      }
       return '<div class="fb"><span class="fb-name">' + esc(name) + '</span>' +
-        (when ? '<span class="fb-date">' + esc(when) + ' IST</span>' : "") +
-        '<p class="fb-msg">' + esc(msg) + '</p>' +
-        (link ? '<a class="fb-link" href="' + link + '" target="_blank" rel="noopener">View on GitHub →</a>' : "") +
-        '</div>';
+        (whenStr ? '<span class="fb-date">' + esc(whenStr) + ' IST</span>' : "") +
+        '<p class="fb-msg">' + esc(msg) + '</p></div>';
     }).join("");
-    list.innerHTML = rows;
+    list.innerHTML = rowsHtml;
   } catch (e) {
     list.innerHTML = '<p class="err">Could not load feedback right now. Check your connection and refresh.</p>';
   }

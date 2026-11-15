@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.3.0.
+// Ankur Mishra — portfolio v5.3.1.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -447,13 +447,16 @@ document.querySelectorAll(".bot-chips button").forEach((b) => {
   });
 });
 
-// ---------- Feedback panel (v5.3.0) ----------
-// Feedback is sent straight from the portfolio via FormSubmit (free,
-// no account, no redirect): the form POSTs to FormSubmit's AJAX
-// endpoint and the message lands in Ankur's email. No GitHub, no
-// sign-in, anonymous by default (name is optional). One-time setup:
-// FormSubmit emails Ankur an activation link the first time a
-// message is sent — he clicks it once and delivery starts.
+// ---------- Feedback panel (v5.3.1) ----------
+// Feedback is saved as text in a Google Form ("Feedback & Suggestions")
+// and shown on Ankur's dashboard (dashboard.html reads the Form's
+// published response Sheet as CSV). The form POSTs to the Google Form
+// response endpoint — no email, no redirect, no sign-in, no token,
+// anonymous by default (name is optional). Google Forms does not send
+// CORS headers, so we use mode "no-cors": the request is sent and the
+// response is opaque (we cannot read it), but the submission lands in
+// the Form. If the fetch itself throws (network error), we show an error.
+const FB_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeCJ_kgxS6e-CZVU32Joum9qtXbAxs7KX5NE07wnSDlRHFuLw/formResponse";
 $("fbSubmit").addEventListener("click", async () => {
   const status = $("fbStatus");
   const btn = $("fbSubmit");
@@ -465,26 +468,19 @@ $("fbSubmit").addEventListener("click", async () => {
     return;
   }
   btn.disabled = true;
-  status.textContent = "Sending...";
+  status.textContent = "Saving...";
   status.classList.remove("err");
   try {
-    const res = await fetch("https://formsubmit.co/ajax/ankurkrishnamishra@gmail.com", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({
-        name: name,
-        message: msg.slice(0, 1000),
-        _subject: "Portfolio feedback from " + name,
-        _captcha: "false",
-      }),
-    });
-    if (!res.ok) throw new Error("send failed");
-    status.textContent = "Thank you! Your feedback was sent to Ankur.";
+    const body = new URLSearchParams();
+    body.set("entry.1528887846", name);
+    body.set("entry.129910801", msg.slice(0, 1000));
+    await fetch(FB_FORM_URL, { method: "POST", mode: "no-cors", body: body });
+    status.textContent = "Thank you! Your feedback was saved — you can see it on Ankur's dashboard.";
     status.classList.remove("err");
     $("fbMsg").value = "";
     $("fbName").value = "";
   } catch (err) {
-    status.textContent = "Couldn't send right now — please try again, or email Ankur directly from the Contact box.";
+    status.textContent = "Couldn't save right now — please try again, or email Ankur directly from the Contact box.";
     status.classList.add("err");
   } finally {
     btn.disabled = false;
