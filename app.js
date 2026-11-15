@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.2.2.
+// Ankur Mishra — portfolio v5.3.0.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -211,6 +211,7 @@ const TITLES = {
   work: "Work", skills: "Skills", education: "Education",
   certificates: "Certificates",
   journey: "Journey", proof: "Proof", hire: "Hire Me — MatchMate", contact: "Contact",
+  feedback: "Feedback",
 };
 const SPEECH = {
   work: "Here is my work — all live, check it yourself.",
@@ -221,6 +222,7 @@ const SPEECH = {
   proof: "Numbers speak. Promises don't.",
   hire: "Write your requirement — I will check how much I match.",
   contact: "Let's talk directly.",
+  feedback: "Say it straight — good, bad, anything. It comes straight to me.",
 };
 const panel = $("panel");
 const backdrop = $("panelBackdrop");
@@ -445,32 +447,16 @@ document.querySelectorAll(".bot-chips button").forEach((b) => {
   });
 });
 
-// ---------- Feedback modal (v5.2.0) ----------
-// Visits are counted by the visitorbadge.io image in index.html (it
-// increments on every page load — no JS needed). Feedback is submitted
-// as a GitHub Issue (label "feedback") so it shows on the dashboard,
-// which reads the repo's issues via the public GitHub API. No account
-// or backend of our own is needed for either.
-const fbModal = $("feedbackModal");
-const fbBackdrop = $("feedbackBackdrop");
-function openFeedback() {
-  fbModal.classList.add("open");
-  fbBackdrop.classList.add("open");
-  fbModal.setAttribute("aria-hidden", "false");
-  $("fbMsg").focus();
-}
-function closeFeedback() {
-  fbModal.classList.remove("open");
-  fbBackdrop.classList.remove("open");
-  fbModal.setAttribute("aria-hidden", "true");
-}
-$("feedbackBtn").addEventListener("click", openFeedback);
-$("feedbackClose").addEventListener("click", closeFeedback);
-fbBackdrop.addEventListener("click", closeFeedback);
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeFeedback(); });
-
-$("fbSubmit").addEventListener("click", () => {
+// ---------- Feedback panel (v5.3.0) ----------
+// Feedback is sent straight from the portfolio via FormSubmit (free,
+// no account, no redirect): the form POSTs to FormSubmit's AJAX
+// endpoint and the message lands in Ankur's email. No GitHub, no
+// sign-in, anonymous by default (name is optional). One-time setup:
+// FormSubmit emails Ankur an activation link the first time a
+// message is sent — he clicks it once and delivery starts.
+$("fbSubmit").addEventListener("click", async () => {
   const status = $("fbStatus");
+  const btn = $("fbSubmit");
   const msg = $("fbMsg").value.trim();
   const name = $("fbName").value.trim() || "Anonymous";
   if (!msg) {
@@ -478,15 +464,29 @@ $("fbSubmit").addEventListener("click", () => {
     status.classList.add("err");
     return;
   }
-  const title = "Feedback from " + name;
-  const body = msg.slice(0, 1000) + "\n\n— Sent from the portfolio feedback box (ankur-portfolio-v3).";
-  const url = "https://github.com/immishra13/ankur-portfolio-v3/issues/new"
-    + "?title=" + encodeURIComponent(title)
-    + "&body=" + encodeURIComponent(body);
-  window.open(url, "_blank", "noopener");
-  status.textContent = "Opening GitHub to post your feedback — it will appear on Ankur's dashboard once submitted. (Needs a GitHub account; no GitHub? Email Ankur directly from the Contact box.)";
+  btn.disabled = true;
+  status.textContent = "Sending...";
   status.classList.remove("err");
-  $("fbMsg").value = "";
-  $("fbName").value = "";
-  setTimeout(closeFeedback, 2500);
+  try {
+    const res = await fetch("https://formsubmit.co/ajax/ankurkrishnamishra@gmail.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        name: name,
+        message: msg.slice(0, 1000),
+        _subject: "Portfolio feedback from " + name,
+        _captcha: "false",
+      }),
+    });
+    if (!res.ok) throw new Error("send failed");
+    status.textContent = "Thank you! Your feedback was sent to Ankur.";
+    status.classList.remove("err");
+    $("fbMsg").value = "";
+    $("fbName").value = "";
+  } catch (err) {
+    status.textContent = "Couldn't send right now — please try again, or email Ankur directly from the Contact box.";
+    status.classList.add("err");
+  } finally {
+    btn.disabled = false;
+  }
 });

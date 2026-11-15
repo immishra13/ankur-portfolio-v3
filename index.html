@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=5.2.2">
+<link rel="stylesheet" href="styles.css?v=5.3.0">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
@@ -124,6 +124,17 @@
         <span class="cube-face cube-bottom" aria-hidden="true"></span>
       </span></span>
     </button>
+    <button type="button" class="orbit-box box-feedback" data-panel="feedback">
+      <span class="cube-float"><span class="cube" data-cube>
+        <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span class="box-label">Feedback</span><span class="box-sub">Say it here</span></span>
+        <span class="cube-face cube-right" aria-hidden="true"><span>Open →</span></span>
+        <span class="cube-face cube-top" aria-hidden="true"></span>
+        <span class="cube-face cube-back" aria-hidden="true"><span>Feedback</span></span>
+        <span class="cube-face cube-left" aria-hidden="true"></span>
+        <span class="cube-face cube-bottom" aria-hidden="true"></span>
+      </span></span>
+    </button>
+
     <button type="button" class="orbit-box box-proof" data-panel="proof">
       <span class="cube-float"><span class="cube" data-cube>
         <span class="cube-face cube-front"><span class="box-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4a2 2 0 0 0 2 4h1M17 6h3a2 2 0 0 1-2 4h-1"/></svg></span><span class="box-label">Proof</span><span class="box-sub">Results</span></span>
@@ -157,7 +168,6 @@
   </nav>
 
   <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a></p>
-  <p class="feedback-link"><button type="button" class="feedback-btn" id="feedbackBtn">💬 Wanna give any suggestions or feedback?</button></p>
   <p class="visit-badge"><img src="https://api.visitorbadge.io/api/visitors?path=ankur-portfolio-v3&label=Visitors&countColor=%23263759" alt="Portfolio visitors" loading="lazy"></p>
 </div>
 
@@ -421,28 +431,22 @@
       <p class="panel-note">Fastest reply: WhatsApp. Work talk: Gmail or LinkedIn.</p>
     </div>
 
+    <div class="panel-section theme-feedback" data-section="feedback">
+      <p class="panel-eyebrow">Say it straight</p>
+      <p class="panel-intro">Tell Ankur what you liked, what can be better, or any suggestion. It goes straight from here — no account, no redirect. You can stay anonymous.</p>
+      <label class="bot-label" for="fbName">Your name (optional)</label>
+      <input type="text" id="fbName" maxlength="60" placeholder="Your name">
+      <label class="bot-label" for="fbMsg">Your suggestion / feedback</label>
+      <textarea id="fbMsg" rows="4" maxlength="1000" placeholder="Write your feedback here..."></textarea>
+      <button type="button" class="btn btn-primary feedback-submit" id="fbSubmit">Send feedback</button>
+      <p class="feedback-status" id="fbStatus" aria-live="polite"></p>
+      <p class="panel-note">No account needed. Your message goes directly to Ankur's email.</p>
+    </div>
+
   </div>
 </aside>
 <div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
-<!-- Feedback modal -->
-<div class="feedback-modal" id="feedbackModal" aria-hidden="true">
-  <div class="feedback-box">
-    <div class="feedback-head">
-      <h3>Your feedback</h3>
-      <button type="button" class="feedback-close" id="feedbackClose" aria-label="Close feedback">×</button>
-    </div>
-    <p class="feedback-sub">Tell Ankur what you liked, what can be better, or any suggestion. Sending opens a pre-filled GitHub Issue — once you post it, it shows on his dashboard. No GitHub account? <a href="mailto:ankurkrishnamishra@gmail.com?subject=Portfolio%20feedback">Email Ankur directly</a> instead.</p>
-    <label class="bot-label" for="fbName">Your name (optional)</label>
-    <input type="text" id="fbName" maxlength="60" placeholder="Your name">
-    <label class="bot-label" for="fbMsg">Your suggestion / feedback</label>
-    <textarea id="fbMsg" rows="4" maxlength="1000" placeholder="Write your feedback here..."></textarea>
-    <button type="button" class="btn btn-primary feedback-submit" id="fbSubmit">Send feedback</button>
-    <p class="feedback-status" id="fbStatus" aria-live="polite"></p>
-  </div>
-</div>
-<div class="feedback-backdrop" id="feedbackBackdrop" aria-hidden="true"></div>
-
-<script src="app.js?v=5.2.2"></script>
+<script src="app.js?v=5.3.0"></script>
 </body>
 </html>
