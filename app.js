@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.3.4.
+// Ankur Mishra — portfolio v5.3.5.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -19,6 +19,10 @@
 // it splits apart with a ripple); Case Study Card on all boxes (book-open
 // pivot + sliding OPEN tab); Canvas Cursor Effect replaces the follow-dot
 // (warm gold spring-ribbon trails, click-sparks kept).
+// v5.3.5 (2026-11-15): Split Text fix — the letters row was left-aligned
+// (name sat at the viewport's left edge) and got no pointer events
+// (.name-block is pointer-events: none), so the hover never fired.
+// Now centred (left 50% + translateX -50%) with pointer-events: auto.
 
 const $ = (id) => document.getElementById(id);
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

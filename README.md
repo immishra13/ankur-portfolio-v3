@@ -76,4 +76,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v5.1.3 — preload REMOVED: it made the first dance start fast but freeze on a standing pose by +2s; back to v5.1.1 playback (random dances, 1–3s start-up lag is acceptable)
 - v5.3.3 — Mage-UI cursor effects: gold follow-dot (desktop) + gold click-sparks on box/avatar taps (touch too), Proof numbers count up, gradient shimmer on the name, preloader until the first avatar frame
 - v5.3.4 — Mage-UI: Split Text on the name (hover a letter, it splits apart), Case Study Card on all boxes (book-open pivot + sliding OPEN tab), Canvas Cursor ribbon replaces the follow-dot (warm gold spring trails, sparks kept)
+- v5.3.5 — Split Text fix: letters row centred (was left-aligned) + pointer-events enabled (the header blocks hover otherwise), so the split actually triggers
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)

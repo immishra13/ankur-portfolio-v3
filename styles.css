@@ -117,10 +117,17 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
    the h1's own background is removed and the halves carry the gradient
    (so no-JS still shows the plain gradient name). The sizer is the
    invisible full text that keeps the h1's size and the accessible name;
-   its shadow is off so it leaves no ghost behind the letters. */
+   its shadow is off so it leaves no ghost behind the letters.
+   v5.3.5 fix: the letters row is centred (left 50% + translateX -50% —
+   it was left-aligned, so the name sat at the viewport's left edge) and
+   gets pointer-events: auto (the .name-block is pointer-events: none,
+   so without this the hover never fired at all). */
 .name-3d.is-split { background: none; animation: none; }
 .split-sizer { text-shadow: none; }
-.split-letters { position: absolute; top: 0; left: 0; display: flex; }
+.split-letters {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  display: flex; pointer-events: auto;
+}
 .split-letter {
   position: relative; display: inline-flex; flex-direction: column;
   height: 1em; line-height: 1;
