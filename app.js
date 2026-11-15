@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.3.1.
+// Ankur Mishra — portfolio v5.3.2.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -472,8 +472,8 @@ $("fbSubmit").addEventListener("click", async () => {
   status.classList.remove("err");
   try {
     const body = new URLSearchParams();
-    body.set("entry.1528887846", name);
-    body.set("entry.129910801", msg.slice(0, 1000));
+    body.set("entry.521064233", name);
+    body.set("entry.1515644547", msg.slice(0, 1000));
     await fetch(FB_FORM_URL, { method: "POST", mode: "no-cors", body: body });
     status.textContent = "Thank you! Your feedback was saved — you can see it on Ankur's dashboard.";
     status.classList.remove("err");
