@@ -92,16 +92,51 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 .intro-hi { margin: 0 0 2px; font-size: 1.05rem; font-weight: 700; color: var(--gold); letter-spacing: 0.05em; }
 .name-3d {
   margin: 0; font-family: "Fraunces", "Inter", serif; font-weight: 900;
-  font-size: clamp(2.4rem, 6vw, 4rem); letter-spacing: 0.03em; color: #fff;
+  font-size: clamp(2.4rem, 6vw, 4rem); letter-spacing: 0.03em;
   transform: perspective(600px) rotateX(10deg);
+  /* Gradient shimmer (v5.3.3, Mage-UI aurora-text idea) — the face is a
+     slow amber-gold gradient; the text-shadow below still gives the 3D
+     extrusion. background-clip: text keeps the shadow, changes the fill. */
+  background: linear-gradient(100deg, #fff8ec 0%, #f59e0b 25%, #ffd97a 50%, #f59e0b 75%, #fff8ec 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  animation: name-shimmer 7s linear infinite;
   text-shadow:
     0 1px 0 var(--gold), 0 2px 0 var(--gold), 0 3px 0 var(--accent),
     0 4px 0 var(--accent), 0 5px 0 var(--accent-dark), 0 6px 0 var(--accent-dark),
     0 10px 24px rgba(0, 0, 0, 0.7);
 }
+@keyframes name-shimmer { to { background-position: -200% 0; } }
 .intro-line { margin: 6px 0 0; font-size: 1.15rem; font-weight: 700; color: var(--gold); }
 .intro-sub { margin: 2px 0 0; font-size: 0.92rem; color: var(--muted); }
 .intro-hint { margin: 6px 0 0; font-size: 0.88rem; font-weight: 600; color: var(--teal); }
+
+/* Preloader (v5.3.3) — clean loading screen while the avatar video warms
+   up. Fades out the moment the first avatar frame is keyed. */
+.preloader {
+  position: fixed; inset: 0; z-index: 100; background: #0d0a07;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; transition: opacity 0.5s ease;
+}
+.preloader.is-hidden { opacity: 0; pointer-events: none; }
+.preloader-name {
+  margin: 0; font-family: "Fraunces", "Inter", serif; font-weight: 900;
+  font-size: clamp(1.4rem, 4vw, 2rem); letter-spacing: 0.06em; color: var(--gold);
+}
+.preloader-bar { width: 160px; height: 3px; background: #2b241d; border-radius: 2px; overflow: hidden; }
+.preloader-bar span {
+  display: block; width: 40%; height: 100%; background: var(--gold); border-radius: 2px;
+  animation: preload-slide 1.2s ease-in-out infinite;
+}
+@keyframes preload-slide { 0% { transform: translateX(-110%); } 100% { transform: translateX(400%); } }
+.preloader-text { margin: 0; font-size: 0.85rem; color: var(--muted); }
+
+/* Cursor canvas (v5.3.3, Mage-UI follow-cursor + click-spark) — one fixed
+   canvas for the gold follow-dot and the gold click sparks. pointer-events
+   none, so it never blocks a tap. Above panels (z 30) so the dot is
+   visible everywhere, like a real cursor. Created by JS, desktop only. */
+.cursor-canvas { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
 
 /* Avatar, centre — Ankur's own avatar VIDEOS (idle + dances). The video
    is the source; the canvas below is what you see — a live chroma-key

@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.3.2.
+// Ankur Mishra — portfolio v5.3.3.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -12,6 +12,9 @@
 // rotates, tap opens a panel on THAT box's side.
 // MatchMate bot: recruiter posts a requirement, bot checks the match honestly.
 // Motion: transform / opacity only. prefers-reduced-motion respected.
+// v5.3.3 (Mage-UI, 2026-11-15): gold follow-dot + gold click-sparks
+// (one canvas, desktop dot / tap sparks everywhere), Proof numbers count
+// up, gradient shimmer on the name, preloader until the first frame.
 
 const $ = (id) => document.getElementById(id);
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -20,6 +23,113 @@ const bubble = $("speechBubble");
 const stateLabel = $("avatarState");
 
 function setSpeech(text) { bubble.textContent = text; }
+
+// ---------- Cursor effects (v5.3.3, Mage-UI follow-cursor + click-spark) ----------
+// One fixed canvas, one rAF loop. A gold dot trails the mouse (lag) —
+// desktop only, because phones have no cursor. Gold spark bursts fire
+// where you tap a box or the avatar — those work on touch too, because a
+// tap is a click. Warm gold (#f59e0b) to match the page; never the stock
+// blue/rainbow. Reduced motion: no canvas at all.
+const finePointer = window.matchMedia("(pointer: fine)").matches;
+let cursorCtx = null;
+const sparks = []; // {x, y, born, rot} — one burst = 8 sparks, 400ms
+let dotX = -100, dotY = -100, dotTX = -100, dotTY = -100, mouseIn = false;
+function initCursorFX() {
+  if (reduced) return;
+  const c = document.createElement("canvas");
+  c.className = "cursor-canvas";
+  c.setAttribute("aria-hidden", "true");
+  document.body.appendChild(c);
+  cursorCtx = c.getContext("2d");
+  const resize = () => { c.width = innerWidth; c.height = innerHeight; };
+  resize();
+  window.addEventListener("resize", resize);
+  if (finePointer) {
+    document.addEventListener("mousemove", (e) => { dotTX = e.clientX; dotTY = e.clientY; mouseIn = true; });
+    document.addEventListener("mouseleave", () => { mouseIn = false; });
+  }
+  const loop = () => {
+    cursorCtx.clearRect(0, 0, c.width, c.height);
+    // Follow dot — lerp toward the mouse (lag ~8), gold with a soft glow.
+    dotX += (dotTX - dotX) / 8;
+    dotY += (dotTY - dotY) / 8;
+    if (finePointer && mouseIn) {
+      cursorCtx.save();
+      cursorCtx.shadowColor = "#f59e0b"; cursorCtx.shadowBlur = 12;
+      cursorCtx.fillStyle = "#f59e0b";
+      cursorCtx.beginPath(); cursorCtx.arc(dotX, dotY, 6, 0, Math.PI * 2); cursorCtx.fill();
+      cursorCtx.restore();
+      cursorCtx.fillStyle = "#fff8ec";
+      cursorCtx.beginPath(); cursorCtx.arc(dotX, dotY, 2, 0, Math.PI * 2); cursorCtx.fill();
+    }
+    // Click sparks — 8 gold lines burst out and shrink over 400ms.
+    const now = performance.now();
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      const age = now - s.born;
+      if (age > 400) { sparks.splice(i, 1); continue; }
+      const p = 1 - age / 400; // 1 -> 0, ease-out
+      const len = 18 * p + 4;
+      cursorCtx.save();
+      cursorCtx.globalAlpha = p;
+      cursorCtx.strokeStyle = "#f59e0b"; cursorCtx.lineWidth = 2; cursorCtx.lineCap = "round";
+      for (let k = 0; k < 8; k++) {
+        const a = (k / 8) * Math.PI * 2 + s.rot;
+        cursorCtx.beginPath();
+        cursorCtx.moveTo(s.x + Math.cos(a) * 6, s.y + Math.sin(a) * 6);
+        cursorCtx.lineTo(s.x + Math.cos(a) * (6 + len), s.y + Math.sin(a) * (6 + len));
+        cursorCtx.stroke();
+      }
+      cursorCtx.restore();
+    }
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+function burstSparks(x, y) {
+  if (!cursorCtx) return;
+  sparks.push({ x, y, born: performance.now(), rot: Math.random() * Math.PI });
+}
+initCursorFX();
+
+// ---------- Preloader (v5.3.3) ----------
+// A clean loading screen while the avatar video warms up, instead of an
+// empty orange glow. Hides the moment the first avatar frame is keyed
+// (keyFrame calls it), or after 4s at the latest, or if the video fails.
+let preloaderHidden = false;
+function hidePreloader() {
+  if (preloaderHidden) return;
+  preloaderHidden = true;
+  const p = $("preloader");
+  if (!p) return;
+  p.classList.add("is-hidden");
+  setTimeout(() => { p.remove(); }, 600); // let the fade finish, then remove
+}
+setTimeout(hidePreloader, 4000); // safety — never leave a loading screen up
+
+// ---------- Proof counter (v5.3.3, Mage-UI counter idea) ----------
+// When the Proof panel opens, its numbers count up from 0 (900ms,
+// easeOutCubic). The final values live in the HTML (data-count), so
+// no-JS still shows them, and reduced motion skips the animation.
+let proofRaf = 0;
+function animateProof() {
+  if (reduced) return;
+  cancelAnimationFrame(proofRaf);
+  const els = document.querySelectorAll(".proof-list [data-count]");
+  const start = performance.now(), DUR = 900;
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / DUR);
+    const e = 1 - Math.pow(1 - t, 3);
+    els.forEach((el) => {
+      const target = parseFloat(el.dataset.count);
+      const dec = parseInt(el.dataset.decimals || "0", 10);
+      const suf = el.dataset.suffix || "";
+      el.textContent = (target * e).toFixed(dec) + suf;
+    });
+    if (t < 1) proofRaf = requestAnimationFrame(step);
+  };
+  proofRaf = requestAnimationFrame(step);
+}
 
 // ---------- Video avatar (idle + dance videos) ----------
 // The videos are shot on a WHITE background, so the live canvas keys the
@@ -48,6 +158,7 @@ function showFallback(msg) {
   if (fb) fb.hidden = false;
   canvas.hidden = true;
   stopKeying();
+  hidePreloader(); // video failed — don't leave the user on a loading screen
   if (msg) stateLabel.textContent = msg;
 }
 
@@ -82,6 +193,7 @@ function keyFrame() {
     }
   }
   vctx.putImageData(img, 0, 0);
+  hidePreloader(); // first frame keyed — the avatar is actually visible now
 }
 
 function startKeying() {
@@ -156,8 +268,9 @@ const TAP_LINES = [
   "My full story is in Journey.",
   "Tap Hire Me — let's see if we match.",
 ];
-stage.addEventListener("click", () => {
+stage.addEventListener("click", (e) => {
   if (reduced) return;
+  burstSparks(e.clientX, e.clientY);
   setSpeech(TAP_LINES[Math.floor(Math.random() * TAP_LINES.length)]);
   if (!openKey) {
     playDance("Right now: dancing");
@@ -253,6 +366,7 @@ function openPanel(key) {
   // (CSS: body.panel-open .avatar-stage z-index 21), so he stays visible.
   if (!reduced) playDance("Right now: dancing — " + (key === "hire" ? "Hire Me" : TITLES[key]));
   setSpeech(SPEECH[key]);
+  if (key === "proof") animateProof(); // Proof numbers count up
 }
 
 function closePanel() {
@@ -269,8 +383,9 @@ function closePanel() {
 }
 
 document.querySelectorAll(".orbit-box").forEach((b) => {
-  b.addEventListener("click", () => {
+  b.addEventListener("click", (e) => {
     if (Date.now() - (window.__cubeDragAt || 0) < 250) return; // it was a drag, not a tap
+    burstSparks(e.clientX, e.clientY);
     if (openKey === b.dataset.panel) { closePanel(); return; }
     openPanel(b.dataset.panel);
   });

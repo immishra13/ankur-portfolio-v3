@@ -41,10 +41,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=5.3.2">
+<link rel="stylesheet" href="styles.css?v=5.3.3">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
+
+<!-- Preloader (v5.3.3) — a clean loading screen while the avatar video
+     warms up, instead of an empty orange glow. Hides the moment the first
+     avatar frame is keyed (JS), or after 4s at the latest. -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <p class="preloader-name">ANKUR MISHRA</p>
+  <div class="preloader-bar"><span></span></div>
+  <p class="preloader-text">loading…</p>
+</div>
 
 <!-- ================= THE ORBIT: one page, avatar in the centre ================= -->
 <div class="orbit" id="orbit">
@@ -372,12 +381,12 @@
       <p class="panel-eyebrow">Scoreboard — results</p>
       <p class="panel-intro">Numbers speak. Promises don't.</p>
       <ul class="proof-list">
-        <li><strong>2000+</strong><span>customers served — FixMateHub</span></li>
-        <li><strong>4.9</strong><span>FixMateHub rating</span></li>
-        <li><strong>50+</strong><span>weddings &amp; corporate events managed</span></li>
-        <li><strong>96</strong><span>NPTEL — AI Concepts &amp; Techniques</span></li>
-        <li><strong>8.70</strong><span>Sem 6 SGPI</span></li>
-        <li><strong>12</strong><span>live projects on this page</span></li>
+        <li><strong data-count="2000" data-suffix="+">2000+</strong><span>customers served — FixMateHub</span></li>
+        <li><strong data-count="4.9" data-decimals="1">4.9</strong><span>FixMateHub rating</span></li>
+        <li><strong data-count="50" data-suffix="+">50+</strong><span>weddings &amp; corporate events managed</span></li>
+        <li><strong data-count="96">96</strong><span>NPTEL — AI Concepts &amp; Techniques</span></li>
+        <li><strong data-count="8.70" data-decimals="2">8.70</strong><span>Sem 6 SGPI</span></li>
+        <li><strong data-count="12">12</strong><span>live projects on this page</span></li>
       </ul>
     </div>
 
@@ -447,6 +456,6 @@
 </aside>
 <div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
-<script src="app.js?v=5.3.2"></script>
+<script src="app.js?v=5.3.3"></script>
 </body>
 </html>
