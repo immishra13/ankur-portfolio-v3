@@ -92,7 +92,8 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 .intro-hi { margin: 0 0 2px; font-size: 1.05rem; font-weight: 700; color: var(--gold); letter-spacing: 0.05em; }
 .name-3d {
   margin: 0; font-family: "Fraunces", "Inter", serif; font-weight: 900;
-  font-size: clamp(2.4rem, 6vw, 4rem); letter-spacing: 0.03em;
+  font-size: clamp(2.4rem, 6vw, 4rem); letter-spacing: 0.03em; line-height: 1;
+  position: relative;
   transform: perspective(600px) rotateX(10deg);
   /* Gradient shimmer (v5.3.3, Mage-UI aurora-text idea) — the face is a
      slow amber-gold gradient; the text-shadow below still gives the 3D
@@ -108,6 +109,45 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
     0 10px 24px rgba(0, 0, 0, 0.7);
 }
 @keyframes name-shimmer { to { background-position: -200% 0; } }
+
+/* Split Text on the name (v5.3.4, Mage-UI split-text) — each letter is
+   cut into a top half + bottom half. Hovering a letter pushes its halves
+   apart (top up, bottom down) with a ripple to the neighbours. The h1
+   keeps its gradient + 3D shadow; when JS builds the split (.is-split),
+   the h1's own background is removed and the halves carry the gradient
+   (so no-JS still shows the plain gradient name). The sizer is the
+   invisible full text that keeps the h1's size and the accessible name;
+   its shadow is off so it leaves no ghost behind the letters. */
+.name-3d.is-split { background: none; animation: none; }
+.split-sizer { text-shadow: none; }
+.split-letters { position: absolute; top: 0; left: 0; display: flex; }
+.split-letter {
+  position: relative; display: inline-flex; flex-direction: column;
+  height: 1em; line-height: 1;
+}
+.split-top, .split-bottom {
+  display: block; height: 50%; overflow: hidden; line-height: 1;
+  transition: transform 0.3s ease-out;
+}
+/* the gradient + shimmer, on the spans that actually hold the letter
+   (the 3D shadow is inherited from .name-3d) */
+.split-top, .split-bottom-inner {
+  background: linear-gradient(100deg, #fff8ec 0%, #f59e0b 25%, #ffd97a 50%, #f59e0b 75%, #fff8ec 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  animation: name-shimmer 7s linear infinite;
+}
+.split-bottom-inner {
+  display: block; transform: translateY(-50%); line-height: 1;
+}
+/* the split: active letter ±20px, ±1 neighbour ±12px, ±2 ±4px */
+.split-letter.is-active .split-top { transform: translateY(-20px); }
+.split-letter.is-active .split-bottom { transform: translateY(20px); }
+.split-letter.is-near1 .split-top { transform: translateY(-12px); }
+.split-letter.is-near1 .split-bottom { transform: translateY(12px); }
+.split-letter.is-near2 .split-top { transform: translateY(-4px); }
+.split-letter.is-near2 .split-bottom { transform: translateY(4px); }
 .intro-line { margin: 6px 0 0; font-size: 1.15rem; font-weight: 700; color: var(--gold); }
 .intro-sub { margin: 2px 0 0; font-size: 0.92rem; color: var(--muted); }
 .intro-hint { margin: 6px 0 0; font-size: 0.88rem; font-weight: 600; color: var(--teal); }
@@ -132,10 +172,10 @@ h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; }
 @keyframes preload-slide { 0% { transform: translateX(-110%); } 100% { transform: translateX(400%); } }
 .preloader-text { margin: 0; font-size: 0.85rem; color: var(--muted); }
 
-/* Cursor canvas (v5.3.3, Mage-UI follow-cursor + click-spark) — one fixed
-   canvas for the gold follow-dot and the gold click sparks. pointer-events
-   none, so it never blocks a tap. Above panels (z 30) so the dot is
-   visible everywhere, like a real cursor. Created by JS, desktop only. */
+/* Cursor canvas (v5.3.4, Mage-UI canvas-cursor-effect + click-spark) — one
+   fixed canvas for the gold ribbon trails and the gold click sparks.
+   pointer-events none, so it never blocks a tap. Above panels (z 30) so
+   the ribbon is visible everywhere, like a real cursor. Created by JS. */
 .cursor-canvas { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
 
 /* Avatar, centre — Ankur's own avatar VIDEOS (idle + dances). The video
@@ -190,12 +230,39 @@ body.panel-open .avatar-stage { z-index: 21; }
 /* Orbit boxes — real 3D cubes (cuboid W x H x D).
    Resting pose shows front + right + top faces. Hover turns the cube,
    drag (pointer) rotates it freely, tap opens the panel. */
-.orbit-boxes { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.orbit-boxes { position: absolute; inset: 0; z-index: 3; pointer-events: none; perspective: 900px; }
 .orbit-box {
   position: absolute; padding: 0; background: none; border: none;
   width: 158px; min-height: 108px; perspective: 600px; pointer-events: auto;
+  transform-origin: left center;
+  transition: transform 0.35s var(--ease-out);
 }
-.cube-float { display: block; transform-style: preserve-3d; animation: float 6s var(--ease-out) infinite; }
+/* Case Study Card (v5.3.4, Mage-UI case-study-card) — the box opens like
+   a book on hover: the whole box pivots on its left edge (rotateY -12deg)
+   and the cube's own turn eases to -25deg so the total stays ~-37deg
+   (the "Open →" side stays visible). Hire Me keeps its centring. */
+.orbit-box:hover, .orbit-box:focus-visible { transform: rotateY(-12deg); }
+.box-hire:hover, .box-hire:focus-visible { transform: translateX(-50%) rotateY(-12deg); }
+/* Sliding "OPEN" tab (the card's "CLICK TO READ" tab) — sits behind the
+   cube and slides out from its right edge on hover, in the box's accent. */
+.orbit-box::after {
+  content: "OPEN";
+  position: absolute; right: 2px; top: 50%; z-index: 0;
+  width: 26px; height: 84px;
+  display: flex; align-items: center; justify-content: center;
+  writing-mode: vertical-rl;
+  background: var(--box-accent, var(--accent)); color: #fff;
+  font-weight: 800; font-size: 0.72rem; letter-spacing: 0.12em;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+  transform: translateY(-50%) translateX(-6px);
+  transition: transform 0.3s ease-in-out;
+  pointer-events: none;
+}
+.orbit-box:hover::after, .orbit-box:focus-visible::after {
+  transform: translateY(-50%) translateX(28px) rotate(4deg);
+}
+.cube-float { position: relative; z-index: 1; display: block; transform-style: preserve-3d; animation: float 6s var(--ease-out) infinite; }
 .cube {
   --w: 158px; --h: 108px; --d: 44px;
   position: relative; display: block; width: var(--w); height: var(--h);
@@ -204,7 +271,7 @@ body.panel-open .avatar-stage { z-index: 21; }
   transition: transform 0.35s var(--ease-out);
 }
 .cube.dragging { transition: none; }
-.orbit-box:hover .cube, .orbit-box:focus-visible .cube { --rx: -8deg; --ry: -38deg; }
+.orbit-box:hover .cube, .orbit-box:focus-visible .cube { --rx: -8deg; --ry: -25deg; }
 .cube-face {
   position: absolute; backface-visibility: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;

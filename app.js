@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.3.3.
+// Ankur Mishra — portfolio v5.3.4.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -15,6 +15,10 @@
 // v5.3.3 (Mage-UI, 2026-11-15): gold follow-dot + gold click-sparks
 // (one canvas, desktop dot / tap sparks everywhere), Proof numbers count
 // up, gradient shimmer on the name, preloader until the first frame.
+// v5.3.4 (Mage-UI, 2026-11-15): Split Text on the name (hover a letter,
+// it splits apart with a ripple); Case Study Card on all boxes (book-open
+// pivot + sliding OPEN tab); Canvas Cursor Effect replaces the follow-dot
+// (warm gold spring-ribbon trails, click-sparks kept).
 
 const $ = (id) => document.getElementById(id);
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -24,16 +28,78 @@ const stateLabel = $("avatarState");
 
 function setSpeech(text) { bubble.textContent = text; }
 
-// ---------- Cursor effects (v5.3.3, Mage-UI follow-cursor + click-spark) ----------
-// One fixed canvas, one rAF loop. A gold dot trails the mouse (lag) —
-// desktop only, because phones have no cursor. Gold spark bursts fire
-// where you tap a box or the avatar — those work on touch too, because a
-// tap is a click. Warm gold (#f59e0b) to match the page; never the stock
-// blue/rainbow. Reduced motion: no canvas at all.
-const finePointer = window.matchMedia("(pointer: fine)").matches;
+// ---------- Cursor effects (v5.3.4, Mage-UI canvas-cursor-effect + click-spark) ----------
+// One fixed canvas, one rAF loop. A warm gold ribbon trails the pointer —
+// 20 spring-physics lines (50 nodes each) flowing behind the cursor like
+// silk (Mage-UI's canvas-cursor-effect, re-themed: its hue-cycle ran the
+// whole rainbow; here it cycles only a narrow amber/gold band, hue 28–52,
+// additive 'lighter' blending on the dark page). Gold click-sparks burst
+// where you tap a box or the avatar. The ribbon follows touch too (it
+// draws while you drag). Reduced motion: no canvas at all. No
+// preventDefault — the effect only reads the pointer position.
+const E = { friction: 0.5, trails: 20, size: 50, dampening: 0.25, tension: 0.98 };
 let cursorCtx = null;
+let ribbonPos = { x: -100, y: -100 };
+let ribbonLines = [];
 const sparks = []; // {x, y, born, rot} — one burst = 8 sparks, 400ms
-let dotX = -100, dotY = -100, dotTX = -100, dotTY = -100, mouseIn = false;
+const hueOsc = { phase: Math.random() * Math.PI * 2, offset: 40, frequency: 0.0015, amplitude: 12 };
+function hueUpdate() {
+  hueOsc.phase += hueOsc.frequency;
+  return hueOsc.offset + Math.sin(hueOsc.phase) * hueOsc.amplitude;
+}
+class RibbonNode {
+  constructor() { this.x = 0; this.y = 0; this.vx = 0; this.vy = 0; }
+}
+class RibbonLine {
+  constructor(spring) {
+    this.spring = spring + (0.1 * Math.random() - 0.02);
+    this.friction = E.friction + (0.01 * Math.random() - 0.002);
+    this.nodes = [];
+    for (let i = 0; i < E.size; i++) {
+      const n = new RibbonNode();
+      n.x = ribbonPos.x; n.y = ribbonPos.y;
+      this.nodes.push(n);
+    }
+  }
+  update() {
+    let spring = this.spring;
+    const node0 = this.nodes[0];
+    node0.vx += (ribbonPos.x - node0.x) * spring;
+    node0.vy += (ribbonPos.y - node0.y) * spring;
+    for (let i = 0; i < this.nodes.length; i++) {
+      const node = this.nodes[i];
+      if (i > 0) {
+        const prev = this.nodes[i - 1];
+        node.vx += (prev.x - node.x) * spring;
+        node.vy += (prev.y - node.y) * spring;
+        node.vx += prev.vx * E.dampening;
+        node.vy += prev.vy * E.dampening;
+      }
+      node.vx *= this.friction;
+      node.vy *= this.friction;
+      node.x += node.vx;
+      node.y += node.vy;
+      spring *= E.tension;
+    }
+  }
+  draw(ctx) {
+    let x = this.nodes[0].x, y = this.nodes[0].y;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    for (let i = 1; i < this.nodes.length - 2; i++) {
+      const cur = this.nodes[i], nxt = this.nodes[i + 1];
+      x = 0.5 * (cur.x + nxt.x);
+      y = 0.5 * (cur.y + nxt.y);
+      ctx.quadraticCurveTo(cur.x, cur.y, x, y);
+    }
+    if (this.nodes.length > 2) {
+      const i = this.nodes.length - 2;
+      ctx.quadraticCurveTo(this.nodes[i].x, this.nodes[i].y, this.nodes[i + 1].x, this.nodes[i + 1].y);
+    }
+    ctx.stroke();
+    ctx.closePath();
+  }
+}
 function initCursorFX() {
   if (reduced) return;
   const c = document.createElement("canvas");
@@ -44,25 +110,28 @@ function initCursorFX() {
   const resize = () => { c.width = innerWidth; c.height = innerHeight; };
   resize();
   window.addEventListener("resize", resize);
-  if (finePointer) {
-    document.addEventListener("mousemove", (e) => { dotTX = e.clientX; dotTY = e.clientY; mouseIn = true; });
-    document.addEventListener("mouseleave", () => { mouseIn = false; });
+  const setPos = (x, y) => { ribbonPos.x = x; ribbonPos.y = y; };
+  document.addEventListener("mousemove", (e) => setPos(e.clientX, e.clientY));
+  document.addEventListener("touchmove", (e) => {
+    if (e.touches.length > 0) setPos(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  document.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 1) setPos(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  ribbonPos = { x: innerWidth / 2, y: innerHeight / 2 };
+  ribbonLines = [];
+  for (let i = 0; i < E.trails; i++) {
+    ribbonLines.push(new RibbonLine(0.4 + (i / E.trails) * 0.025));
   }
   const loop = () => {
     cursorCtx.clearRect(0, 0, c.width, c.height);
-    // Follow dot — lerp toward the mouse (lag ~8), gold with a soft glow.
-    dotX += (dotTX - dotX) / 8;
-    dotY += (dotTY - dotY) / 8;
-    if (finePointer && mouseIn) {
-      cursorCtx.save();
-      cursorCtx.shadowColor = "#f59e0b"; cursorCtx.shadowBlur = 12;
-      cursorCtx.fillStyle = "#f59e0b";
-      cursorCtx.beginPath(); cursorCtx.arc(dotX, dotY, 6, 0, Math.PI * 2); cursorCtx.fill();
-      cursorCtx.restore();
-      cursorCtx.fillStyle = "#fff8ec";
-      cursorCtx.beginPath(); cursorCtx.arc(dotX, dotY, 2, 0, Math.PI * 2); cursorCtx.fill();
-    }
-    // Click sparks — 8 gold lines burst out and shrink over 400ms.
+    // Ribbon — additive gold trails, hue cycling slowly in the amber band.
+    cursorCtx.globalCompositeOperation = "lighter";
+    cursorCtx.strokeStyle = `hsla(${Math.round(hueUpdate())}, 85%, 55%, 0.22)`;
+    cursorCtx.lineWidth = 1;
+    for (const line of ribbonLines) { line.update(); line.draw(cursorCtx); }
+    // Click sparks — back to normal blending, 8 gold lines, 400ms.
+    cursorCtx.globalCompositeOperation = "source-over";
     const now = performance.now();
     for (let i = sparks.length - 1; i >= 0; i--) {
       const s = sparks[i];
@@ -106,6 +175,64 @@ function hidePreloader() {
   setTimeout(() => { p.remove(); }, 600); // let the fade finish, then remove
 }
 setTimeout(hidePreloader, 4000); // safety — never leave a loading screen up
+
+// ---------- Split Text on the name (v5.3.4, Mage-UI split-text) ----------
+// Each letter is cut into a top half + bottom half. Hovering a letter
+// pushes its halves apart (top up, bottom down) with a ripple to the
+// neighbours (active ±20px, ±1 ±12px, ±2 ±4px — Mage-UI's numbers).
+// Built by JS so no-JS still shows the plain gradient name. The sizer
+// keeps the h1's size and the accessible name; the letters row is
+// aria-hidden. Reduced motion: keep the plain name, no split.
+function buildSplitName() {
+  if (reduced) return;
+  const h1 = $("splitName");
+  if (!h1) return;
+  const text = h1.textContent;
+  let splitTimer = 0;
+  const letters = [];
+  function setSplitActive(idx) {
+    clearTimeout(splitTimer);
+    letters.forEach((w, j) => {
+      const d = Math.abs(j - idx);
+      w.classList.toggle("is-active", idx >= 0 && j === idx);
+      w.classList.toggle("is-near1", idx >= 0 && d === 1);
+      w.classList.toggle("is-near2", idx >= 0 && d === 2);
+    });
+  }
+  h1.classList.add("is-split");
+  h1.innerHTML = "";
+  const sizer = document.createElement("span");
+  sizer.className = "split-sizer";
+  sizer.textContent = text;
+  h1.appendChild(sizer);
+  const row = document.createElement("span");
+  row.className = "split-letters";
+  row.setAttribute("aria-hidden", "true");
+  text.split("").forEach((ch, i) => {
+    const c = ch === " " ? "\u00A0" : ch; // non-breaking space keeps its width
+    const wrap = document.createElement("span");
+    wrap.className = "split-letter";
+    const top = document.createElement("span");
+    top.className = "split-top";
+    top.textContent = c;
+    const bottom = document.createElement("span");
+    bottom.className = "split-bottom";
+    const inner = document.createElement("span");
+    inner.className = "split-bottom-inner";
+    inner.textContent = c;
+    bottom.appendChild(inner);
+    wrap.appendChild(top);
+    wrap.appendChild(bottom);
+    wrap.addEventListener("mouseenter", () => setSplitActive(i));
+    wrap.addEventListener("mouseleave", () => {
+      splitTimer = setTimeout(() => setSplitActive(-1), 150);
+    });
+    row.appendChild(wrap);
+    letters.push(wrap);
+  });
+  h1.appendChild(row);
+}
+buildSplitName();
 
 // ---------- Proof counter (v5.3.3, Mage-UI counter idea) ----------
 // When the Proof panel opens, its numbers count up from 0 (900ms,
