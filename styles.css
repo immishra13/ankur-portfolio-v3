@@ -565,6 +565,8 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   .box-hire { bottom: 2%; width: 150px; }
   .box-hire .cube { --w: 150px; --h: 80px; }
   .orbit-source { left: 10px; bottom: 8px; }
+  .feedback-link { bottom: 108px; font-size: 0.85rem; }
+  .visit-badge { display: none; }
   .panel, .panel.panel-left { width: 100vw; height: 86dvh; top: auto; bottom: 0; left: 0; right: 0; border-left: none; border-right: none; border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; transform: translateY(102%); box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5); }
   .panel.open, .panel.panel-left.open { transform: translateY(0); }
   body.panel-open .orbit-boxes { opacity: 1; }
@@ -595,7 +597,7 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 }
 
 /* ---------- Feedback (v5.2.0) ---------- */
-.feedback-link { text-align: center; margin: 6px 0 0; }
+.feedback-link { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 3; margin: 0; text-align: center; white-space: nowrap; }
 .feedback-btn {
   background: none; border: none; cursor: pointer;
   color: #4c9aff; font: inherit; font-size: 13px; font-weight: 600;
@@ -641,6 +643,6 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
 .bot-contact-cta .btn { width: 100%; }
 
 /* ---------- Visit badge (v5.2.0) ---------- */
-.visit-badge { text-align: center; margin: 8px 0 0; }
+.visit-badge { position: absolute; bottom: 12px; right: 16px; z-index: 3; margin: 0; text-align: center; }
 .visit-badge img { height: 20px; }
 .feedback-backdrop.open { display: block; }

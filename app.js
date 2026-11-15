@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.2.0.
+// Ankur Mishra — portfolio v5.2.1.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
