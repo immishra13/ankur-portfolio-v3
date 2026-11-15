@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Analytics — Ankur Mishra</title>
+<meta name="description" content="Private analytics dashboard for Ankur Mishra's portfolio — visits and visitor feedback.">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, system-ui, -apple-system, sans-serif; background: #0d0a07; color: #f5efe6; padding: 24px 16px 48px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  .sub { color: #b8a894; font-size: 14px; margin: 0 0 24px; }
+  .sub a { color: #4c9aff; }
+  .card { background: #171310; border: 1px solid #2b241d; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+  .badge-big { display: block; margin: 6px 0 4px; }
+  .badge-big img { height: 28px; }
+  .big-label { color: #b8a894; font-size: 14px; margin-top: 6px; }
+  .meta { color: #8a7d68; font-size: 12px; margin-top: 12px; }
+  h2 { font-size: 18px; margin: 0 0 12px; }
+  .fb { border-top: 1px solid #2b241d; padding: 12px 0; }
+  .fb:first-of-type { border-top: none; }
+  .fb-name { font-weight: 700; font-size: 14px; }
+  .fb-date { color: #8a7d68; font-size: 12px; margin-left: 8px; }
+  .fb-msg { margin: 6px 0 0; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+  .fb-link { color: #4c9aff; font-size: 12px; }
+  .empty { color: #b8a894; font-size: 14px; }
+  .err { color: #ff9d9d; font-size: 14px; }
+  .refresh { background: #e8590c; color: #fff; border: none; border-radius: 10px; padding: 10px 16px; font: inherit; font-weight: 700; cursor: pointer; }
+  .refresh:hover { background: #d14e0a; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📊 Portfolio Analytics</h1>
+  <p class="sub">Ankur Mishra's portfolio — visits &amp; feedback. <a href="./">← Back to portfolio</a></p>
+
+  <div class="card">
+    <div class="badge-big"><img src="https://api.visitorbadge.io/api/visitors?path=ankur-portfolio-v3&label=Visitors&countColor=%23263759" alt="Total portfolio visitors"></div>
+    <div class="big-label">total visits to the portfolio (every page load counts; opening this dashboard adds 1 too)</div>
+    <div class="meta" id="updatedAt"></div>
+    <p><button type="button" class="refresh" id="refreshBtn">Refresh feedback</button></p>
+  </div>
+
+  <div class="card">
+    <h2>💬 Visitor feedback (<span id="fbCount">0</span>)</h2>
+    <div id="fbList"><p class="empty">Loading…</p></div>
+    <p class="empty">Feedback is posted as a GitHub Issue from the portfolio’s feedback box. <a href="https://github.com/immishra13/ankur-portfolio-v3/issues?q=is%3Aissue+Feedback+from" target="_blank" rel="noopener" class="fb-link">View all on GitHub →</a></p>
+  </div>
+</div>
+
+<script>
+// Feedback lives as GitHub Issues on the portfolio repo. The public
+// GitHub API needs no auth to read them. We filter client-side by the
+// "Feedback from ..." title the feedback box sets, so no label has to
+// exist in the repo. Escape all visitor-written text before rendering
+// (XSS safety).
+const ISSUES_URL = "https://api.github.com/repos/immishra13/ankur-portfolio-v3/issues?state=open&per_page=50";
+
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+async function load() {
+  const list = document.getElementById("fbList");
+  const meta = document.getElementById("updatedAt");
+  meta.textContent = "Last updated: " + new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) + " IST";
+  try {
+    const res = await fetch(ISSUES_URL, { headers: { "Accept": "application/vnd.github+json" } });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const issues = await res.json();
+    const all = Array.isArray(issues) ? issues : [];
+    // Only feedback issues (title set by the portfolio feedback box).
+    // Exclude pull requests (they appear in the issues list too).
+    const fb = all.filter((it) => !it.pull_request && (it.title || "").toLowerCase().startsWith("feedback from"));
+    document.getElementById("fbCount").textContent = fb.length;
+    if (!fb.length) {
+      list.innerHTML = '<p class="empty">No feedback yet — when someone sends feedback from the portfolio, it will appear here.</p>';
+      return;
+    }
+    // Newest first (API returns newest first already).
+    const rows = fb.map(function (it) {
+      const title = esc(it.title || "Feedback");
+      // Body starts with the visitor's message; strip the auto footer line.
+      let msg = String(it.body || "").replace(/\n\n— Sent from the portfolio feedback box.*$/s, "").trim();
+      const name = title.replace(/^Feedback from\s+/i, "");
+      const when = it.created_at ? new Date(it.created_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) : "";
+      const link = esc(it.html_url || "");
+      return '<div class="fb"><span class="fb-name">' + esc(name) + '</span>' +
+        (when ? '<span class="fb-date">' + esc(when) + ' IST</span>' : "") +
+        '<p class="fb-msg">' + esc(msg) + '</p>' +
+        (link ? '<a class="fb-link" href="' + link + '" target="_blank" rel="noopener">View on GitHub →</a>' : "") +
+        '</div>';
+    }).join("");
+    list.innerHTML = rows;
+  } catch (e) {
+    list.innerHTML = '<p class="err">Could not load feedback right now. Check your connection and refresh.</p>';
+  }
+}
+document.getElementById("refreshBtn").addEventListener("click", load);
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>

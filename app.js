@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.1.3.
+// Ankur Mishra — portfolio v5.2.0.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -424,7 +424,10 @@ function checkMatch() {
     <p class="chips">${missing.map((m) => `<span class="missing">${m}</span>`).join("")}</p>` : `<h4 class="good">No gaps spotted in what you listed.</h4>`}
     ${proofs.length ? `<h4 class="good">Proof — where I used it</h4>
     <ul class="bot-proof">${proofs.map((p) => `<li><strong>${p}</strong> — real work, link is in the Work box.</li>`).join("")}</ul>` : ""}
+    ${matched.length ? `<div class="bot-contact-cta"><button type="button" class="btn btn-primary" id="botContactBtn">📩 Match hua — Contact Ankur, let's talk</button></div>` : ""}
   `;
+  const contactBtn = result.querySelector("#botContactBtn");
+  if (contactBtn) contactBtn.addEventListener("click", () => openPanel("contact"));
   requestAnimationFrame(() => {
     const bar = result.querySelector(".match-bar span");
     if (bar) bar.classList.add("go");
@@ -440,4 +443,50 @@ document.querySelectorAll(".bot-chips button").forEach((b) => {
     $("reqInput").value = b.dataset.req;
     checkMatch();
   });
+});
+
+// ---------- Feedback modal (v5.2.0) ----------
+// Visits are counted by the visitorbadge.io image in index.html (it
+// increments on every page load — no JS needed). Feedback is submitted
+// as a GitHub Issue (label "feedback") so it shows on the dashboard,
+// which reads the repo's issues via the public GitHub API. No account
+// or backend of our own is needed for either.
+const fbModal = $("feedbackModal");
+const fbBackdrop = $("feedbackBackdrop");
+function openFeedback() {
+  fbModal.classList.add("open");
+  fbBackdrop.classList.add("open");
+  fbModal.setAttribute("aria-hidden", "false");
+  $("fbMsg").focus();
+}
+function closeFeedback() {
+  fbModal.classList.remove("open");
+  fbBackdrop.classList.remove("open");
+  fbModal.setAttribute("aria-hidden", "true");
+}
+$("feedbackBtn").addEventListener("click", openFeedback);
+$("feedbackClose").addEventListener("click", closeFeedback);
+fbBackdrop.addEventListener("click", closeFeedback);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeFeedback(); });
+
+$("fbSubmit").addEventListener("click", () => {
+  const status = $("fbStatus");
+  const msg = $("fbMsg").value.trim();
+  const name = $("fbName").value.trim() || "Anonymous";
+  if (!msg) {
+    status.textContent = "Please write your feedback first.";
+    status.classList.add("err");
+    return;
+  }
+  const title = "Feedback from " + name;
+  const body = msg.slice(0, 1000) + "\n\n— Sent from the portfolio feedback box (ankur-portfolio-v3).";
+  const url = "https://github.com/immishra13/ankur-portfolio-v3/issues/new"
+    + "?title=" + encodeURIComponent(title)
+    + "&body=" + encodeURIComponent(body);
+  window.open(url, "_blank", "noopener");
+  status.textContent = "Opening GitHub to post your feedback — it will appear on Ankur's dashboard once submitted. (Needs a GitHub account; no GitHub? Email Ankur directly from the Contact box.)";
+  status.classList.remove("err");
+  $("fbMsg").value = "";
+  $("fbName").value = "";
+  setTimeout(closeFeedback, 2500);
 });

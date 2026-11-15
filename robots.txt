@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://immishra13.github.io/ankur-portfolio-v3/sitemap.xml

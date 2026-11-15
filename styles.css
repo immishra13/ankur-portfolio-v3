@@ -593,3 +593,54 @@ body.panel-open .orbit-boxes { opacity: 0.45; transition: opacity 0.3s var(--eas
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .name-3d { transform: none; }
 }
+
+/* ---------- Feedback (v5.2.0) ---------- */
+.feedback-link { text-align: center; margin: 6px 0 0; }
+.feedback-btn {
+  background: none; border: none; cursor: pointer;
+  color: #4c9aff; font: inherit; font-size: 13px; font-weight: 600;
+  text-decoration: underline; text-underline-offset: 3px; padding: 4px 8px;
+}
+.feedback-btn:hover { color: #7db4ff; }
+.feedback-modal {
+  position: fixed; inset: 0; z-index: 60; display: none;
+  align-items: center; justify-content: center; padding: 16px;
+}
+.feedback-modal.open { display: flex; }
+.feedback-box {
+  background: #171310; border: 1px solid #2b241d; border-radius: 14px;
+  width: min(440px, 100%); padding: 18px; box-shadow: 0 18px 50px rgba(0,0,0,.6);
+}
+.feedback-head { display: flex; align-items: center; justify-content: space-between; }
+.feedback-head h3 { margin: 0; font-size: 18px; color: #f5efe6; }
+.feedback-close {
+  background: none; border: none; color: #b8a894; font-size: 26px; line-height: 1;
+  cursor: pointer; padding: 2px 8px;
+}
+.feedback-close:hover { color: #f5efe6; }
+.feedback-sub { color: #b8a894; font-size: 13px; margin: 8px 0 14px; }
+.feedback-box input[type="text"], .feedback-box textarea {
+  width: 100%; box-sizing: border-box; background: #0d0a07; color: #f5efe6;
+  border: 1px solid #2b241d; border-radius: 10px; padding: 10px 12px;
+  font: inherit; font-size: 14px; margin: 4px 0 12px; resize: vertical;
+}
+.feedback-box input[type="text"]:focus, .feedback-box textarea:focus {
+  outline: none; border-color: #4c9aff;
+}
+.feedback-submit { width: 100%; }
+.feedback-status { font-size: 13px; color: #7ee2a8; min-height: 18px; margin: 10px 0 0; }
+.feedback-status.err { color: #ff9d9d; }
+.feedback-backdrop {
+  position: fixed; inset: 0; z-index: 59; background: rgba(0,0,0,.55);
+  display: none;
+}
+.feedback-backdrop.open { display: block; }
+
+/* ---------- MatchMate contact CTA (v5.2.0) ---------- */
+.bot-contact-cta { margin-top: 16px; }
+.bot-contact-cta .btn { width: 100%; }
+
+/* ---------- Visit badge (v5.2.0) ---------- */
+.visit-badge { text-align: center; margin: 8px 0 0; }
+.visit-badge img { height: 20px; }
+.feedback-backdrop.open { display: block; }

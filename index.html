@@ -4,7 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ankur Mishra — The Orbit. I ship products, not promises.</title>
-<meta name="description" content="Ankur Mishra — CSE (AI & ML) student, Python backend & GenAI developer, Co-Founder of FixMateHub. One page, one avatar, everything around him. Tap a box.">
+<meta name="description" content="Ankur Mishra (Ankur Krishna Mishra, Ankur Kumar Mishra) — CSE (AI & ML) student, Python backend & GenAI developer, Co-Founder of FixMateHub. One page, one avatar, everything around him. Tap a box.">
+<meta name="keywords" content="Ankur Mishra, Ankur Krishna Mishra, Ankur Kumar Mishra, Mishra, Ankur, Ankur Mishra portfolio, Ankur Krishna Mishra portfolio, Python developer, GenAI developer, FixMateHub, VIVA Institute of Technology, CSE AI ML, backend developer, AI ML engineer, Mumbai developer">
+<meta name="author" content="Ankur Krishna Mishra">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ankur Mishra",
+  "alternateName": ["Ankur Krishna Mishra", "Ankur Kumar Mishra", "Ankur Mishra", "Mishra"],
+  "description": "CSE (AI & ML) student, Python backend & GenAI developer, Co-Founder of FixMateHub",
+  "url": "https://immishra13.github.io/ankur-portfolio-v3/",
+  "jobTitle": ["Python Backend Developer", "GenAI Developer", "Co-Founder, FixMateHub"],
+  "alumniOf": {"@type": "CollegeOrUniversity", "name": "VIVA Institute of Technology, Virar, University of Mumbai"},
+  "knowsAbout": ["Python", "FastAPI", "GenAI", "Machine Learning", "NLP", "React", "JavaScript", "FixMateHub"],
+  "sameAs": [
+    "https://www.linkedin.com/in/ankur-krishna-mishra-923654235",
+    "https://github.com/immishra13",
+    "https://fixmatehub.com"
+  ]
+}
+</script>
 <link rel="canonical" href="https://immishra13.github.io/ankur-portfolio-v3/">
 <meta property="og:title" content="Ankur Mishra — The Orbit">
 <meta property="og:description" content="Python backend & GenAI developer, Co-Founder of FixMateHub. Tap a box around him — Work, Skills, Proof, Hire Me.">
@@ -20,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=5.1.3">
+<link rel="stylesheet" href="styles.css?v=5.2.0">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
@@ -136,6 +157,8 @@
   </nav>
 
   <p class="orbit-source"><a href="https://github.com/immishra13/ankur-portfolio-v3" target="_blank" rel="noopener">Source on GitHub</a></p>
+  <p class="feedback-link"><button type="button" class="feedback-btn" id="feedbackBtn">💬 Wanna give any suggestions or feedback?</button></p>
+  <p class="visit-badge"><img src="https://api.visitorbadge.io/api/visitors?path=ankur-portfolio-v3&label=Visitors&countColor=%23263759" alt="Portfolio visitors" loading="lazy"></p>
 </div>
 
 <!-- ================= SIDE PANEL: one panel per box ================= -->
@@ -402,6 +425,24 @@
 </aside>
 <div class="panel-backdrop" id="panelBackdrop" aria-hidden="true"></div>
 
-<script src="app.js?v=5.1.3"></script>
+<!-- Feedback modal -->
+<div class="feedback-modal" id="feedbackModal" aria-hidden="true">
+  <div class="feedback-box">
+    <div class="feedback-head">
+      <h3>Your feedback</h3>
+      <button type="button" class="feedback-close" id="feedbackClose" aria-label="Close feedback">×</button>
+    </div>
+    <p class="feedback-sub">Tell Ankur what you liked, what can be better, or any suggestion. Sending opens a pre-filled GitHub Issue — once you post it, it shows on his dashboard. No GitHub account? <a href="mailto:ankurkrishnamishra@gmail.com?subject=Portfolio%20feedback">Email Ankur directly</a> instead.</p>
+    <label class="bot-label" for="fbName">Your name (optional)</label>
+    <input type="text" id="fbName" maxlength="60" placeholder="Your name">
+    <label class="bot-label" for="fbMsg">Your suggestion / feedback</label>
+    <textarea id="fbMsg" rows="4" maxlength="1000" placeholder="Write your feedback here..."></textarea>
+    <button type="button" class="btn btn-primary feedback-submit" id="fbSubmit">Send feedback</button>
+    <p class="feedback-status" id="fbStatus" aria-live="polite"></p>
+  </div>
+</div>
+<div class="feedback-backdrop" id="feedbackBackdrop" aria-hidden="true"></div>
+
+<script src="app.js?v=5.2.0"></script>
 </body>
 </html>
