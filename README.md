@@ -77,4 +77,5 @@ Plain HTML, CSS & JavaScript. No framework, no build step, no tracking.
 - v5.3.3 — Mage-UI cursor effects: gold follow-dot (desktop) + gold click-sparks on box/avatar taps (touch too), Proof numbers count up, gradient shimmer on the name, preloader until the first avatar frame
 - v5.3.4 — Mage-UI: Split Text on the name (hover a letter, it splits apart), Case Study Card on all boxes (book-open pivot + sliding OPEN tab), Canvas Cursor ribbon replaces the follow-dot (warm gold spring trails, sparks kept)
 - v5.3.5 — Split Text fix: letters row centred (was left-aligned) + pointer-events enabled (the header blocks hover otherwise), so the split actually triggers
+- v5.3.6 — Duplicate "Open" removed: the cube's side face said "Open →" / "Talk →" AND the tab says "OPEN"; side faces are now plain coloured edges, the tab is the single "OPEN"
 - v2 lives at https://github.com/immishra13/ankur-portfolio-v2 (untouched)

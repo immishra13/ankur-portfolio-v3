@@ -1,4 +1,4 @@
-// Ankur Mishra — portfolio v5.3.5.
+// Ankur Mishra — portfolio v5.3.6.
 // Full dark UI. Ankur's own avatar VIDEOS in the centre (avatar-idle.mp4
 // loops normally; the dance videos play when a box opens — a different
 // dance each time, time to time — and the speech bubble narrates the
@@ -23,6 +23,10 @@
 // (name sat at the viewport's left edge) and got no pointer events
 // (.name-block is pointer-events: none), so the hover never fired.
 // Now centred (left 50% + translateX -50%) with pointer-events: auto.
+// v5.3.6 (2026-11-15): duplicate "Open" removed — the cube's right face
+// said "Open →" (8 boxes) / "Talk →" (Hire) AND the Case Study tab says
+// "OPEN", so the label appeared twice. The right faces are now plain
+// coloured edges (the 3D depth stays); the tab is the single "OPEN".
 
 const $ = (id) => document.getElementById(id);
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
